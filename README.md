@@ -20,6 +20,6 @@ Compile it like any other C/C++ source code.
 **Note: The Qt designer UI files for EncodeGUI and the Preview windows will remain confidential.**
 
 # Licensing
-EncodeGUI is licensed under the AGPL v3.0. See `LICENSE` for more details. Early released versions of EncodeGUI are licensed under a custom license. Read it at https://encodegui.com/privacy-terms.html.
+EncodeGUI's source code is licensed under the AGPL v3.0. See `LICENSE` for more details. Early released versions of EncodeGUI are licensed under a custom license. Read it at https://encodegui.com/privacy-terms.html.
 
-**The setup file for EncodeGUI is closed source and is NOT a part of this repository or the AGPL license.**
+**The setup file for EncodeGUI is closed source and is NOT a part of this repository or the AGPL license. Read the privacy and terms at EncodeGUI.com linked above for more details.**
