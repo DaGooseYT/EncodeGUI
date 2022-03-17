@@ -15,7 +15,7 @@ Support for issues and directions for how to submit a proper issue/bug report ar
 Requires `Qt 6 SDK` and MS `Visual Studio` or `Cmake`.
 Compile it like any other C/C++ source code.
 
-**Note: The Qt designer UI files for EncodeGUI and the Preview window will remain confedential. The setup file is closed source and is NOT a part of this repository or the AGPL license.**
+**Note: The Qt designer UI files for EncodeGUI and the Preview windows will remain confidential. The setup file is closed source and is NOT a part of this repository or the AGPL license.**
 
 # Licensing
 EncodeGUI is licensed under the AGPL v3.0. See `LICENSE` for more details. Early released versions of EncodeGUI are licensed under a custom license. Read it at https://encodegui.com/privacy-terms.html.
