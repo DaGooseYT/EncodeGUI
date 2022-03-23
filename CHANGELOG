@@ -1,0 +1,25 @@
+EncodeGUI v1.0.3 [Pre-release: 03/22/2022] [Regular release: 04/19/2022]
+
+- Fixed color bit depth output on ProRes XQ encoding.
+- Added two pass encoding for both QuickSync and AMF encoders.
+- Added constant quantizer encoding for both QuickSync and AMF encoders.
+- Added the option to open the output path by right-clicking a job in the job queue.
+
+=============================================================================================================
+
+EncodeGUI v1.0.1 (hotfix) [03/22/2022]
+
+- Fixed a bug where disabling the preview from automatically opening causes the application to crash  when starting a job.
+- Fixed an issue where canceling all jobs wouldn’t cancel the current running job.
+- Fixed an issue where an NCNN process attempts to start while using SVPFlow (this is abnormal behavior and caused issues for some users).
+- Fixed an issue where a message box will pop up explaining that only 8-bit color videos are supported even though the video is already in 8-bit colors.
+- Fixed an issue where invalid color spaces are used with SVPFlow
+- Removed FFMs2 due to limited codec support and added LSmashSource instead.
+- Added built-in update notifications for EncodeGUI.
+- Updated FFMpeg binaries to v5.0
+- Updated the installer file to make it much more lightweight and make large dependencies to instead be downloaded and installed through the installer wizard. If your system already has the required dependencies then the downloads will be skipped to save time and server bandwidth.
+
+=============================================================================================================
+
+v1.0.0 [03/14/2022]:
+- Initial release!
