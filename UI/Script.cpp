@@ -131,14 +131,16 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 	}
 
 	ScriptBuilder::SetInclude();
-	ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\ffms2.dll"));
+	ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\LSMASHSource.dll"));
 
 	if (CHECKED(ui.UpscalingGB)) {
 		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\waifu2x.dll"));
 		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\srmd.dll"));
 	}
 	if (CHECKED(ui.InterpolationCB)) {
-		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\rife.dll"));
+		if (ui.BackendDD->currentIndex() == 1)
+			ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\rife.dll"));
+		
 		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\svpflow1.dll"));
 		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\svpflow2.dll"));
 	}
@@ -295,14 +297,20 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 		transfer_out = ui.OutputTransferDD->currentText().toLower().remove("bt");
 		primaries_out = ui.OutputPrimsDD->currentText().toLower().remove("bt");
 
-		if (CHECKED(ui.InterpolationCB) || CHECKED(ui.UpscalingGB))
-			ScriptBuilder::SetColorsOut(format, matrix_out, transfer_out, primaries_out);
+		if (CHECKED(ui.InterpolationCB) || CHECKED(ui.UpscalingGB)) {
+			if (CHECKED(ui.InterpolationCB) && ui.ToolInterpDD->currentIndex() == 2)
+				ScriptBuilder::SetColorsInOut(format, matrix_in, transfer_in, primaries_in, matrix_out, transfer_out, primaries_out);
+			else
+				ScriptBuilder::SetColorsOut(format, matrix_out, transfer_out, primaries_out);
+		}
 		else
 			ScriptBuilder::SetColorsInOut(format, matrix_in, transfer_in, primaries_in, matrix_out, transfer_out, primaries_out);
 	}
-	else
-		if (CHECKED(ui.InterpolationCB) || CHECKED(ui.UpscalingGB))
+	else if (CHECKED(ui.InterpolationCB) || CHECKED(ui.UpscalingGB))
+		if (CHECKED(ui.InterpolationCB) && ui.ToolInterpDD->currentIndex() == 2) {}
+		else
 			ScriptBuilder::SetColorsOut(format, matrix_in, transfer_in, primaries_in);
+				
 
 	ScriptBuilder::SetConcludeClip();
 

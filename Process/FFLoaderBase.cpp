@@ -103,7 +103,7 @@ void FFLoader::OutputData(QProcess* process, ProcessType type) {
 		if (type == ProcessType::Encode || type == ProcessType::Vs) {
 			ProcessErrorRegex::ErrorRegex(output);
 
-			if (type == ProcessType::Vs)
+			if (type == ProcessType::Vs && !output.contains("Creating lwi index file"))
 				emit Logs(output);
 		}
 
@@ -114,6 +114,7 @@ void FFLoader::OutputData(QProcess* process, ProcessType type) {
 				emit setProgress();
 			else
 				emit Logs(output);
+
 			break;
 		case ProcessType::VideoInfo:
 			VideoInfoRegex::DurationBitrateRegex(output);

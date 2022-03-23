@@ -11,9 +11,13 @@
 #include "Checks\Checks.h"
 #include "UI_EncodeGUI.h"
 #include "Preview.h"
+#include "Updater.h"
 #include "Windows.h"
 #include "DxGi.h"
 
+#include "QtNetwork/QNetworkAccessManager"
+#include "QtNetwork/QNetworkRequest"
+#include "QtNetwork/QNetworkReply"
 #include <QtWidgets/QMainWindow>
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -35,6 +39,8 @@
 #define WARNING 1
 #define INFO 2
 #define QUESTION 3
+
+#define VERSION QString("1.0.1")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -81,6 +87,7 @@ private:
     void RemoveAudio();
     void NewTask();
     void NewJob();
+    void Updater();
     int DecimalCounter(QString);
     void setup_queue();
     void CheckEncoders();
@@ -111,6 +118,10 @@ private:
 private slots:
     void Start();
     void CreateJob();
+    void Skip();
+    void GoToUpdate();
+    void Later();
+    void UpdateFinished();
     void PatreonClick();
     void YouClick();
     void DisClick();

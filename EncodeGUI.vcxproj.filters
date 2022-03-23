@@ -194,6 +194,9 @@
     <ClCompile Include="Arguments\AudioArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Updater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arguments\Argument.h">
@@ -244,6 +247,9 @@
     <ClInclude Include="UI\Preview.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Updater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UI\EncodeGUI.h">
@@ -258,6 +264,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="UI\Preview.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="UI\Updater.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

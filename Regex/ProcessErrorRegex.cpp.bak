@@ -97,7 +97,6 @@ void ProcessErrorRegex::ErrorRegex(QString output) {
 	else if (matchPipeError.hasMatch()) {
 #ifdef PROCESSERROR_H
 		ProcessError::SetPipeError(IndexerBool.at(GetError::Pipe));
-		ProcessError::SetError(true);
 #endif // PROCESSERROR_H
 	}
 

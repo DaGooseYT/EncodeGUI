@@ -60,8 +60,8 @@ void EncodeGUI::JobContext(QPoint pos) {
 
         QMenu* m = new QMenu(this);
 
-        QAction* pause = new QAction("Pause / Resume", this);
         QAction* logs = new QAction("Open logs path", this);
+        QAction* pause = new QAction("Pause / Resume", this);
         QAction* cancel = new QAction("Cancel", this);
         QAction* remove = new QAction("Remove", this);
         QAction* reset = new QAction("Reset", this);
@@ -80,8 +80,8 @@ void EncodeGUI::JobContext(QPoint pos) {
         }
 
         m->setFont(this->font());
-        m->addAction(pause);
         m->addAction(logs);
+        m->addAction(pause);
         m->addAction(cancel);
         m->addAction(remove);
         m->addAction(reset);
@@ -247,7 +247,7 @@ void EncodeGUI::CreateJob() {
                     }
 
                 if (ui.VideoEncDD->currentIndex() == 1 && CHECKED(ui.Hardware265CB))
-                    if (!VideoInfo::GetColors().contains("8-bit") || !VideoInfo::GetColors().contains("10-bit")) {
+                    if (!VideoInfo::GetColors().contains("8-bit") && !VideoInfo::GetColors().contains("10-bit")) {
                         MsgBoxHelper(MessageType::Error, "EncodeGUI error", "Only 8-bit and 10-bit sources are allowed for hardware encoding in HEVC. Disable hardware encoding for higher bit depth videos.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                         return;
                     }

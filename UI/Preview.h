@@ -4,6 +4,7 @@
 #define PREVIEW_H
 
 #include "ui_Preview.h"
+#include <QDialog>
 
 class Preview : public QDialog {
 public:

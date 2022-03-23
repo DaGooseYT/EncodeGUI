@@ -35,7 +35,7 @@ QString EncodeGUI::ConfigureAudioM(int stream, int stream2, QString stream3, QSt
 		MediaConfig::SetAudioCodecMulti("copy", stream3);
 
 	if (stream == 1 && stream3.toInt() == ui.AudioQueue->rowCount() - 1) {
-		MediaConfig::Append(" -metadata:g encoding_tool=\"EncodeGUI v1.0.0\"");
+		MediaConfig::Append(QString(" -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION));
 		MediaConfig::SetOutput(ui.SaveOutTxtBox->text());
 	}
 
@@ -62,7 +62,7 @@ QString EncodeGUI::ConfigureAudioP(int stream, QString id, QString container) {
 	ConfigureSubtitle(stream, container);
 
 	if (stream == 1) {
-		MediaConfig::Append(" -metadata:g encoding_tool=\"EncodeGUI v1.0.0\"");
+		MediaConfig::Append(QString(" -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION));
 		MediaConfig::SetOutput(ui.SaveOutTxtBox->text());
 	}
 
@@ -492,7 +492,7 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 		if (CHECKED(ui.AudioCB))
 			MediaConfig::SetOutput(QDir::toNativeSeparators(QDir::tempPath() + QString("\\%1.mkv").arg(id)));
 		else {
-			MediaConfig::Append(" -metadata:g encoding_tool=\"EncodeGUI v1.0.0\"");
+			MediaConfig::Append(QString(" -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION));
 			MediaConfig::SetOutput(ui.SaveOutTxtBox->text());
 		}
 

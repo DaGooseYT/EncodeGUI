@@ -20,7 +20,7 @@ QString VapourSynth::Include() {
 /// <param name="path">The source video file path.</param>
 /// <returns>String representation of the script.</returns>
 QString VapourSynth::Input(QString path, QString id) {
-	return QString("\nclip = core.ffms2.Source(source=\"%1\", cachefile=tempfile.gettempdir() + \"\\%2.ffindex\")\n\n").arg(path).replace("\\", "\\\\").arg(id);
+	return QString("\nclip = core.lsmas.LWLibavSource(source=\"%1\", cachefile=tempfile.gettempdir() + \"\\%2.lwi\")\n\n").arg(path).replace("\\", "\\\\").arg(id);
 }
 
 /// <summary>

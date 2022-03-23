@@ -143,6 +143,9 @@ void EncodeGUI::tool_interp() {
         SET_INVISIBLE(ui.EqualsLabel);
         SET_INVISIBLE(ui.Times2Label);
 
+        if (!VideoInfo::GetFrameRate().contains("?"))
+            ui.OutputFPSNUD->setMinimum(VideoInfo::GetFrameRate().toDouble() * static_cast<double>(1.25));
+
         if (ui.BackendDD->currentIndex() == 0 || ui.BackendDD->currentIndex() == 2) {
             SET_DISABLED(ui.ModelInterpDD);
             ui.ModelInterpDD->setCurrentIndex(0);
@@ -180,6 +183,10 @@ void EncodeGUI::tool_interp() {
         if (ui.BackendDD->currentIndex() == 1)
             SET_VISIBLE(ui.EqualsLabel);
 
+        if (!VideoInfo::GetFrameRate().contains("?"))
+            ui.OutputFPSNUD->setMinimum(VideoInfo::GetFrameRate().toDouble() * static_cast<double>(ui.InterpFactorNUD->value()));
+
+        InterpFactor();
         hide_interpgpucb();
         hide_params();
         break;
@@ -216,6 +223,8 @@ void EncodeGUI::tool_interp() {
             ui.BackendDD->setCurrentIndex(2);
         if (CHECKED(ui.ParamsCB))
             hide_params();
+
+        ui.OutputFPSNUD->setMinimum(5);
 
         break;
     }

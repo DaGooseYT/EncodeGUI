@@ -38,7 +38,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.2.2</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;network;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -142,6 +142,7 @@
     <ClCompile Include="UI\Script.cpp" />
     <ClCompile Include="UI\Settings.cpp" />
     <ClCompile Include="UI\Theora.cpp" />
+    <ClCompile Include="UI\Updater.cpp" />
     <ClCompile Include="UI\VPX.cpp" />
     <ClCompile Include="UI\VS.cpp" />
     <ClCompile Include="UI\AVC.cpp" />
@@ -170,12 +171,14 @@
     <ClInclude Include="Regex\ProgressInfoRegex.h" />
     <ClInclude Include="Regex\VideoInfoRegex.h" />
     <ClInclude Include="UI\Preview.h" />
+    <ClInclude Include="UI\Updater.h" />
     <ClInclude Include="VS\VapourSynth.h" />
     <QtMoc Include="UI\EncodeGUI.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="UI\EncodeGUI.ui" />
     <QtUic Include="UI\Preview.ui" />
+    <QtUic Include="UI\Updater.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Assets\EncodeGUI.qrc" />
