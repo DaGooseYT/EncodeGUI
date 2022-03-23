@@ -8,7 +8,7 @@ EncodeGUI (encode-gooey) is a free and open source video transcoder GUI that uti
 This repository only consists of the source code; no builds are hosted here. See https://encodegui.com/downloads.html for the latest builds.
 
 # Usage
-Documentation including the usage can be found at https://encodegui.com/docs/documentation.html. As of 3/14/2022, the docs are still under construction and will be posted soon. 
+Documentation including the basic usage guide can be found at https://encodegui.com/docs/documentation.html.
 
 # Support
 Support for issues and directions for how to submit a proper issue/bug report are availible on https://encodegui.com/support.html
