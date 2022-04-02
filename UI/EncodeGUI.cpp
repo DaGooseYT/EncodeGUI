@@ -118,6 +118,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ui.CompleteMessageCB, SIGNAL(stateChanged(int)), this, SLOT(JobsComplete()));
     connect(ui.ErrorMessageCB, SIGNAL(stateChanged(int)), this, SLOT(ErrorMsg()));
     connect(ui.DynamicMetadataBttn, SIGNAL(clicked(bool)), this, SLOT(HDRMeta()));
+    connect(ui.GetVidInfoCB, SIGNAL(stateChanged(int)), this, SLOT(MediaInfo()));
 
     ffloader = new FFLoader();
 
@@ -233,6 +234,29 @@ void EncodeGUI::CheckEncoders() {
     else {
         connect(ui.Hardware265DD, SIGNAL(currentIndexChanged(int)), this, SLOT(hdwr_265d()));
         connect(ui.Hardware264DD, SIGNAL(currentIndexChanged(int)), this, SLOT(hdwr_264d()));
+    }
+}
+
+void EncodeGUI::MediaInfo() {
+    if (!CHECKED(ui.GetVidInfoCB)) {
+        VideoInfo::ClearAll();
+        AudioInfo::ClearAll();
+        SubtitleInfo::ClearAll();
+        SetVideoInfo();
+        SetAudioInfo();
+
+        disconnect(ui.AudioTrackDD, SIGNAL(currentIndexChanged(int)), this, SLOT(audio_track()));
+
+        ui.AudioTrackDD->clear();
+        ui.SelectedAudioDD->clear();
+        ui.SelectInTxtBox->clear();
+
+        ui.SubtitlesCB->setChecked(false);
+        SET_DISABLED(ui.SubtitlesCB);
+        SET_DISABLED(ui.SubtitlesDD);
+
+        ui.ChaptersCB->setChecked(false);
+        SET_DISABLED(ui.ChaptersCB);
     }
 }
 
@@ -1309,10 +1333,10 @@ void EncodeGUI::OutBttn() {
     output = QFileDialog::getSaveFileName(this, tr("Save Output File"), ui.SelectInTxtBox->text(), container);
     output = QDir::toNativeSeparators(output);
     
-    if (!output.contains(ext))
+    if (!output.contains(ext) && !output.isEmpty())
         output += ext;
 
-    if (output.contains(ui.SelectInTxtBox->text()) && output.length() == ui.SelectInTxtBox->text().length()) {
+    if (output.contains(ui.SelectInTxtBox->text()) && output.length() == ui.SelectInTxtBox->text().length() && !ui.SaveOutTxtBox->text().isEmpty()) {
         MsgBoxHelper(MessageType::Error, "EncodeGUI error", "Output destination cannot be equivalent to the source file path.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         return;
     }

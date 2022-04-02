@@ -40,7 +40,7 @@
 #define INFO 2
 #define QUESTION 3
 
-#define VERSION QString("1.0.1")
+#define VERSION QString("1.0.2")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -119,6 +119,7 @@ private slots:
     void Start();
     void CreateJob();
     void Skip();
+    void MediaInfo();
     void GoToUpdate();
     void Later();
     void UpdateFinished();
