@@ -13,8 +13,8 @@ QString AudioSubInfoRegex::SubLanguage;
 QString AudioSubInfoRegex::SubStreams;
 
 void AudioSubInfoRegex::SetupPattern() {
-	Indexer << QRegularExpression("Stream\\s?#0:([0-9]?[0-9]?)\\(?(\\w*)\\)?:?\\[?[^\\]]*\\]?:\\s?Audio:\\s?(\\w*)[^,]*,?\\s?([^\\s]*)\\sHz,\\s?([^,]*),?");
-	Indexer << QRegularExpression("Stream\\s?#0:([0-9]?[0-9]?)\\(?(\\w*)\\)?:?\\[?[^\\]]*\\]?:\\s?Subtitle:\\s?([^\\s]*)");
+	Indexer << QRegularExpression("Stream\\s?#0:([0-9]?[0-9]?)\\[?[^\\]]*?\\]?\\(?(\\w*)\\)?:?\\[?[^\\]]*\\]?:\\s?Audio:\\s?(\\w*)[^,]*,?\\s?([^\\s]*)\\sHz,\\s?([^,]*),?");
+	Indexer << QRegularExpression("Stream\\s?#0:([0-9]?[0-9]?)\\[?[^\\]]*?\\]?\\(?(\\w*)\\)?:?\\[?[^\\]]*\\]?:\\s?Subtitle:\\s?([^\\s]*)");
 	Indexer << QRegularExpression("\\s*Chapters:");
 }
 
@@ -55,7 +55,7 @@ void AudioSubInfoRegex::AudioInfoRegex(QString output) {
 
 		if (!AudioLanguage.contains("und") && !AudioLanguage.isEmpty())
 			AudioLanguage = AudioLanguage.toUpper();
-		else if (AudioLanguage.isEmpty())
+		else
 			AudioLanguage = "?";
 
 		if (!SampleRate.isEmpty())
