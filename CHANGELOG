@@ -1,3 +1,14 @@
+EncodeGUI v1.0.5 [Pre-release: 04/24/2022] [Regular release: 06/05/2022]
+
+- Fixed an issue where elapsed time wouldn't reset on a new job if the previous job was paused for a long period of time.
+- Fixed an issue where the pause and cancel buttons on the main tab will become disabled even while a job is running.
+- Fixed an issue where 5.1 channel audio downmix option wouldn't work.
+- Added the option to set the audio title in the Audio tab.
+- Added DTS audio codec encoding option.
+- Added TrueHD audio codec encoding option.
+
+=============================================================================================================
+
 EncodeGUI v1.0.3 [Pre-release: 03/22/2022] [Regular release: 04/19/2022]
 
 - Fixed color bit depth output on ProRes XQ encoding.
