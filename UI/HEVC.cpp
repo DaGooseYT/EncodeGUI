@@ -102,8 +102,6 @@ void EncodeGUI::hdwr_265d() {
         }
         if (ui.Hardware265DD->count() == 1 || ui.Hardware265DD->currentIndex() == 1) {
             SET_VISIBLE(ui.EncodeMode265HWDD);
-            ui.EncodeMode265HWDD->setCurrentIndex(1);
-            SET_DISABLED(ui.EncodeMode265HWDD);
             SET_INVISIBLE(ui.EncodeMode265DD);
             SET_DISABLED(ui.EncodeMode265DD);
         }
@@ -159,7 +157,7 @@ void EncodeGUI::mode_265() {
         SET_INVISIBLE(ui.FastPass265CB);
         SET_INVISIBLE(ui.FastPass265Label);
 
-        if (ui.EncodeMode264HWDD->currentIndex() == 0) {
+        if (ui.EncodeMode265HWDD->currentIndex() == 0) {
             SET_INVISIBLE(ui.Bitrate265NUD);
             SET_INVISIBLE(ui.Bitrate265Label);
             SET_VISIBLE(ui.Quantizer265Label);

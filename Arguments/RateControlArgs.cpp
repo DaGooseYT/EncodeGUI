@@ -53,3 +53,12 @@ QString Argument::ConstantRateFactor(int crf) {
 QString Argument::ConstantQuantizer(int strength) {
 	return QString(" -cq %1").arg(strength);
 }
+
+/// <summary>
+/// Sets the constant quantization for GPU encoders.
+/// </summary>
+/// <param name="strength">The quantizaton strength.</param>
+/// <returns>String representation of the argument.</returns>
+QString Argument::Quantizer(int strength) {
+	return QString(" -q %1").arg(strength);
+}

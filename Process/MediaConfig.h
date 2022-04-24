@@ -41,6 +41,7 @@ public:
 	static void SetAudioBitrate(int, QString);
 	static void SetConstantRateFactor(int);
 	static void SetConstantQuantizer(int);
+	static void SetQuantizer(int);
 	static void SetConstantVideoQuality(int);
 	static void SetConstantAudioQuality(int, QString);
 	static void SetVideoResolution(int, int);

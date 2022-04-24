@@ -40,7 +40,7 @@
 #define INFO 2
 #define QUESTION 3
 
-#define VERSION QString("1.0.2")
+#define VERSION QString("1.0.3")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -118,6 +118,7 @@ private:
 private slots:
     void Start();
     void CreateJob();
+    void OpenOutput();
     void Skip();
     void MediaInfo();
     void GoToUpdate();
@@ -184,7 +185,6 @@ private slots:
     void hide_aud();
     void hide_sub();
     void hdwr_264();
-    void hdwr_264d();
     void mode_264();
     void hide_pre264();
     void hide_tun264();
@@ -201,6 +201,7 @@ private slots:
     void bsldr_265();
     void hdwr_265();
     void hdwr_265d();
+    void hdwr_264d();
     void mode_265();
     void audio_dd();
     void downmix_cb();

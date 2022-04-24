@@ -85,8 +85,6 @@ void EncodeGUI::hdwr_264d() {
         }
         if (ui.Hardware264DD->count() == 1 || ui.Hardware264DD->currentIndex() == 1) {
             SET_VISIBLE(ui.EncodeMode264HWDD);
-            ui.EncodeMode264HWDD->setCurrentIndex(1);
-            SET_DISABLED(ui.EncodeMode264HWDD);
             SET_INVISIBLE(ui.EncodeMode264DD);
             SET_DISABLED(ui.EncodeMode264DD);
         }

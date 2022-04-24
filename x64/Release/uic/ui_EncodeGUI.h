@@ -2357,7 +2357,7 @@ public:
 
     void retranslateUi(QMainWindow *EncodeGUIMV)
     {
-        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.0.1 (free, stable)", nullptr));
+        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.0.3 (free, stable)", nullptr));
 #if QT_CONFIG(tooltip)
         EGUILogo->setToolTip(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI :)", nullptr));
 #endif // QT_CONFIG(tooltip)

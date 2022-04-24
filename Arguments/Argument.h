@@ -36,6 +36,7 @@ protected:
 	static QString AudioBitrate(int, QString);
 	static QString ConstantRateFactor(int);
 	static QString ConstantQuantizer(int);
+	static QString Quantizer(int);
 	static QString ConstantVideoQuality(int);
 	static QString ConstantAudioQuality(int, QString);
 	static QString VideoResolution(int, int);

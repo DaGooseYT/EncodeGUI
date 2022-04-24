@@ -61,6 +61,7 @@ void EncodeGUI::JobContext(QPoint pos) {
         QMenu* m = new QMenu(this);
 
         QAction* logs = new QAction("Open logs path", this);
+        QAction* output = new QAction("Open output path", this);
         QAction* pause = new QAction("Pause / Resume", this);
         QAction* cancel = new QAction("Cancel", this);
         QAction* remove = new QAction("Remove", this);
@@ -81,6 +82,7 @@ void EncodeGUI::JobContext(QPoint pos) {
 
         m->setFont(this->font());
         m->addAction(logs);
+        m->addAction(output);
         m->addAction(pause);
         m->addAction(cancel);
         m->addAction(remove);
@@ -88,6 +90,7 @@ void EncodeGUI::JobContext(QPoint pos) {
         m->popup(ui.JobQueue->viewport()->mapToGlobal(pos));
 
         connect(pause, SIGNAL(triggered()), this, SLOT(PauseClick()));
+        connect(output, SIGNAL(triggered()), this, SLOT(OpenOutput()));
         connect(logs, SIGNAL(triggered()), this, SLOT(OpenJobLogs()));
         connect(cancel, SIGNAL(triggered()), this, SLOT(CancelClick()));
         connect(remove, SIGNAL(triggered()), this, SLOT(RemoveJob()));

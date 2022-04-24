@@ -158,7 +158,10 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 
 			switch (ui.EncodeMode264HWDD->currentIndex()) {
 			case 0:
-				MediaConfig::SetConstantQuantizer(ui.Quantizer264NUD->value());
+				if (ui.Hardware264DD->currentText().contains("NVENC"))
+					MediaConfig::SetConstantQuantizer(ui.Quantizer264NUD->value());
+				else
+					MediaConfig::SetQuantizer(ui.Quantizer264NUD->value());
 				break;
 			case 1:
 				MediaConfig::SetVideoBitrate(ui.Bitrate264NUD->value());
@@ -293,7 +296,10 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 
 			switch (ui.EncodeMode265HWDD->currentIndex()) {
 			case 0:
-				MediaConfig::SetConstantQuantizer(ui.Quantizer265NUD->value());
+				if (ui.Hardware265DD->currentText().contains("NVENC"))
+					MediaConfig::SetConstantQuantizer(ui.Quantizer265NUD->value());
+				else
+					MediaConfig::SetQuantizer(ui.Quantizer265NUD->value());
 				break;
 			case 1:
 				MediaConfig::SetVideoBitrate(ui.Bitrate265NUD->value());
@@ -321,6 +327,11 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 
 			MediaConfig::SetColorsProRes(mtrx, trans, prims);
 		}
+
+		if (ui.ProfileDD->currentIndex() >= 0 && ui.ProfileDD->currentIndex() < 4)
+			MediaConfig::SetPixelFormat("yuv422p10le");
+		else
+			MediaConfig::SetPixelFormat("yuv444p12le");
 
 		break;
 	case 3:

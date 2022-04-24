@@ -130,6 +130,10 @@ void MediaConfig::SetConstantQuantizer(int strength) {
 	ArgumentList.append(Argument::ConstantQuantizer(strength));
 }
 
+void MediaConfig::SetQuantizer(int strength) {
+	ArgumentList.append(Argument::Quantizer(strength));
+}
+
 void MediaConfig::SetConstantVideoQuality(int quality) {
 	ArgumentList.append(Argument::ConstantVideoQuality(quality));
 }

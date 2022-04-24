@@ -144,9 +144,9 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     bsldr_264();
     profile_gb264();
     hdwr_265();
-    hdwr_265d();
     SampleVid();
     mode_265();
+    hdwr_265d();
     mode_vpx();
     downmix_cb();
     mode_theora();
@@ -192,12 +192,13 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     GPUFinished();
     CheckEncoders();
     GetProcessor();
-    LoadSysSetting();
 
     Updater();
 
     connect(ui.AutoDelSourceCB, SIGNAL(stateChanged(int)), this, SLOT(DelSource()));
     connect(ui.SCThresholdNUD, SIGNAL(valueChanged(int)), this, SLOT(ScNUD()));
+
+    LoadSysSetting();
 }
 
 void EncodeGUI::CheckEncoders() {
@@ -507,28 +508,33 @@ void EncodeGUI::RegexFinished() {
     }
     else {
         tool_interp();
-        ui.InterpolationCB->setChecked(true);
-        ui.InterpolationCB->setChecked(false);
+
+        if (CHECKED(ui.ColorSpaceCB)) {
+            if (VideoInfo::GetMatrix().contains("?") || VideoInfo::GetMatrix().contains("unknown")) {
+                VideoInfo::SetMatrix("bt709");
+                WriteLog("Color matrix for the selected source is unknown, assuming BT709.", false, false, false);
+            }
+            if (VideoInfo::GetTransfer().contains("?") || VideoInfo::GetTransfer().contains("unknown")) {
+                VideoInfo::SetTransfer("bt709");
+                WriteLog("Color transfer for the selected source is unknown, assuming BT709.", false, false, false);
+            }
+            if (VideoInfo::GetPrimaries().contains("?") || VideoInfo::GetPrimaries().contains("unknown")) {
+                VideoInfo::SetPrimaries("bt709");
+                WriteLog("Color primaries for the selected source is unknown, assuming BT709.", false, false, false);
+            }
+        }
+        
+        if (!ui.InterpolationCB->isChecked()) {
+            ui.InterpolationCB->setChecked(true);
+            ui.InterpolationCB->setChecked(false);
+        }
 
         if (AudioInfo::TotalStreams() != 0) {
-            SET_ENABLED(ui.AudioTrackDD);
+            if (CHECKED(ui.GetVidInfoCB))
+                SET_ENABLED(ui.AudioTrackDD);
+
             SET_ENABLED(ui.AudioCB);
             ui.AudioCB->setChecked(true);
-
-            if (CHECKED(ui.ColorSpaceCB)) {
-                if (VideoInfo::GetMatrix().contains("?") || VideoInfo::GetMatrix().contains("unknown")) {
-                    VideoInfo::SetMatrix("bt709");
-                    WriteLog("Color matrix for the selected source is unknown, assuming BT709.", false, false, false);
-                }
-                if (VideoInfo::GetTransfer().contains("?") || VideoInfo::GetTransfer().contains("unknown")) {
-                    VideoInfo::SetTransfer("bt709");
-                    WriteLog("Color transfer for the selected source is unknown, assuming BT709.", false, false, false);
-                }
-                if (VideoInfo::GetPrimaries().contains("?") || VideoInfo::GetPrimaries().contains("unknown")) {
-                    VideoInfo::SetPrimaries("bt709");
-                    WriteLog("Color primaries for the selected source is unknown, assuming BT709.", false, false, false);
-                }
-            }
         }
         if (SubtitleInfo::TotalStreams() != 0) {
             SET_ENABLED(ui.SubtitlesDD);
@@ -591,9 +597,10 @@ void EncodeGUI::RegexFinished() {
         InterpFactor();
     }
 
+    SetAudioInfo();
+
     if (CHECKED(ui.GetVidInfoCB)) {
         SetVideoInfo();
-        SetAudioInfo();
 
         connect(ui.AudioTrackDD, SIGNAL(currentIndexChanged(int)), this, SLOT(audio_track()));
     }
@@ -1179,6 +1186,10 @@ void EncodeGUI::NewJob() {
 
 void EncodeGUI::OpenJobLogs() {
     QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(selectedJob)))));
+}
+
+void EncodeGUI::OpenOutput() {
+    QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QFileInfo(outputList.at(selectedJob)).absolutePath())));
 }
 
 void EncodeGUI::UpdateProgress() {
