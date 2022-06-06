@@ -317,6 +317,7 @@ void EncodeGUI::ModelUpScaleGB() {
         SET_DISABLED(ui.Width2xNUD);
         SET_DISABLED(ui.Height2xNUD);
         SET_DISABLED(ui.AutoAdjCB);
+        SET_DISABLED(ui.AutoAdjDD);
 
         if (VideoInfo::GetHeight() != 0) {
             ui.Height2xNUD->setValue(VideoInfo::GetHeight());
@@ -325,6 +326,7 @@ void EncodeGUI::ModelUpScaleGB() {
     }
     else {
         SET_ENABLED(ui.AutoAdjCB);
+        SET_ENABLED(ui.AutoAdjDD);
         AutoAdjustUD();
 
         if (VideoInfo::GetHeight() != 0 && ui.ToolUpscaleDD->currentIndex() == 0) {

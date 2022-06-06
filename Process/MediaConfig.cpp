@@ -138,6 +138,10 @@ void MediaConfig::SetConstantVideoQuality(int quality) {
 	ArgumentList.append(Argument::ConstantVideoQuality(quality));
 }
 
+void MediaConfig::SetAudioTitle(QString stream, QString text) {
+	ArgumentList.append(Argument::AudioTitle(stream, text));
+}
+
 void MediaConfig::SetConstantAudioQuality(int quality, QString stream) {
 	ArgumentList.append(Argument::ConstantAudioQuality(quality, stream));
 }

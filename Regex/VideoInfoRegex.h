@@ -3,7 +3,7 @@
 #ifndef VIDEOINFOREGEX_H
 #define VIDEOINFOREGEX_H
 
-#include "IO\VideoInfo.h"
+#include "..\IO\VideoInfo.h"
 
 #include <QRegularExpression>
 #include <QElapsedTimer>

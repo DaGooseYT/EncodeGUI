@@ -45,6 +45,7 @@ protected:
 	static QString TransposeVideo(int);
 	static QString FlipVideo(QString);
 	static QString NoAutoRotate();
+	static QString AudioTitle(QString, QString);
 	static QString Tier(int);
 	static QString SharpenVideo(QString, QString);
 	static QString AddTimecodes(int, int, int, int);

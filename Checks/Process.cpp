@@ -46,6 +46,18 @@ bool Checks::CheckAudioCompatability(int format, QString container) {
 		else
 			result = false;
 		break;
+	case DTS:
+		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".mov") || container.contains(".asf"))
+			result = true;
+		else
+			result = false;
+		break;
+	case TRUEHD:
+		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".ts"))
+			result = true;
+		else
+			result = false;
+		break;
 	case EAC3:
 		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".mov"))
 			result = true;
@@ -72,18 +84,6 @@ bool Checks::CheckAudioCompatability(int format, QString container) {
 		break;
 	case MP2:
 		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".mov") || container.contains(".avi") || container.contains(".asf") || container.contains(".ts"))
-			result = true;
-		else
-			result = false;
-		break;
-	case DTS:
-		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".mov") || container.contains(".asf"))
-			result = true;
-		else
-			result = false;
-		break;
-	case TRUEHD:
-		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".ts"))
 			result = true;
 		else
 			result = false;

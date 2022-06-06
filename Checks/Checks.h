@@ -13,13 +13,13 @@
 #define FLAC 3
 #define VORBIS 4
 #define OPUS 5
-#define EAC3 6
-#define ALAC 7
-#define WMA 8
-#define PCM 9
-#define MP2 10
-#define DTS 11
-#define TRUEHD 12
+#define DTS 6
+#define TRUEHD 7
+#define EAC3 8
+#define ALAC 9
+#define WMA 10
+#define PCM 11
+#define MP2 12
 
 class Checks {
 public:

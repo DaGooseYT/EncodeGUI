@@ -117,8 +117,10 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ui.EnablePreviewCB, SIGNAL(stateChanged(int)), this, SLOT(EnablePreview()));
     connect(ui.CompleteMessageCB, SIGNAL(stateChanged(int)), this, SLOT(JobsComplete()));
     connect(ui.ErrorMessageCB, SIGNAL(stateChanged(int)), this, SLOT(ErrorMsg()));
+    connect(ui.UpdateOptCB, SIGNAL(stateChanged(int)), this, SLOT(UpdateOpt()));
     connect(ui.DynamicMetadataBttn, SIGNAL(clicked(bool)), this, SLOT(HDRMeta()));
     connect(ui.GetVidInfoCB, SIGNAL(stateChanged(int)), this, SLOT(MediaInfo()));
+    connect(ui.AudioTitleCB, SIGNAL(stateChanged(int)), this, SLOT(AudioTitle()));
 
     ffloader = new FFLoader();
 
@@ -128,7 +130,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ffloader, SIGNAL(setProgress()), this, SLOT(UpdateProgress()));
     connect(ffloader, SIGNAL(Completed()), this, SLOT(EncodeFinished()));
     connect(ffloader, SIGNAL(Logs(QString)), this, SLOT(WriteFile(QString)));
-
+    
     HideEnc();
     hide_aud();
     hide_sub();
@@ -166,6 +168,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     AutoAdjustDD();
     InterpFactor();
     FlipDD();
+    AudioTitle();
     AlgoDD();
 
     //fix disabled bug
@@ -180,10 +183,6 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
 
     if (!QDir(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI"))).exists())
         QDir().mkpath(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI")));
-    else {
-        if (QDir(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI"))).removeRecursively());
-            QDir().mkpath(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI")));
-    }
 
     WriteLog(QString("Welcome to EncodeGUI! You are using the v%1 (free, stable) build.").arg(VERSION), false, false, false);
     WriteLog("This is a user information log and will not be accepted in an issue/bug report.", true, false, false);
@@ -193,12 +192,17 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     CheckEncoders();
     GetProcessor();
 
-    Updater();
-
     connect(ui.AutoDelSourceCB, SIGNAL(stateChanged(int)), this, SLOT(DelSource()));
-    connect(ui.SCThresholdNUD, SIGNAL(valueChanged(int)), this, SLOT(ScNUD()));
+    connect(ui.SCThresholdNUD, SIGNAL(valueChanged(double)), this, SLOT(ScNUD()));
+
+    connect(new QShortcut(QKeySequence(Qt::Key_F1), this), &QShortcut::activated, []() { QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html")); });
 
     LoadSysSetting();
+
+    if (CHECKED(ui.UpdateOptCB))
+        Updater();
+    else
+        WriteLog(QString("The user had selected to opt-out of automatically checking for updates in preferences. Skipping update search..."), false, false, false);
 }
 
 void EncodeGUI::CheckEncoders() {
@@ -269,10 +273,10 @@ void EncodeGUI::Updater() {
     QNetworkAccessManager* nam = new QNetworkAccessManager();
     QNetworkReply* reply = nam->get(req);
 
-    connect(reply, SIGNAL(finished()), this, SLOT(UpdateFinished()));
+    connect(reply, SIGNAL(finished()), this, SLOT(UpdaterFinished()));
 }
 
-void EncodeGUI::UpdateFinished() {
+void EncodeGUI::UpdaterFinished() {
     QNetworkReply* rply = qobject_cast<QNetworkReply*>(sender());
 
     if (rply->error() == QNetworkReply::NoError) {
@@ -284,18 +288,20 @@ void EncodeGUI::UpdateFinished() {
         bool newUp = false;
 
         while (!stream.atEnd()) {
-            output = stream.readLine(0);
+            output = stream.readLine();
+
+            if (output.contains("Version="))
+                if (!output.contains(VERSION) && !output.contains(QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").value("update", VERSION).toString()))
+                    newUp = true;
+                else {
+                    vers = output.remove("Version=");
+                    break;
+                }
 
             if (!output.contains("Version="))
                 lst << output;
             else
                 vers = output.remove("Version=");
-
-            if (output.contains("Version="))
-                if (!output.contains(VERSION) && !output.contains(QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").value("update", VERSION).toString()))
-                    newUp = true;
-                else
-                    break;
         }
 
         if (newUp) {
@@ -383,7 +389,7 @@ void EncodeGUI::input_bttn() {
     QString ffprobe;
 
 #if DEBUG
-    ffprobe = QDir::toNativeSeparators(QDir::currentPath()) + QString("\\x64\\Release\\ffmpeg\\ffprobe.exe");
+    ffprobe = QDir::toNativeSeparators(QDir::currentPath()) + QString("\\x64\\Debug\\ffmpeg\\ffprobe.exe");
 #else
     ffprobe = QDir::toNativeSeparators(QDir::currentPath()) + QString("\\ffmpeg\\ffprobe.exe");
 #endif // DEBUG
@@ -430,8 +436,7 @@ void EncodeGUI::HDRMeta() {
 }
 
 void EncodeGUI::ScNUD() {
-    QSettings set(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI");
-    set.setValue("scvalue", ui.SCThresholdNUD->value());
+    QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("scvalue", ui.SCThresholdNUD->value());
 }
 
 void EncodeGUI::ErrorMsg() {
@@ -444,6 +449,10 @@ void EncodeGUI::JobsComplete() {
 
 void EncodeGUI::EnablePreview() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("preview", CHECKED(ui.EnablePreviewCB));
+}
+
+void EncodeGUI::UpdateOpt() {
+    QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("updateopt", CHECKED(ui.UpdateOptCB));
 }
 
 void EncodeGUI::DelSource() {
@@ -643,6 +652,14 @@ void EncodeGUI::CancelAllClick() {
     QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel ALL jobs? All curent progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (msg == QMessageBox::Yes) {
+        FOR_EACH(ui.JobQueue->rowCount())
+            if (!ui.JobQueue->item(i, 1)->text().contains("Paused") && !ui.JobQueue->item(i, 1)->text().contains("Active"))
+                ui.JobQueue->item(i, 1)->setText("Canceled");
+            else if (ui.JobQueue->item(i, 1)->text().contains("Paused")) {
+                MsgBoxHelper(MessageType::Warning, "EncodeGUI warning", "The currently paused process could not be canceled. Please resume it first then cancel it.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                WriteLog("All jobs in the queue have been canceled except the currenly paused job. Resume it to cancel it.", false, false, false);
+            }
+
         if (ffloader->encode && ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Active"))
             if (ffloader->encode->state() == QProcess::Running) {
                 ui.JobQueue->item(ffloader->currentJob, 1)->setText("Canceled");
@@ -650,14 +667,6 @@ void EncodeGUI::CancelAllClick() {
 
                 if (ffloader->vs)
                     ffloader->CloseProcess(ffloader->vs);
-            }
-
-        FOR_EACH(ui.JobQueue->rowCount())
-            if (!ui.JobQueue->item(i, 1)->text().contains("Paused"))
-                ui.JobQueue->item(i, 1)->setText("Canceled");
-            else {
-                MsgBoxHelper(MessageType::Warning, "EncodeGUI warning", "The currently paused process could not be canceled. Please resume it first then cancel it.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-                WriteLog("All jobs in the queue have been canceled except the currenly paused job. Resume it to cancel it.", false, false, false);
             }
 
         if (!ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Paused")) {
@@ -754,21 +763,21 @@ void EncodeGUI::ClearFinished() {
 }
 
 void EncodeGUI::CancelMain() {
-    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the current job? All curent progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All curent progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
-    if (msg == QMessageBox::Yes)
-        FOR_EACH(ui.JobQueue->rowCount())
-            if (ui.JobQueue->item(i, 1)->text().contains("Active")) {
-                ui.JobQueue->item(i, 1)->setText("Canceled");
-                WriteLog(QString("Job %1 canceled by the user").arg(job.at(i)), false, false, false);
+    if (msg == QMessageBox::Yes) {
+        if (ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Active")) {
+            ui.JobQueue->item(ffloader->currentJob, 1)->setText("Canceled");
+            WriteLog(QString("Job %1 canceled by user").arg(job.at(ffloader->currentJob)), false, false, false);
 
-                ffloader->CloseProcess(ffloader->encode);
+            ffloader->CloseProcess(ffloader->encode);
 
-                if (ffloader->vs)
-                    ffloader->CloseProcess(ffloader->vs);
-            }
-            else if (ui.JobQueue->item(i, 1)->text().contains("Paused"))
-                MsgBoxHelper(MessageType::Error, "EncodeGUI error", "The selected job must be running for it to be canceled.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+            if (ffloader->vs)
+                ffloader->CloseProcess(ffloader->vs);
+        }
+        else
+            MsgBoxHelper(MessageType::Error, "EncodeGUI error", "A job must be running to cancel it", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
 }
 
 void EncodeGUI::CancelClick() {
@@ -1132,10 +1141,6 @@ void EncodeGUI::EncodeFinished() {
 }
 
 void EncodeGUI::NewJob() {
-    SET_DISABLED(ui.PauseBttn);
-    SET_DISABLED(ui.CancelBttn);
-    SET_ENABLED(ui.StartBttn);
-
     Paletter(ui.JobStartValueLabel);
     ui.JobStartValueLabel->setText("?");
 
@@ -1159,6 +1164,10 @@ void EncodeGUI::NewJob() {
         if (isDone > 0)
             NewExtract();
         else {
+            SET_DISABLED(ui.PauseBttn);
+            SET_DISABLED(ui.CancelBttn);
+            SET_ENABLED(ui.StartBttn);
+
             switch (ui.WhenEncCompleteDD->currentIndex()) {
             case 0:
                 if (ui.JobQueue->rowCount() > 0) {

@@ -20,6 +20,9 @@ QString EncodeGUI::ConfigureAudioM(int stream, int stream2, QString stream3, QSt
 	if (stream == 1)
 		MediaConfig::SetMap("a", QString("%1").arg(stream), stream2);
 
+	if (IsTitle.at(stream3.toInt()))
+		MediaConfig::SetAudioTitle(QString("%1").arg(stream3), Title.at(stream3.toInt()));
+
 	if (IsEncoding.at(stream3.toInt())) {
 		MediaConfig::SetAudioCodecMulti(AudioCodec.at(stream3.toInt()), stream3);
 			
@@ -98,6 +101,10 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 
 	MediaConfig::SetFFMpeg(QDir::toNativeSeparators(QDir::currentPath()) + "\\ffmpeg\\ffmpeg.exe");
 	MediaConfig::SetOverride();
+
+	if (CHECKED(ui.RotateGB) && CHECKED(ui.NoAutoRotateCB))
+		MediaConfig::SetNoAutoRotate();
+
 	MediaConfig::Append(" -i -");
 
 	switch (ui.VideoEncDD->currentIndex()) {
@@ -392,8 +399,9 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 	}
 
 	if (ui.VideoEncDD->currentIndex() != 5) {
-		if (CHECKED(ui.UpscalingGB) || CHECKED(ui.CropGB) || CHECKED(ui.RotateGB) || CHECKED(ui.SharpenGB))
-			MediaConfig::SetFilters();
+		if (CHECKED(ui.UpscalingGB) || CHECKED(ui.ResizeGB) || CHECKED(ui.CropGB) || CHECKED(ui.RotateGB) || CHECKED(ui.SharpenGB))
+			if (!((CHECKED(ui.RotateGB) && !CHECKED(ui.FlipCB) && ui.AngleDD->currentIndex() == 0) && !CHECKED(ui.UpscalingGB) && !CHECKED(ui.ResizeGB) && !CHECKED(ui.CropGB) && !CHECKED(ui.SharpenGB)))
+				MediaConfig::SetFilters();
 
 		if (CHECKED(ui.UpscalingGB)) {
 			MediaConfig::SetVideoResolution(ui.Width2xNUD->value(), ui.Height2xNUD->value());
@@ -407,7 +415,8 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 			if (CHECKED(ui.ResizeAlgoCB))
 				MediaConfig::SetVideoResizeAlgo(ui.ResizeAlgoDD->currentText().toLower());
 
-			MediaConfig::SetComma();
+			if (CHECKED(ui.CropGB) || CHECKED(ui.RotateGB) || CHECKED(ui.SharpenGB))
+				MediaConfig::SetComma();
 		}
 
 		if (CHECKED(ui.CropGB)) {
@@ -486,11 +495,9 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 			MediaConfig::SetSharpenVideo(radius, strength);
 		}
 
-		if (CHECKED(ui.UpscalingGB) || CHECKED(ui.CropGB) || CHECKED(ui.RotateGB) || CHECKED(ui.SharpenGB))
-			MediaConfig::SetConcludeFilters();
-
-		if (CHECKED(ui.RotateGB) && CHECKED(ui.NoAutoRotateCB))
-			MediaConfig::SetNoAutoRotate();
+		if (CHECKED(ui.UpscalingGB) || CHECKED(ui.ResizeGB) || CHECKED(ui.CropGB) || CHECKED(ui.RotateGB) || CHECKED(ui.SharpenGB))
+			if (!((CHECKED(ui.RotateGB) && !CHECKED(ui.FlipCB) && ui.AngleDD->currentIndex() == 0) && !CHECKED(ui.UpscalingGB) && !CHECKED(ui.ResizeGB) && !CHECKED(ui.CropGB) && !CHECKED(ui.SharpenGB)))
+				MediaConfig::SetConcludeFilters();
 	}
 
 	if (twoPass) {

@@ -3,11 +3,11 @@
 #ifndef FFLOADER_H
 #define FFLOADER_H
 
-#include "Regex\AudioSubInfoRegex.h"
-#include "Regex\ProcessErrorRegex.h"
-#include "Regex\ProgressInfoRegex.h"
-#include "Regex\VideoInfoRegex.h"
-#include "IO\VideoInfoList.h"
+#include "..\Regex\AudioSubInfoRegex.h"
+#include "..\Regex\ProcessErrorRegex.h"
+#include "..\Regex\ProgressInfoRegex.h"
+#include "..\Regex\VideoInfoRegex.h"
+#include "..\IO\VideoInfoList.h"
 
 #include <QProcess>
 #include <QTime>

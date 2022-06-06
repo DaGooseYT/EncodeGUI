@@ -3,8 +3,8 @@
 #ifndef AUDIOSUBINFOREGEX_H
 #define AUDIOSUBINFOREGEX_H
 
-#include "IO\AudioInfo.h"
-#include "IO\SubtitleInfo.h"
+#include "..\IO\AudioInfo.h"
+#include "..\IO\SubtitleInfo.h"
 
 #include <QRegularExpression>
 #include <QMessageBox>

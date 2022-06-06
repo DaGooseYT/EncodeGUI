@@ -5,24 +5,25 @@
 #ifndef ENCODEGUI_H
 #define ENCODEGUI_H
 
-#include "Process\ScriptBuilder.h"
-#include "Process\MediaConfig.h"
-#include "Process\FFLoader.h"
-#include "Checks\Checks.h"
+#include "..\Process\ScriptBuilder.h"
+#include "..\Process\MediaConfig.h"
+#include "..\Process\FFLoader.h"
+#include "..\Checks\Checks.h"
 #include "UI_EncodeGUI.h"
 #include "Preview.h"
 #include "Updater.h"
 #include "Windows.h"
 #include "DxGi.h"
 
-#include "QtNetwork/QNetworkAccessManager"
-#include "QtNetwork/QNetworkRequest"
-#include "QtNetwork/QNetworkReply"
-#include <QtWidgets/QMainWindow>
+#include "QtNetwork\QNetworkAccessManager"
+#include "QtNetwork\QNetworkRequest"
+#include "QtNetwork\QNetworkReply"
+#include <QtWidgets\QMainWindow>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QCloseEvent>
+#include <QShortcut>
 #include <QSettings>
 #include <QProcess>
 #include <QVector>
@@ -40,7 +41,7 @@
 #define INFO 2
 #define QUESTION 3
 
-#define VERSION QString("1.0.3")
+#define VERSION QString("1.0.5")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -108,6 +109,8 @@ private:
     QList<int> Bitrate;
     QList<int> Stream;
     QList<bool> IsEncoding;
+    QList<bool> IsTitle;
+    QStringList Title;
     QStringList AudioCodec;
 
     QStringList FileStream;
@@ -123,9 +126,10 @@ private slots:
     void MediaInfo();
     void GoToUpdate();
     void Later();
-    void UpdateFinished();
     void PatreonClick();
     void YouClick();
+    void UpdateOpt();
+    void UpdaterFinished();
     void DisClick();
     void IgClick();
     void JobsComplete();
@@ -177,6 +181,7 @@ private slots:
     void PauseClick();
     void UpdateProgress();
     void EncodeFinished();
+    void AudioTitle();
     void GPUFinished();
     void RegexFinished();
     void DonateDaGoose();

@@ -10,6 +10,17 @@ QString Argument::AudioRate(QString rate, QString stream) {
 }
 
 /// <summary>
+/// Sets the audio title for a specific audio stream.
+/// </summary>
+/// <param name="stream">The stream file specifier.</param>
+/// <param name="stream2">The audio stream specifier.</param>
+/// <param name="title">The contents to be added to the title.</param>
+/// <returns>String representation of the argument.</returns>
+QString Argument::AudioTitle(QString stream, QString title) {
+	return QString(" -metadata:s:a:%1 title=\"%2\"").arg(stream).arg(title);
+}
+
+/// <summary>
 /// Sets the number of channels in the audio stream.
 /// </summary>
 /// <param name="channels">The number of audio channels</param>

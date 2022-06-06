@@ -23,5 +23,5 @@ QString Argument::FlipVideo(QString flip) {
 /// </summary>
 /// <returns>String representation of the argument.</returns>
 QString Argument::NoAutoRotate() {
-	return QString(" -noautoroate");
+	return QString(" -noautorotate");
 }

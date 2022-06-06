@@ -1,4 +1,4 @@
-#include "EncodeGUI.h"
+#include "UI\EncodeGUI.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[]) {

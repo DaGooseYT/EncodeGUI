@@ -3,7 +3,7 @@
 #ifndef PROGRESSINFOREGEX_H
 #define PROGRESSINFOREGEX_H
 
-#include "IO\ProgressInfo.h"
+#include "..\IO\ProgressInfo.h"
 
 #include <QRegularExpression>
 #include <QElapsedTimer>

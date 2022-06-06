@@ -3,7 +3,7 @@
 #ifndef SCRIPTBUILDER_H
 #define SCRIPTBUILDER_H
 
-#include "VS\VapourSynth.h"
+#include "..\VS\VapourSynth.h"
 
 #include <QString>
 

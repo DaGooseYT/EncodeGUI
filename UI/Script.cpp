@@ -207,7 +207,7 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 				if (CHECKED(ui.SCThresholdCB))
 					ScriptBuilder::SetSCDetect(QString("%1").arg(ui.SCThresholdNUD->value()));
 				else
-					ScriptBuilder::SetSCDetect(QString("0.10"));
+					ScriptBuilder::SetSCDetect(QString("0.12"));
 
 			if (CHECKED(ui.UpscalingGB))
 				UpscaleMD(width, height);

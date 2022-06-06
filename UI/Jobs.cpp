@@ -7,6 +7,8 @@ QList<int> Quality;
 QList<int> Bitrate;
 QList<int> Stream;
 QList<bool> IsEncoding;
+QList<bool> IsTitle;
+QStringList Title;
 QStringList AudioCodec;
 
 void EncodeGUI::setup_queue() {
@@ -121,14 +123,23 @@ void EncodeGUI::AddAudioJob() {
         ui.AudioQueue->item(ui.AudioQueue->rowCount() - 1, 0)->setTextAlignment(Qt::AlignCenter);
         Stream << ui.SelectedAudioDD->currentIndex();
 
+        if (CHECKED(ui.AudioTitleCB)) {
+            Title << ui.AudioTitleTxtBox->text();
+            IsTitle << true;
+        }
+        else {
+            Title << QString();
+            IsTitle << false;
+        }
+
         if (CHECKED(ui.EncodingAudioGB)) {
             IsEncoding << true;
-            AudioCodec << ui.AudioEncoderDD->currentText().toLower().replace("ogg", "libvorbis").replace("opus", "libopus").replace("mp3", "libmp3lame");
+            AudioCodec << ui.AudioEncoderDD->currentText().toLower().replace("vorbis", "libvorbis").replace("opus", "libopus").replace("mp3", "libmp3lame").replace("truehd", "truehd -strict -2").replace("dts", "dts -strict -2");
             Bitrate << ui.AudioBitrateNUD->value();
             Quality << ui.AudioQualityNUD->value();
 
             if (CHECKED(ui.DownmixCB))
-                Channels << ui.DownmixDD->currentText().replace("Stereo", "2").replace("Mono", "1");
+                Channels << ui.DownmixDD->currentText().replace("Stereo", "2").replace("Mono", "1").replace("5.1", "6");
             else
                 Channels << "0";
         }
@@ -191,7 +202,7 @@ void EncodeGUI::CreateJob() {
                         break;
                     }
 
-                    if (ui.AudioDD->currentIndex() == 1) {
+                    if (ui.AudioDD->currentIndex() == 1 && CHECKED(ui.EncodingAudioGB)) {
                         if (!Checks::CheckAudioCompatability(ui.AudioEncoderDD->currentIndex(), container)) {
                             MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 audio codec isn't supported with the %2 output container.")
                                 .arg(ui.AudioEncoderDD->currentText()).arg(container), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
@@ -312,7 +323,7 @@ void EncodeGUI::CreateJob() {
                 else if (CHECKED(ui.AudioCB))
                     AudioArgs << ConfigureAudioP(1, tempFile, container);
                 else
-                    AudioArgs << " -an -metadata:g encoding_tool=\"EncodeGUI v1.0.0\"";
+                    AudioArgs << QString(" -an -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION);
 
                 switch (ui.VideoEncDD->currentIndex()) {
                 case 0:

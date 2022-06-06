@@ -3,7 +3,7 @@
 #ifndef MEDIACONFIG_H
 #define MEDIACONFIG_H
 
-#include "Arguments\Argument.h"
+#include "..\Arguments\Argument.h"
 
 #include <QStringList>
 
@@ -38,6 +38,7 @@ public:
 	static void SetVideoProfile(QString);
 	static void SetVideoProfileLevel(QString);
 	static void SetVideoBitrate(int);
+	static void SetAudioTitle(QString, QString);
 	static void SetAudioBitrate(int, QString);
 	static void SetConstantRateFactor(int);
 	static void SetConstantQuantizer(int);

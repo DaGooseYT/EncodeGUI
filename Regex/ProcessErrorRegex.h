@@ -3,7 +3,7 @@
 #ifndef PROCESSERRORREGEX_H
 #define PROCESSERRORREGEX_H
 
-#include "IO\ProcessError.h"
+#include "..\IO\ProcessError.h"
 
 #include <QRegularExpression>
 #include <QList>
