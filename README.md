@@ -11,7 +11,7 @@ This repository only consists of the source code; no builds are hosted here. See
 Documentation including the basic usage guide can be found at https://encodegui.com/docs/documentation.html.
 
 # Support
-Support for issues and directions for how to submit a proper issue/bug report are availible on https://encodegui.com/support.html
+Support for issues and directions for how to submit a proper issue/bug report are available on https://encodegui.com/support.html
 
 # Compilation
 Requires `Qt 6 SDK` and MS `Visual Studio` or `Cmake`.
