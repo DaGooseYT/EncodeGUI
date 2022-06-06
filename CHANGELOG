@@ -1,3 +1,19 @@
+EncodeGUI v1.0.7 [Pre-release: 06/05/2022] [Regular release: 07/31/2022]
+
+- Add the option to generate the output file name/path.
+- The saved output video path will no longer disappear when changing the output container selection or video codec.
+- Add the ability to drag and drop a video into EncodeGUI as an input selection option.
+- Add RIFE model v4.0 to RIFE NCNN; EncodeGUI AI NCNN was also updated in accordance.
+- Add the option to open the source video file path when right-clicking a job in the job queue.
+- You can now use both Frame Interpolation and Resolution Upscaling combined, however, you must have at least two GPUs.
+- Non-running jobs in the job queue will now save automatically, allowing it to recover them after restarting the application or if, say, you lose power and restart your machine.
+- Fixed an issue where the preset option in HEVC was locked on Slow.
+- Fixed an issue where the scene change threshold value in settings wouldn't automatically save (including v1.0.5).
+- Fixed an issue where the update notification wouldn't show up on a new update (including v1.0.5).
+- Other miscellaneous fixes (including v1.0.5)
+
+=============================================================================================================
+
 EncodeGUI v1.0.5 [Pre-release: 04/24/2022] [Regular release: 06/05/2022]
 
 - Fixed an issue where elapsed time wouldn't reset on a new job if the previous job was paused for a long period of time.
