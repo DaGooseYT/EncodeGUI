@@ -1,3 +1,13 @@
+EncodeGUI v1.1.0 [Pre-release: 07/31/2022] [Regular release: 10/23/2022]
+
+- Add AV1 codec to the video codec selection.
+- Add Muxing to the video codec selection.
+- Add the option to use multiple GPUs in preferences for Resolution Upscaling.
+- Add the option to set the language in audio encoding.
+- Added help options to error message boxes for better user support.
+
+=============================================================================================================
+
 EncodeGUI v1.0.7 [Pre-release: 06/05/2022] [Regular release: 07/31/2022]
 
 - Add the option to generate the output file name/path.
