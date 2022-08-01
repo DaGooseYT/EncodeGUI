@@ -39,7 +39,7 @@ QString EncodeGUI::ConfigureAudioM(int stream, int stream2, QString stream3, QSt
 
 	if (stream == 1 && stream3.toInt() == ui.AudioQueue->rowCount() - 1) {
 		MediaConfig::Append(QString(" -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION));
-		MediaConfig::SetOutput(ui.SaveOutTxtBox->text());
+		MediaConfig::SetOutput(ui.SaveOutTxtBox->text() + container);
 	}
 
 	return MediaConfig::GetArguments();
@@ -66,7 +66,7 @@ QString EncodeGUI::ConfigureAudioP(int stream, QString id, QString container) {
 
 	if (stream == 1) {
 		MediaConfig::Append(QString(" -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION));
-		MediaConfig::SetOutput(ui.SaveOutTxtBox->text());
+		MediaConfig::SetOutput(ui.SaveOutTxtBox->text() + container);
 	}
 
 	return MediaConfig::GetArguments();
@@ -96,7 +96,7 @@ QString EncodeGUI::ConfigureVS(QString id) {
 	return MediaConfig::GetArguments();
 }
 
-QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, bool twoPass, int pass) {
+QString EncodeGUI::ConfigureArgs(QString container, QString id, QString audio, QString subtitles, bool twoPass, int pass) {
 	MediaConfig::ResetArguments();
 
 	MediaConfig::SetFFMpeg(QDir::toNativeSeparators(QDir::currentPath()) + "\\ffmpeg\\ffmpeg.exe");
@@ -196,7 +196,7 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 				MediaConfig::SetVideoTune(ui.Tune265DD->currentText().toLower().remove(" "));
 
 			if (CHECKED(ui.Preset265CB))
-				MediaConfig::SetVideoPreset(ui.Preset264DD->currentText().toLower().remove(" "));
+				MediaConfig::SetVideoPreset(ui.Preset265DD->currentText().toLower().remove(" "));
 
 			QString profile;
 
@@ -511,7 +511,7 @@ QString EncodeGUI::ConfigureArgs(QString id, QString audio, QString subtitles, b
 			MediaConfig::SetOutput(QDir::toNativeSeparators(QDir::tempPath() + QString("\\%1.mkv").arg(id)));
 		else {
 			MediaConfig::Append(QString(" -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION));
-			MediaConfig::SetOutput(ui.SaveOutTxtBox->text());
+			MediaConfig::SetOutput(ui.SaveOutTxtBox->text() + container);
 		}
 
 	return MediaConfig::GetArguments();

@@ -11,6 +11,17 @@ QList<bool> IsTitle;
 QStringList Title;
 QStringList AudioCodec;
 
+QVariantList Varguments;
+QVariantList Vjob;
+QVariantList VvapourScript;
+QVariantList VinputList;
+QVariantList VoutputList;
+QVariantList VtempList;
+QVariantList Vstate;
+QVariantList VaudioArgs;
+QVariantList Vduration;
+QVariantList VframeRate;
+
 void EncodeGUI::setup_queue() {
     ui.JobQueue->setColumnWidth(0, 100);
     ui.JobQueue->setColumnWidth(1, 80);
@@ -63,6 +74,7 @@ void EncodeGUI::JobContext(QPoint pos) {
         QMenu* m = new QMenu(this);
 
         QAction* logs = new QAction("Open logs path", this);
+        QAction* input = new QAction("Open source path", this);
         QAction* output = new QAction("Open output path", this);
         QAction* pause = new QAction("Pause / Resume", this);
         QAction* cancel = new QAction("Cancel", this);
@@ -84,6 +96,7 @@ void EncodeGUI::JobContext(QPoint pos) {
 
         m->setFont(this->font());
         m->addAction(logs);
+        m->addAction(input);
         m->addAction(output);
         m->addAction(pause);
         m->addAction(cancel);
@@ -92,6 +105,7 @@ void EncodeGUI::JobContext(QPoint pos) {
         m->popup(ui.JobQueue->viewport()->mapToGlobal(pos));
 
         connect(pause, SIGNAL(triggered()), this, SLOT(PauseClick()));
+        connect(input, SIGNAL(triggered()), this, SLOT(InputClick()));
         connect(output, SIGNAL(triggered()), this, SLOT(OpenOutput()));
         connect(logs, SIGNAL(triggered()), this, SLOT(OpenJobLogs()));
         connect(cancel, SIGNAL(triggered()), this, SLOT(CancelClick()));
@@ -177,8 +191,10 @@ void EncodeGUI::CreateJob() {
                     return;
                 }
                 if (CHECKED(ui.InterpolationCB) && CHECKED(ui.UpscalingGB)) {
-                    MsgBoxHelper(MessageType::Error, "EncodeGUI error", "Frame interpolation combined with resolution upscaling is not supported yet.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-                    return;
+                    if (ui.GPUInterpDD->currentIndex() == ui.GPUUpscaleDD->currentIndex()) {
+                        MsgBoxHelper(MessageType::Error, "EncodeGUI error", "You cannot use the same GPU for both Frame Interpolation and Resolution Upscaling.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
                 }
 
                 QString container;
@@ -200,6 +216,11 @@ void EncodeGUI::CreateJob() {
                     case 4:
                         container = ui.OutContainerVPXDD->currentText();
                         break;
+                    }
+
+                    if (QString(ui.SaveOutTxtBox->text() + container).contains(ui.SelectInTxtBox->text()) && QString(ui.SaveOutTxtBox->text() + container).length() == ui.SelectInTxtBox->text().length() && !ui.SaveOutTxtBox->text().isEmpty()) {
+                        MsgBoxHelper(MessageType::Error, "EncodeGUI error", "The output destination path cannot be equivalent to the source file path.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
                     }
 
                     if (ui.AudioDD->currentIndex() == 1 && CHECKED(ui.EncodingAudioGB)) {
@@ -295,7 +316,9 @@ void EncodeGUI::CreateJob() {
                 ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 0, new QTableWidgetItem(id));
                 ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 1, new QTableWidgetItem("Waiting"));
                 ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 2, new QTableWidgetItem("0%"));
-                ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 3, new QTableWidgetItem(ui.SaveOutTxtBox->text()));
+                ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 3, new QTableWidgetItem(ui.SaveOutTxtBox->text() + container));
+
+                state << "Waiting"; Vstate << "Waiting";
 
                 for (int i = 0; i < 3; i++)
                     ui.JobQueue->item(ui.JobQueue->rowCount() - 1, i)->setTextAlignment(Qt::AlignCenter);
@@ -310,7 +333,7 @@ void EncodeGUI::CreateJob() {
                 stream << BuildScript(VideoInfo::GetWidth(), VideoInfo::GetHeight(), id);
 
                 script.close();
-                vapourScript << ConfigureVS(id);
+                vapourScript << ConfigureVS(id); VvapourScript << ConfigureVS(id);
 
                 QString tempFile = QString("%1.mkv").arg(id);
 
@@ -318,12 +341,14 @@ void EncodeGUI::CreateJob() {
                     for (int i = 0; i < Stream.count(); i++)
                         audioArgs.append(ConfigureAudioM(1, Stream.at(i), QString("%1").arg(i), tempFile, container));
 
-                    AudioArgs << audioArgs;
+                    AudioArgs << audioArgs; VaudioArgs << audioArgs;
                 }
-                else if (CHECKED(ui.AudioCB))
-                    AudioArgs << ConfigureAudioP(1, tempFile, container);
-                else
-                    AudioArgs << QString(" -an -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION);
+                else if (CHECKED(ui.AudioCB)) {
+                    AudioArgs << ConfigureAudioP(1, tempFile, container); VaudioArgs << ConfigureAudioP(1, tempFile, container);
+                }
+                else {
+                    AudioArgs << QString(" -an -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION); VaudioArgs << QString(" -an -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION);
+                }
 
                 switch (ui.VideoEncDD->currentIndex()) {
                 case 0:
@@ -358,26 +383,34 @@ void EncodeGUI::CreateJob() {
                     break;
                 }
 
-                job << id;
+                job << id; Vjob << id;
                 
-                inputList << ui.SelectInTxtBox->text();
-                tempList << QDir::toNativeSeparators(QDir::tempPath() + QString("\\%1").arg(tempFile));
-                outputList << ui.SaveOutTxtBox->text();
+                inputList << ui.SelectInTxtBox->text(); VinputList << ui.SelectInTxtBox->text();
+                tempList << QDir::toNativeSeparators(QDir::tempPath() + QString("\\%1").arg(tempFile)); VtempList << QDir::toNativeSeparators(QDir::tempPath() + QString("\\%1").arg(tempFile));
+                outputList << ui.SaveOutTxtBox->text() + container; VoutputList << ui.SaveOutTxtBox->text() + container;
                 
                 VideoInfoList::SetDuration(VideoInfo::GetDuration());
-                VideoInfoList::SetInFrameRate(VideoInfo::GetFrameRate());
+                Vduration << VideoInfo::GetDuration();
 
-                if (!CHECKED(ui.InterpolationCB))
+                if (!CHECKED(ui.InterpolationCB)) {
                     VideoInfoList::SetFrameRate(VideoInfo::GetFrameRate());
-                else
+                    VframeRate << VideoInfo::GetFrameRate();
+                }
+                else {
                     VideoInfoList::SetFrameRate(QString("%1").arg(ui.OutputFPSNUD->value()));
+                    VframeRate << QString("%1").arg(ui.OutputFPSNUD->value());
+                }
 
                 WriteLog(QString("Job with ID %1 successfully added to the Job Queue.").arg(id), false, false, false);
 
-                if (!twoPass)
-                    arguments << ConfigureArgs(id, audioArgs, subtitleArgs, twoPass, 0);
-                else
-                    arguments << ConfigureArgs(id, " -an", QString(), twoPass, 1);
+                if (!twoPass) {
+                    arguments << ConfigureArgs(container, id, audioArgs, subtitleArgs, twoPass, 0); Varguments << ConfigureArgs(container, id, audioArgs, subtitleArgs, twoPass, 0);
+                }
+                else {
+                    arguments << ConfigureArgs(container, id, " -an", QString(), twoPass, 1); Varguments << ConfigureArgs(container, id, " -an", QString(), twoPass, 1);
+                }
+
+                SetJobSetting();
 
                 MsgBoxHelper(MessageType::Info, tr("Add job"), "Added job with ID: " + id, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
             }

@@ -2,7 +2,6 @@
 
 QList<QTime> VideoInfoList::Duration;
 QStringList VideoInfoList::FrameRate;
-QStringList VideoInfoList::InFrameRate;
 
 /// <summary>
 /// Sets the total duration.
@@ -18,14 +17,6 @@ void VideoInfoList::SetDuration(QTime duration) {
 /// <param name="frameRate">The frame rate.</param>
 void VideoInfoList::SetFrameRate(QString frameRate) {
 	FrameRate << frameRate;
-}
-
-/// <summary>
-/// Sets the source frame rate.
-/// </summary>
-/// <param name="frameRate">The frame rate.</param>
-void VideoInfoList::SetInFrameRate(QString frameRate) {
-	InFrameRate << frameRate;
 }
 
 /// <summary>
@@ -47,20 +38,11 @@ QString VideoInfoList::GetFrameRate(int index) {
 }
 
 /// <summary>
-/// Gets the input frame rate from the video list.
-/// </summary>
-/// <param name="index">The index to get.</param>
-/// <returns>The input frame rate.</returns>
-QString VideoInfoList::GetInFrameRate(int index) {
-	return(FrameRate.at(index));
-}
-
-/// <summary>
 /// Removes a duration from the video list.
 /// </summary>
 /// <param name="index">The index to remove.</param>
 void VideoInfoList::RemoveDuration(int index) {
-	Duration.remove(index);
+	Duration.removeAt(index);
 }
 
 /// <summary>
@@ -68,15 +50,7 @@ void VideoInfoList::RemoveDuration(int index) {
 /// </summary>
 /// <param name="index">The index to remove.</param>
 void VideoInfoList::RemoveFrameRate(int index) {
-	FrameRate.remove(index);
-}
-
-/// <summary>
-/// Removes an input frame rate at an index in the video list.
-/// </summary>
-/// <param name="index">The index to remove.</param>
-void VideoInfoList::RemoveInFrameRate(int index) {
-	InFrameRate.remove(index);
+	FrameRate.removeAt(index);
 }
 
 /// <summary>
@@ -85,5 +59,4 @@ void VideoInfoList::RemoveInFrameRate(int index) {
 void VideoInfoList::ClearAll() {
 	Duration.clear();
 	FrameRate.clear();
-	InFrameRate.clear();
 }

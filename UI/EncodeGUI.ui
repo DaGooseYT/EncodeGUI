@@ -22,8 +22,11 @@
     <height>387</height>
    </size>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
-   <string>EncodeGUI v1.0.5 (free, stable)</string>
+   <string>EncodeGUI v1.0.7 (patron beta)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../Assets/EncodeGUI.qrc">
@@ -3932,6 +3935,11 @@
              <string>v3.1</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>v4.0</string>
+            </property>
+           </item>
           </widget>
           <widget class="QComboBox" name="RIFEModelCADD">
            <property name="geometry">
@@ -6393,7 +6401,7 @@
           <x>11</x>
           <y>5</y>
           <width>523</width>
-          <height>166</height>
+          <height>189</height>
          </rect>
         </property>
         <property name="title">
@@ -6406,7 +6414,7 @@
          <property name="geometry">
           <rect>
            <x>486</x>
-           <y>23</y>
+           <y>20</y>
            <width>32</width>
            <height>20</height>
           </rect>
@@ -6422,7 +6430,7 @@
          <property name="geometry">
           <rect>
            <x>486</x>
-           <y>50</y>
+           <y>47</y>
            <width>28</width>
            <height>20</height>
           </rect>
@@ -6435,7 +6443,7 @@
          <property name="geometry">
           <rect>
            <x>486</x>
-           <y>78</y>
+           <y>75</y>
            <width>31</width>
            <height>20</height>
           </rect>
@@ -6451,7 +6459,7 @@
          <property name="geometry">
           <rect>
            <x>486</x>
-           <y>104</y>
+           <y>101</y>
            <width>24</width>
            <height>24</height>
           </rect>
@@ -6467,7 +6475,7 @@
          <property name="geometry">
           <rect>
            <x>27</x>
-           <y>104</y>
+           <y>101</y>
            <width>193</width>
            <height>20</height>
           </rect>
@@ -6480,7 +6488,7 @@
          <property name="geometry">
           <rect>
            <x>27</x>
-           <y>78</y>
+           <y>75</y>
            <width>189</width>
            <height>16</height>
           </rect>
@@ -6493,7 +6501,7 @@
          <property name="geometry">
           <rect>
            <x>28</x>
-           <y>50</y>
+           <y>47</y>
            <width>259</width>
            <height>16</height>
           </rect>
@@ -6506,7 +6514,7 @@
          <property name="geometry">
           <rect>
            <x>28</x>
-           <y>23</y>
+           <y>20</y>
            <width>238</width>
            <height>16</height>
           </rect>
@@ -6519,7 +6527,7 @@
          <property name="geometry">
           <rect>
            <x>27</x>
-           <y>133</y>
+           <y>130</y>
            <width>239</width>
            <height>18</height>
           </rect>
@@ -6532,7 +6540,7 @@
          <property name="geometry">
           <rect>
            <x>486</x>
-           <y>134</y>
+           <y>131</y>
            <width>20</width>
            <height>20</height>
           </rect>
@@ -6544,12 +6552,38 @@
           <bool>true</bool>
          </property>
         </widget>
+        <widget class="QLabel" name="GenerateOutLabel">
+         <property name="geometry">
+          <rect>
+           <x>27</x>
+           <y>160</y>
+           <width>249</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Automatically generate output file name:</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="GenerateOutCB">
+         <property name="geometry">
+          <rect>
+           <x>486</x>
+           <y>160</y>
+           <width>21</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="ProgressBarGB">
         <property name="geometry">
          <rect>
           <x>11</x>
-          <y>177</y>
+          <y>199</y>
           <width>524</width>
           <height>51</height>
          </rect>
@@ -6768,7 +6802,7 @@
        <enum>Qt::CustomContextMenu</enum>
       </property>
       <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
+       <enum>Qt::ScrollBarAsNeeded</enum>
       </property>
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>

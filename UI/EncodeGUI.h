@@ -1,30 +1,36 @@
 #pragma once
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "user32.lib")
+#pragma comment(lib, "Opengl32.lib")
 
 #ifndef ENCODEGUI_H
 #define ENCODEGUI_H
 
-#include "..\Process\ScriptBuilder.h"
-#include "..\Process\MediaConfig.h"
-#include "..\Process\FFLoader.h"
-#include "..\Checks\Checks.h"
+#include "../Process/ScriptBuilder.h"
+#include "../Process/MediaConfig.h"
+#include "../Process/FFLoader.h"
+#include "../Checks/Checks.h"
 #include "UI_EncodeGUI.h"
 #include "Preview.h"
 #include "Updater.h"
+
+#ifdef Q_OS_WINDOWS
 #include "Windows.h"
 #include "DxGi.h"
+#endif
 
-#include "QtNetwork\QNetworkAccessManager"
-#include "QtNetwork\QNetworkRequest"
-#include "QtNetwork\QNetworkReply"
-#include <QtWidgets\QMainWindow>
+#include "QtNetwork/QNetworkAccessManager"
+#include "QtNetwork/QNetworkRequest"
+#include "QtNetwork/QNetworkReply"
+#include <QtWidgets/QMainWindow>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QCloseEvent>
+#include <QMetaType>
 #include <QShortcut>
 #include <QSettings>
+#include <QMimeData>
 #include <QProcess>
 #include <QVector>
 #include <QMenu>
@@ -41,7 +47,7 @@
 #define INFO 2
 #define QUESTION 3
 
-#define VERSION QString("1.0.5")
+#define VERSION QString("1.0.7")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -57,7 +63,7 @@ public:
     EncodeGUI(QWidget* parent = Q_NULLPTR);
     ~EncodeGUI();
 
-    QString ConfigureArgs(QString, QString, QString, bool, int);
+    QString ConfigureArgs(QString, QString, QString, QString, bool, int);
     QString ConfigureVS(QString);
     QString ConfigureAudioP(int, QString, QString);
     QString ConfigureAudioM(int, int, QString, QString, QString);
@@ -72,13 +78,22 @@ public:
 
     QStringList arguments;
     QStringList job;
-    QList<bool> isTwoPass;
-    QStringList encodeAudio;
-    QStringList encodeSubs;
     QStringList vapourScript;
     QStringList inputList;
     QStringList outputList;
     QStringList tempList;
+    QStringList state;
+
+    QVariantList Varguments;
+    QVariantList Vjob;
+    QVariantList VvapourScript;
+    QVariantList VinputList;
+    QVariantList VoutputList;
+    QVariantList VtempList;
+    QVariantList Vstate;
+    QVariantList VaudioArgs;
+    QVariantList Vduration;
+    QVariantList VframeRate;
 
 private:
     Ui::EncodeGUIMV ui;
@@ -87,8 +102,14 @@ private:
     void UpscaleMD(int, int);
     void RemoveAudio();
     void NewTask();
+    void GetVideoInfo(QString, QString);
+    void dragEnterEvent(QDragEnterEvent* d);
+    void dropEvent(QDropEvent* d);
     void NewJob();
     void Updater();
+    void SaveSettings();
+    void SetState();
+    void SetJobSetting();
     int DecimalCounter(QString);
     void setup_queue();
     void CheckEncoders();
@@ -125,6 +146,7 @@ private slots:
     void Skip();
     void MediaInfo();
     void GoToUpdate();
+    void GenOutput();
     void Later();
     void PatreonClick();
     void YouClick();
@@ -132,13 +154,13 @@ private slots:
     void UpdaterFinished();
     void DisClick();
     void IgClick();
+    void InputClick();
     void JobsComplete();
     void HDRMeta();
     void ErrorMsg();
     void DelSource();
     void EnablePreview();
     void ScNUD();
-    void Quitting();
     void OpenLogs();
     void InterpFactor();
     void ExtracterInfo();
@@ -195,7 +217,6 @@ private slots:
     void hide_tun264();
     void profile_264();
     void profile_vpx();
-    void container_ch();
     void input_bttn();
     void profile_gb264();
     void refsldr_264();

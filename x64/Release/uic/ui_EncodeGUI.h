@@ -346,6 +346,8 @@ public:
     QLabel *EnablePreviewLabel;
     QLabel *UpdateOptLabel;
     QCheckBox *UpdateOptCB;
+    QLabel *GenerateOutLabel;
+    QCheckBox *GenerateOutCB;
     QGroupBox *ProgressBarGB;
     QCheckBox *JobsCB;
     QCheckBox *FPSCB;
@@ -433,6 +435,7 @@ public:
         EncodeGUIMV->resize(743, 387);
         EncodeGUIMV->setMinimumSize(QSize(743, 387));
         EncodeGUIMV->setMaximumSize(QSize(743, 387));
+        EncodeGUIMV->setAcceptDrops(true);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/EncodeGUI/egui.png"), QSize(), QIcon::Normal, QIcon::Off);
         EncodeGUIMV->setWindowIcon(icon);
@@ -1349,6 +1352,7 @@ public:
         RIFEModelVKDD->addItem(QString());
         RIFEModelVKDD->addItem(QString());
         RIFEModelVKDD->addItem(QString());
+        RIFEModelVKDD->addItem(QString());
         RIFEModelVKDD->setObjectName(QString::fromUtf8("RIFEModelVKDD"));
         RIFEModelVKDD->setGeometry(QRect(436, 87, 55, 22));
         RIFEModelCADD = new QComboBox(InterpolationCB);
@@ -1924,45 +1928,51 @@ public:
         EGUITab->setObjectName(QString::fromUtf8("EGUITab"));
         EGUISettingsGB = new QGroupBox(EGUITab);
         EGUISettingsGB->setObjectName(QString::fromUtf8("EGUISettingsGB"));
-        EGUISettingsGB->setGeometry(QRect(11, 5, 523, 166));
+        EGUISettingsGB->setGeometry(QRect(11, 5, 523, 189));
         EGUISettingsGB->setAlignment(Qt::AlignCenter);
         EnablePreviewCB = new QCheckBox(EGUISettingsGB);
         EnablePreviewCB->setObjectName(QString::fromUtf8("EnablePreviewCB"));
-        EnablePreviewCB->setGeometry(QRect(486, 23, 32, 20));
+        EnablePreviewCB->setGeometry(QRect(486, 20, 32, 20));
         EnablePreviewCB->setChecked(true);
         AutoDelSourceCB = new QCheckBox(EGUISettingsGB);
         AutoDelSourceCB->setObjectName(QString::fromUtf8("AutoDelSourceCB"));
-        AutoDelSourceCB->setGeometry(QRect(486, 50, 28, 20));
+        AutoDelSourceCB->setGeometry(QRect(486, 47, 28, 20));
         CompleteMessageCB = new QCheckBox(EGUISettingsGB);
         CompleteMessageCB->setObjectName(QString::fromUtf8("CompleteMessageCB"));
-        CompleteMessageCB->setGeometry(QRect(486, 78, 31, 20));
+        CompleteMessageCB->setGeometry(QRect(486, 75, 31, 20));
         CompleteMessageCB->setChecked(true);
         ErrorMessageCB = new QCheckBox(EGUISettingsGB);
         ErrorMessageCB->setObjectName(QString::fromUtf8("ErrorMessageCB"));
-        ErrorMessageCB->setGeometry(QRect(486, 104, 24, 24));
+        ErrorMessageCB->setGeometry(QRect(486, 101, 24, 24));
         ErrorMessageCB->setChecked(true);
         ErrorMessageLabel = new QLabel(EGUISettingsGB);
         ErrorMessageLabel->setObjectName(QString::fromUtf8("ErrorMessageLabel"));
-        ErrorMessageLabel->setGeometry(QRect(27, 104, 193, 20));
+        ErrorMessageLabel->setGeometry(QRect(27, 101, 193, 20));
         JobsCompleteLabel = new QLabel(EGUISettingsGB);
         JobsCompleteLabel->setObjectName(QString::fromUtf8("JobsCompleteLabel"));
-        JobsCompleteLabel->setGeometry(QRect(27, 78, 189, 16));
+        JobsCompleteLabel->setGeometry(QRect(27, 75, 189, 16));
         DeleteSourcesLabel = new QLabel(EGUISettingsGB);
         DeleteSourcesLabel->setObjectName(QString::fromUtf8("DeleteSourcesLabel"));
-        DeleteSourcesLabel->setGeometry(QRect(28, 50, 259, 16));
+        DeleteSourcesLabel->setGeometry(QRect(28, 47, 259, 16));
         EnablePreviewLabel = new QLabel(EGUISettingsGB);
         EnablePreviewLabel->setObjectName(QString::fromUtf8("EnablePreviewLabel"));
-        EnablePreviewLabel->setGeometry(QRect(28, 23, 238, 16));
+        EnablePreviewLabel->setGeometry(QRect(28, 20, 238, 16));
         UpdateOptLabel = new QLabel(EGUISettingsGB);
         UpdateOptLabel->setObjectName(QString::fromUtf8("UpdateOptLabel"));
-        UpdateOptLabel->setGeometry(QRect(27, 133, 239, 18));
+        UpdateOptLabel->setGeometry(QRect(27, 130, 239, 18));
         UpdateOptCB = new QCheckBox(EGUISettingsGB);
         UpdateOptCB->setObjectName(QString::fromUtf8("UpdateOptCB"));
-        UpdateOptCB->setGeometry(QRect(486, 134, 20, 20));
+        UpdateOptCB->setGeometry(QRect(486, 131, 20, 20));
         UpdateOptCB->setChecked(true);
+        GenerateOutLabel = new QLabel(EGUISettingsGB);
+        GenerateOutLabel->setObjectName(QString::fromUtf8("GenerateOutLabel"));
+        GenerateOutLabel->setGeometry(QRect(27, 160, 249, 16));
+        GenerateOutCB = new QCheckBox(EGUISettingsGB);
+        GenerateOutCB->setObjectName(QString::fromUtf8("GenerateOutCB"));
+        GenerateOutCB->setGeometry(QRect(486, 160, 21, 20));
         ProgressBarGB = new QGroupBox(EGUITab);
         ProgressBarGB->setObjectName(QString::fromUtf8("ProgressBarGB"));
-        ProgressBarGB->setGeometry(QRect(11, 177, 524, 51));
+        ProgressBarGB->setGeometry(QRect(11, 199, 524, 51));
         ProgressBarGB->setAlignment(Qt::AlignCenter);
         JobsCB = new QCheckBox(ProgressBarGB);
         JobsCB->setObjectName(QString::fromUtf8("JobsCB"));
@@ -2033,7 +2043,7 @@ public:
         JobQueue->setSizePolicy(sizePolicy);
         JobQueue->setFocusPolicy(Qt::NoFocus);
         JobQueue->setContextMenuPolicy(Qt::CustomContextMenu);
-        JobQueue->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        JobQueue->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         JobQueue->setEditTriggers(QAbstractItemView::NoEditTriggers);
         JobQueue->setSelectionMode(QAbstractItemView::NoSelection);
         JobQueue->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -2561,7 +2571,7 @@ public:
 
     void retranslateUi(QMainWindow *EncodeGUIMV)
     {
-        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.0.5 (free, stable)", nullptr));
+        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.0.7 (patron beta)", nullptr));
 #if QT_CONFIG(tooltip)
         EGUILogo->setToolTip(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI :)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -3207,6 +3217,7 @@ public:
         RIFEModelVKDD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "v1.8", nullptr));
         RIFEModelVKDD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "v2.4", nullptr));
         RIFEModelVKDD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", "v3.1", nullptr));
+        RIFEModelVKDD->setItemText(3, QCoreApplication::translate("EncodeGUIMV", "v4.0", nullptr));
 
 #if QT_CONFIG(tooltip)
         RIFEModelVKDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Sets the RIFE model to use for NCNN.", nullptr));
@@ -3632,7 +3643,13 @@ public:
 #endif // QT_CONFIG(tooltip)
         AddAudioJob->setText(QCoreApplication::translate("EncodeGUIMV", "Add Selected Audio to Queue", nullptr));
         AudioQueueLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Audio Queue", nullptr));
+#if QT_CONFIG(tooltip)
+        AudioTitleCB->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
         AudioTitleCB->setText(QCoreApplication::translate("EncodeGUIMV", "Title:", nullptr));
+#if QT_CONFIG(tooltip)
+        AudioTitleTxtBox->setToolTip(QString());
+#endif // QT_CONFIG(tooltip)
         Tabs->setTabText(Tabs->indexOf(AudioTab), QCoreApplication::translate("EncodeGUIMV", "Audio", nullptr));
         EGUISettingsGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI Settings", nullptr));
         EnablePreviewCB->setText(QString());
@@ -3645,6 +3662,8 @@ public:
         EnablePreviewLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically open live encoding preview:", nullptr));
         UpdateOptLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically check for EncodeGUI updates:", nullptr));
         UpdateOptCB->setText(QString());
+        GenerateOutLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically generate output file name:", nullptr));
+        GenerateOutCB->setText(QString());
         ProgressBarGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Progress Bar", nullptr));
         JobsCB->setText(QCoreApplication::translate("EncodeGUIMV", "Jobs", nullptr));
         FPSCB->setText(QCoreApplication::translate("EncodeGUIMV", "FPS", nullptr));

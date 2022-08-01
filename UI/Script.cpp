@@ -149,7 +149,7 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 
 	if (CHECKED(ui.InterpolationCB)) {
 		QString fp, tta, uhd, sc, remv;
-		int model, thread, num, den, multi;
+		int model, thread, num, den, multi, model2;
 		int id = ui.GPUInterpDD->currentIndex();
 		double inFPS = VideoInfo::GetFrameRate().toDouble();
 		double outFPS = ui.OutputFPSNUD->value();
@@ -175,7 +175,8 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 		else
 			uhd = "False";
 
-		model = ui.RIFEModelCADD->currentIndex();
+		model = ui.RIFEModelVKDD->currentIndex();
+		model2 = ui.ModelInterpDD->currentIndex();
 		thread = ui.GPUThreadDD->currentIndex() + 1;
 		multi = Multi(inFPS, outFPS);
 
@@ -217,7 +218,15 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 				ScriptBuilder::SetRIFECuda("cuda", multi, scale, id, fp);
 				break;
 			case 1:
-				ScriptBuilder::SetRIFENcnn(model, id, thread, tta, uhd, sc);
+				if (ui.ToolInterpDD->currentIndex() == 1)
+					ScriptBuilder::SetRIFENcnn(model, id, thread, tta, uhd, sc);
+				else
+					if (model2 == 0)
+						ScriptBuilder::SetRIFENcnn(3, id, thread, tta, uhd, sc);
+					else if (model2 == 1)
+						ScriptBuilder::SetRIFENcnn(1, id, thread, tta, uhd, sc);
+					else if (model2 == 2)
+						ScriptBuilder::SetRIFENcnn(0, id, thread, tta, uhd, sc);
 				break;
 			case 2:
 				ScriptBuilder::SetRIFECuda("cpu", multi, scale, id, fp);

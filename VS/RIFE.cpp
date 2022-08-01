@@ -24,5 +24,5 @@ QString VapourSynth::RIFECuda(QString device, int multi, double scale, int id, Q
 /// <param name="sc">Enables or disables scene change detection.</param>
 /// <returns>String representation of the argument.</returns>
 QString VapourSynth::RIFENcnn(int model, int id, int thread, QString tta, QString uhd, QString sc) {
-	return QString("clip = core.rife.RIFE(clip, model=%1, gpu_id=%2, gpu_thread=%3, tta=%4, uhd=%5, sc=%6)\n\n").arg(model).arg(id).arg(thread).arg(tta).arg(uhd).arg(sc);
+	return QString("clip = core.rife.RIFE(clip, model=%1, multiplier=2, gpu_id=%2, gpu_thread=%3, tta=%4, uhd=%5, sc=%6)\n\n").arg(model).arg(id).arg(thread).arg(tta).arg(uhd).arg(sc);
 }

@@ -34,6 +34,14 @@ QStringList FileStream;
 Preview* preview;
 Update* up;
 
+QStringList arguments;
+QStringList job;
+QStringList vapourScript;
+QStringList inputList;
+QStringList outputList;
+QStringList tempList;
+QStringList state;
+
 EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
 {
     ui.setupUi(this);
@@ -77,11 +85,6 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ui.SelectInBttn, SIGNAL(clicked(bool)), this, SLOT(input_bttn()));
     connect(ui.SampleVidCB, SIGNAL(stateChanged(int)), this, SLOT(SampleVid()));
     connect(ui.SaveOutBttn, SIGNAL(clicked(bool)), this, SLOT(OutBttn()));
-    connect(ui.OutContainerx264DD, SIGNAL(currentIndexChanged(int)), this, SLOT(container_ch()));
-    connect(ui.OutContainerx265DD, SIGNAL(currentIndexChanged(int)), this, SLOT(container_ch()));
-    connect(ui.OutContainerProResDD, SIGNAL(currentIndexChanged(int)), this, SLOT(container_ch()));
-    connect(ui.OutContainerTheoraDD, SIGNAL(currentIndexChanged(int)), this, SLOT(container_ch()));
-    connect(ui.OutContainerVPXDD, SIGNAL(currentIndexChanged(int)), this, SLOT(container_ch()));
     connect(ui.AddJobBttn, SIGNAL(clicked(bool)), this, SLOT(CreateJob()));
     connect(ui.StartBttn, SIGNAL(clicked(bool)), this, SLOT(Start()));
     connect(ui.CancelBttn, SIGNAL(clicked(bool)), this, SLOT(CancelMain()));
@@ -121,6 +124,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ui.DynamicMetadataBttn, SIGNAL(clicked(bool)), this, SLOT(HDRMeta()));
     connect(ui.GetVidInfoCB, SIGNAL(stateChanged(int)), this, SLOT(MediaInfo()));
     connect(ui.AudioTitleCB, SIGNAL(stateChanged(int)), this, SLOT(AudioTitle()));
+    connect(ui.GenerateOutCB, SIGNAL(stateChanged(int)), this, SLOT(GenOutput()));
 
     ffloader = new FFLoader();
 
@@ -203,6 +207,52 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
         Updater();
     else
         WriteLog(QString("The user had selected to opt-out of automatically checking for updates in preferences. Skipping update search..."), false, false, false);
+
+    FOR_EACH(arguments.count()) {
+        ui.JobQueue->insertRow(ui.JobQueue->rowCount());
+
+        if (Checks::CheckVsScript(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1\\%1.vpy").arg(job.at(i)))) && Checks::CheckInput(inputList.at(i))) {
+            ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 0, new QTableWidgetItem(job.at(i)));
+            ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 1, new QTableWidgetItem(state.at(i)));
+
+            if (state.at(i).contains("Finished"))
+                ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 2, new QTableWidgetItem("100%"));
+            else
+                ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 2, new QTableWidgetItem("0%"));
+
+            ui.JobQueue->setItem(ui.JobQueue->rowCount() - 1, 3, new QTableWidgetItem(outputList.at(i)));
+
+            for (int i = 0; i < 3; i++)
+                ui.JobQueue->item(ui.JobQueue->rowCount() - 1, i)->setTextAlignment(Qt::AlignCenter);
+
+            WriteLog(QString("Loaded job %1 from backup successfully.").arg(job.at(i)), false, false, false);
+        }
+        else {
+            WriteLog(QString("Error: Job %1 automatically removed from job queue because either the source file or VapourSynth script file is missing or does not exist.").arg(job.at(i)), false, true, false);
+
+            ui.JobQueue->removeRow(i);
+
+            arguments.removeAt(i);
+            vapourScript.removeAt(i);
+            tempList.removeAt(i);
+            AudioArgs.removeAt(i);
+            outputList.removeAt(i);
+            inputList.removeAt(i);
+            state.removeAt(i);
+
+            QDir(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1")).arg(job.at(i))).removeRecursively();
+
+            job.removeAt(i);
+
+            VideoInfoList::RemoveDuration(i);
+            VideoInfoList::RemoveFrameRate(i);
+            
+            i--;
+        }
+    }
+
+    SaveSettings();
+    SetJobSetting();
 }
 
 void EncodeGUI::CheckEncoders() {
@@ -323,6 +373,34 @@ void EncodeGUI::UpdaterFinished() {
         WriteLog(QString("Error: Unable to check for updates due to a network error: %1").arg(rply->errorString()), false, true, false);
 }
 
+void EncodeGUI::dragEnterEvent(QDragEnterEvent* d) {
+    const QMimeData* md = d->mimeData();
+
+    if (md->hasUrls())
+        d->acceptProposedAction();
+}
+
+void EncodeGUI::dropEvent(QDropEvent* d) {
+    const QMimeData* md = d->mimeData();
+
+    QList<QUrl> urlList = md->urls();
+
+    if (CHECKED(ui.SampleVidCB))
+        MsgBoxHelper(MessageType::Error, "EncodeGUI error", "EncodeGUI is currently not accepting drag and drop input as the sample video input option is enabled.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    else {
+        VideoInfo::ClearAll();
+        AudioInfo::ClearAll();
+        SubtitleInfo::ClearAll();
+
+        VideoInfoRegex::DurationLine.clear();
+
+        QString ffprobe = QDir::toNativeSeparators(QDir::currentPath() + QString("\\ffmpeg\\ffprobe.exe"));
+        QString input = QDir::toNativeSeparators(urlList.at(0).toLocalFile());
+
+        GetVideoInfo(input, ffprobe);
+    }
+}
+
 void EncodeGUI::Skip() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("update", vers);
     up->close();
@@ -386,14 +464,7 @@ void EncodeGUI::input_bttn() {
     VideoInfoRegex::DurationLine.clear();
     
     QString input;
-    QString ffprobe;
-
-#if DEBUG
-    ffprobe = QDir::toNativeSeparators(QDir::currentPath()) + QString("\\x64\\Debug\\ffmpeg\\ffprobe.exe");
-#else
-    ffprobe = QDir::toNativeSeparators(QDir::currentPath()) + QString("\\ffmpeg\\ffprobe.exe");
-#endif // DEBUG
-
+    QString ffprobe = QDir::toNativeSeparators(QDir::currentPath()) + QString("\\ffmpeg\\ffprobe.exe");
 
     if (!CHECKED(ui.SampleVidCB))
         input = QFileDialog::getOpenFileName(this, tr("Select Input"), ui.SelectInTxtBox->text(), tr("All files (*.*)"));
@@ -403,8 +474,11 @@ void EncodeGUI::input_bttn() {
     if (input.isEmpty() && !ui.SelectInTxtBox->text().isEmpty())
         input = ui.SelectInTxtBox->text();
 
+    GetVideoInfo(QDir::toNativeSeparators(input), ffprobe);
+}
+
+void EncodeGUI::GetVideoInfo(QString input, QString ffprobe) {
     if (Checks::CheckFFProbe(ffprobe)) {
-        input = QDir::toNativeSeparators(input);
         ui.SelectInTxtBox->setText(input);
 
         if (!ui.SelectInTxtBox->text().isEmpty()) {
@@ -415,6 +489,13 @@ void EncodeGUI::input_bttn() {
             RemoveAudio();
 
             ffloader->VideoInfo(QString("\"%1\"").arg(ffprobe) + QString(" -hide_banner -i \"%1\"").arg(input));
+
+            if (CHECKED(ui.GenerateOutCB)) {
+                QFileInfo fi(ui.SelectInTxtBox->text().left(ui.SelectInTxtBox->text().lastIndexOf(".")));
+                QString fn(fi.fileName());
+
+                ui.SaveOutTxtBox->setText(ui.SelectInTxtBox->text().left(ui.SelectInTxtBox->text().lastIndexOf(".")).replace(fn, QString("%1-egui").arg(fn)));
+            }
         }
     }
     else {
@@ -489,6 +570,26 @@ void EncodeGUI::DisClick() {
 
 void EncodeGUI::IgClick() {
     QDesktopServices::openUrl(QUrl("https://www.instagram.com/dagooseyt/"));
+}
+
+void EncodeGUI::GenOutput() {
+    QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("genout", CHECKED(ui.GenerateOutCB));
+
+    if (CHECKED(ui.GenerateOutCB)) {
+        SET_DISABLED(ui.SaveOutBttn);
+        ui.SaveOutTxtBox->setText(QString());
+
+        if (!ui.SelectInTxtBox->text().isEmpty()) {
+            QFileInfo fi(ui.SelectInTxtBox->text().left(ui.SelectInTxtBox->text().lastIndexOf(".")));
+            QString fn(fi.fileName());
+
+            ui.SaveOutTxtBox->setText(ui.SelectInTxtBox->text().left(ui.SelectInTxtBox->text().lastIndexOf(".")).replace(fn, QString("%1-egui").arg(fn)));
+        }
+    }
+    else {
+        SET_ENABLED(ui.SaveOutBttn);
+        ui.SaveOutTxtBox->setText(QString());
+    }
 }
 
 void EncodeGUI::ExtracterInfo() {
@@ -653,8 +754,10 @@ void EncodeGUI::CancelAllClick() {
 
     if (msg == QMessageBox::Yes) {
         FOR_EACH(ui.JobQueue->rowCount())
-            if (!ui.JobQueue->item(i, 1)->text().contains("Paused") && !ui.JobQueue->item(i, 1)->text().contains("Active"))
+            if (!ui.JobQueue->item(i, 1)->text().contains("Paused") && !ui.JobQueue->item(i, 1)->text().contains("Active")) {
                 ui.JobQueue->item(i, 1)->setText("Canceled");
+                state.replace(i, "Canceled");
+            }
             else if (ui.JobQueue->item(i, 1)->text().contains("Paused")) {
                 MsgBoxHelper(MessageType::Warning, "EncodeGUI warning", "The currently paused process could not be canceled. Please resume it first then cancel it.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                 WriteLog("All jobs in the queue have been canceled except the currenly paused job. Resume it to cancel it.", false, false, false);
@@ -663,6 +766,8 @@ void EncodeGUI::CancelAllClick() {
         if (ffloader->encode && ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Active"))
             if (ffloader->encode->state() == QProcess::Running) {
                 ui.JobQueue->item(ffloader->currentJob, 1)->setText("Canceled");
+                state.replace(ffloader->currentJob, "Canceled");
+
                 ffloader->CloseProcess(ffloader->encode);
 
                 if (ffloader->vs)
@@ -675,6 +780,8 @@ void EncodeGUI::CancelAllClick() {
 
             WriteLog("All jobs in the queue have been canceled.", false, false, false);
         }
+
+        SetState();
     }
 }
 
@@ -683,25 +790,23 @@ void EncodeGUI::closeEvent(QCloseEvent* evnt) {
         MsgBoxHelper(MessageType::Error, "EncodeGUI error", "Please cancel the current running process before closing EncodeGUI", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         evnt->ignore();
     }
-    else if (ffloader->encode) {
-        if (ffloader->encode->state() == QProcess::NotRunning) {
-            Quitting();
+    else if (ffloader->encode)
+        if (ffloader->encode->state() == QProcess::NotRunning)
             evnt->accept();
-        }
-    }
-    else {
-        Quitting();
+    else
         evnt->accept();
-    }
 }
 
 void EncodeGUI::ResetJob() {
     ui.JobQueue->item(selectedJob, 1)->setText("Waiting");
+    state.replace(selectedJob, "Waiting");
     
     if (arguments.at(selectedJob).contains("pass 2") || arguments.at(selectedJob).contains("pass=2"))
         arguments.replace(selectedJob, QString(arguments.at(selectedJob)).replace("-pass 2", "-pass 1").replace(AudioArgs.at(selectedJob), "-an").replace("\"" + tempList.at(selectedJob) + "\"", QString("-passlogfile \"%1\"").arg(QDir::toNativeSeparators(QDir::tempPath())) + " -f NULL nul").replace("pass=2", "pass=1"));
 
     WriteLog(QString("Job %1 has been reset.").arg(job.at(selectedJob)), false, false, false);
+
+    SetState();
 }
 
 void EncodeGUI::RemoveJob() {
@@ -718,6 +823,7 @@ void EncodeGUI::RemoveJob() {
     AudioArgs.removeAt(selectedJob);
     outputList.removeAt(selectedJob);
     inputList.removeAt(selectedJob);
+    state.removeAt(selectedJob);
 
     VideoInfoList::RemoveDuration(selectedJob);
     VideoInfoList::RemoveFrameRate(selectedJob);
@@ -732,6 +838,9 @@ void EncodeGUI::RemoveJob() {
     QDir(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(selectedJob)))).removeRecursively();
 
     job.removeAt(selectedJob);
+
+    SaveSettings();
+    SetJobSetting();
 }
 
 void EncodeGUI::ClearFinished() {
@@ -745,6 +854,7 @@ void EncodeGUI::ClearFinished() {
             AudioArgs.removeAt(i);
             outputList.removeAt(i);
             inputList.removeAt(i);
+            state.removeAt(i);
 
             QDir(QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1")).arg(job.at(i))).removeRecursively();
 
@@ -760,28 +870,44 @@ void EncodeGUI::ClearFinished() {
         FOR_EACH(arguments.count())
             if (ui.JobQueue->item(i, 1)->text().contains("Active") || ui.JobQueue->item(i, 1)->text().contains("Paused"))
                 ffloader->currentJob = i;
+
+    SaveSettings();
+    SetJobSetting();
 }
 
 void EncodeGUI::CancelMain() {
-    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All curent progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All current progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (msg == QMessageBox::Yes) {
         if (ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Active")) {
             ui.JobQueue->item(ffloader->currentJob, 1)->setText("Canceled");
+            state.replace(ffloader->currentJob, "Canceled");
+
             WriteLog(QString("Job %1 canceled by user").arg(job.at(ffloader->currentJob)), false, false, false);
 
             ffloader->CloseProcess(ffloader->encode);
 
             if (ffloader->vs)
                 ffloader->CloseProcess(ffloader->vs);
+
+            SetState();
         }
         else
             MsgBoxHelper(MessageType::Error, "EncodeGUI error", "A job must be running to cancel it", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
 }
 
+void EncodeGUI::SetState() {
+    Vstate.clear();
+
+    foreach(QString sta, state)
+        Vstate << sta;
+
+    QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("state", Vstate);
+}
+
 void EncodeGUI::CancelClick() {
-    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All curent progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All current progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (msg == QMessageBox::Yes) {
         if (ui.JobQueue->item(selectedJob, 1)->text().contains("Active")) {
@@ -794,17 +920,12 @@ void EncodeGUI::CancelClick() {
                 if (ffloader->vs)
                     ffloader->CloseProcess(ffloader->vs);
             }
+
+            state.replace(selectedJob, "Canceled");
+            SetState();
         }
         else
             MsgBoxHelper(MessageType::Error, "EncodeGUI error", "A job must be running to cancel it", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-    }
-}
-
-void EncodeGUI::Quitting() {
-    FOR_EACH(arguments.count()) {
-        selectedJob = i;
-        RemoveJob();
-        i--;
     }
 }
 
@@ -973,6 +1094,7 @@ void EncodeGUI::EncodeFinished() {
 
     if (ProcessError::Error()) {
         ui.JobQueue->item(ffloader->currentJob, 1)->setText("Failed");
+        state.replace(ffloader->currentJob, "Failed");
         
         if (ProcessError::GetCudaError()) {
             WriteLog(QString("Error: Job %1 failed due to the CUDA runtime failing to load. Try updating the selected GPU drivers. Else, the selected GPU is not supported. See the associated process logs for more details.").arg(job.at(ffloader->currentJob)), false, true, false);
@@ -1039,10 +1161,15 @@ void EncodeGUI::EncodeFinished() {
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
         if (msg == QMessageBox::Help)
             QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
+        SetState();
     }
     else if (ProcessError::GetPipeError()) {
         if (CHECKED(ui.ErrorMessageCB))
             msg = MsgBoxHelper(MessageType::Error, "EncodeGUI error", "The process failed due to FFMpeg recieving invaild data from VSPipe. Click \"Open\" below to see the associate process logs.", QMessageBox::Ok, QMessageBox::Help, QMessageBox::Open);
+
+        state.replace(ffloader->currentJob, "Failed");
+        SetState();
     }
     else if (ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Failed")) {
         WriteLog(QString("Error: Job %1 failed due to an unknown process error. See the associated process logs for more details.").arg(job.at(ffloader->currentJob)), false, true, false);
@@ -1052,6 +1179,9 @@ void EncodeGUI::EncodeFinished() {
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
         if (msg == QMessageBox::Help)
             QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
+        state.replace(ffloader->currentJob, "Failed");
+        SetState();
     }
     else if (arguments.at(ffloader->currentJob).contains("-f NULL")) {
         FileStream << "\n#================================================#";
@@ -1077,6 +1207,9 @@ void EncodeGUI::EncodeFinished() {
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
         if (msg == QMessageBox::Help)
             QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
+        state.replace(ffloader->currentJob, "Failed");
+        SetState();
     }
     else {
         if (!ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Canceled")) {
@@ -1092,7 +1225,7 @@ void EncodeGUI::EncodeFinished() {
 
                 return;
             }
-            else if (EncodingAudio && !QFile(outputList.at(ffloader->currentJob)).exists()) {
+            else if (EncodingAudio && !QFile(outputList.at(ffloader->currentJob)).exists() || QFile(outputList.at(ffloader->currentJob)).size() < 10000) {
                 ui.JobQueue->item(ffloader->currentJob, 2)->setText("0%");
                 ui.JobQueue->item(ffloader->currentJob, 1)->setText("Failed");
 
@@ -1103,6 +1236,9 @@ void EncodeGUI::EncodeFinished() {
                     QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
                 if (sb == QMessageBox::Help)
                     QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
+                state.replace(ffloader->currentJob, "Failed");
+                SetState();
             }
             else {
                 ui.JobQueue->item(ffloader->currentJob, 2)->setText("100%");
@@ -1114,6 +1250,9 @@ void EncodeGUI::EncodeFinished() {
                 }
 
                 WriteLog(QString("Job %1 complete! Checking to see if there are any other jobs...").arg(job.at(ffloader->currentJob)), false, false, false);
+
+                state.replace(ffloader->currentJob, "Finished");
+                SetState();
             }
         }
     }
@@ -1291,6 +1430,7 @@ void EncodeGUI::WriteFile(QString output) {
 }
 
 void EncodeGUI::GPUFinished() {
+#ifdef Q_OS_WINDOWS
     IDXGIAdapter* adapter;
     IDXGIFactory* factory = NULL;
     DXGI_ADAPTER_DESC desc;
@@ -1318,48 +1458,19 @@ void EncodeGUI::GPUFinished() {
     WriteLog(QString("Found %1 GPU device(s): %2").arg(gpuNames.count()).arg(gpuNames.join(", ")), false, false, false);
 
     this->setWindowTitle(QString("EncodeGUI v%1 (free, stable) - [GPU 0: %2]").arg(VERSION).arg(gpuNames.at(0)));
+#endif
+#ifdef Q_OS_LINUX
+    glGetString();
+#endif
+}
+
+void EncodeGUI::InputClick() {
+    QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QFileInfo(inputList.at(selectedJob)).absolutePath())));
 }
 
 void EncodeGUI::OutBttn() {
-    QString output, container, ext;
-    
-    switch (ui.VideoEncDD->currentIndex()) {
-        case 0:
-            container = QString("%1 Files (*%2)").arg(ui.OutContainerx264DD->currentText().toUpper().remove(".")).arg(ui.OutContainerx264DD->currentText());
-            ext = ui.OutContainerx264DD->currentText();
-            break;
-        case 1:
-            container = QString("%1 Files (*%2)").arg(ui.OutContainerx265DD->currentText().toUpper().remove(".")).arg(ui.OutContainerx265DD->currentText());
-            ext = ui.OutContainerx265DD->currentText();
-            break;
-        case 2:
-            container = QString("%1 Files (*%2)").arg(ui.OutContainerProResDD->currentText().toUpper().remove(".")).arg(ui.OutContainerProResDD->currentText());
-            ext = ui.OutContainerProResDD->currentText();
-            break;
-        case 3:
-            container = QString("%1 Files (*%2)").arg(ui.OutContainerTheoraDD->currentText().toUpper().remove(".")).arg(ui.OutContainerTheoraDD->currentText());
-            ext = ui.OutContainerTheoraDD->currentText();
-            break;
-        case 4:
-            container = QString("%1 Files (*%2)").arg(ui.OutContainerVPXDD->currentText().toUpper().remove(".")).arg(ui.OutContainerVPXDD->currentText());
-            ext = ui.OutContainerVPXDD->currentText();
-            break;
-        case 5:
-            container = QString("%1 Files (*%2)").arg(ui.OutContainerx264DD->currentText().toUpper().remove(".")).arg(ui.OutContainerx264DD->currentText());
-            ext = ui.OutContainerx264DD->currentText();
-            break;
-    }
-
-    output = QFileDialog::getSaveFileName(this, tr("Save Output File"), ui.SelectInTxtBox->text(), container);
+    QString output = QFileDialog::getSaveFileName(this, tr("Save Output File"), ui.SelectInTxtBox->text().left(ui.SelectInTxtBox->text().lastIndexOf(".")), QString("Supported extensions"));
     output = QDir::toNativeSeparators(output);
-    
-    if (!output.contains(ext) && !output.isEmpty())
-        output += ext;
-
-    if (output.contains(ui.SelectInTxtBox->text()) && output.length() == ui.SelectInTxtBox->text().length() && !ui.SaveOutTxtBox->text().isEmpty()) {
-        MsgBoxHelper(MessageType::Error, "EncodeGUI error", "Output destination cannot be equivalent to the source file path.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-        return;
-    }
 
     if (output.isEmpty() && !ui.SaveOutTxtBox->text().isEmpty())
         output = ui.SaveOutTxtBox->text();
@@ -1382,10 +1493,6 @@ void EncodeGUI::WriteLog(QString log, bool bold, bool red, bool yellow) {
 
     if (bold)
         ui.LogsOutRTxtBox->setFontWeight(QFont::Normal);
-}
-
-void EncodeGUI::container_ch() {
-    ui.SaveOutTxtBox->setText(QString());
 }
 
 void EncodeGUI::cpu_thread() {
@@ -1535,8 +1642,6 @@ void EncodeGUI::HideEnc() {
         if (!ui.Tabs->isTabVisible(ui.Tabs->indexOf(ui.VideoTab)))
             ui.Tabs->insertTab(ui.Tabs->indexOf(ui.HomeTab) + 1, ui.VideoTab, "Video");
     }
-
-    ui.SaveOutTxtBox->setText(QString());
 
     switch (ui.VideoEncDD->currentIndex()) {
     case 0:
