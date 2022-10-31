@@ -1,7 +1,7 @@
 EncodeGUI v1.1.2 [Pre-release: 10/23/2022] [Regular release: 12/18/2022]
 
-- Add anti-aliasing VapourSynth filter (EEDIAA & EEDIAA CUDA)
-- Add deinterlacing FFmpeg filter (yadif & yadif CUDA)
+- Add anti-aliasing VapourSynth filter (EEDIAA)
+- Add deinterlacing FFmpeg filter (yadif)
 - Other miscellaneous patches and minor bug fixes
 
 =============================================================================================================
