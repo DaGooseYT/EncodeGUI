@@ -13,11 +13,20 @@ QString Argument::AudioRate(QString rate, QString stream) {
 /// Sets the audio title for a specific audio stream.
 /// </summary>
 /// <param name="stream">The stream file specifier.</param>
-/// <param name="stream2">The audio stream specifier.</param>
 /// <param name="title">The contents to be added to the title.</param>
 /// <returns>String representation of the argument.</returns>
 QString Argument::AudioTitle(QString stream, QString title) {
 	return QString(" -metadata:s:a:%1 title=\"%2\"").arg(stream).arg(title);
+}
+
+/// <summary>
+/// Sets the audio language for a specific audio stream.
+/// </summary>
+/// <param name="stream">The stream file specifier.</param>
+/// <param name="lang">The language.</param>
+/// <returns>String representation of the argument.</returns>
+QString Argument::AudioLang(QString stream, QString lang) {
+	return QString(" -metadata:s:a:%1 language=%2").arg(stream).arg(lang);
 }
 
 /// <summary>

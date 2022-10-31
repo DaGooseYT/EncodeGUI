@@ -1,6 +1,69 @@
 #include "Checks.h"
 
 /// <summary>
+/// Checks to ensure that the video codec is compatible with the selected output video container.
+/// </summary>
+/// <param name="format">The video codec index.</param>
+/// <param name="container">The output video container.</param>
+/// <returns>True or false.</returns>
+bool Checks::CheckVideoCompatability(int format, QString container) {
+	bool result = true;
+
+	switch (format) {
+	case AVC:
+		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".mov") || container.contains(".avi") || container.contains(".asf") || container.contains(".ts") || container.contains(".flv") || container.contains(".3gp"))
+			result = true;
+		else
+			result = false;
+		break;
+	case HEVC:
+		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".mov") || container.contains(".ts"))
+			result = true;
+		else
+			result = false;
+		break;
+	case PRORES:
+		if (container.contains(".mkv") || container.contains(".mov") || container.contains(".avi"))
+			result = true;
+		else
+			result = false;
+		break;
+	case THEORA:
+		if (container.contains(".mkv") || container.contains(".ogv"))
+			result = true;
+		else
+			result = false;
+		break;
+	case VP9:
+		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".avi") || container.contains(".asf") || container.contains(".webm"))
+			result = true;
+		else
+			result = false;
+		break;
+	case VC1:
+		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".mov") || container.contains(".avi"))
+			result = true;
+		else
+			result = false;
+		break;
+	case MPEG2:
+		if (container.contains(".mp4") || container.contains(".mkv") || container.contains(".ts") || container.contains(".avi") || container.contains(".asf"))
+			result = true;
+		else
+			result = false;
+		break;
+	case MPEG4:
+		if (container.contains(".mp4") || container.contains(".mov") || container.contains(".avi") || container.contains(".asf"))
+			result = true;
+		else
+			result = false;
+		break;
+	}
+
+	return result;
+}
+
+/// <summary>
 /// Checks to ensure that the audio codec is compatible with the selected output video container.
 /// </summary>
 /// <param name="format">The audio codec index.</param>

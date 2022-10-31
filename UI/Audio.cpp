@@ -22,6 +22,7 @@ void EncodeGUI::RemoveAudio() {
     Stream.clear();
     IsTitle.clear();
     Title.clear();
+    IsLang.clear();
 }
 
 void EncodeGUI::AudioTitle() {
@@ -29,6 +30,13 @@ void EncodeGUI::AudioTitle() {
         SET_ENABLED(ui.AudioTitleTxtBox);
     else
         SET_DISABLED(ui.AudioTitleTxtBox);
+}
+
+void EncodeGUI::AudioLang() {
+    if (CHECKED(ui.LangAudioCB))
+        SET_ENABLED(ui.LangAudioDD);
+    else
+        SET_DISABLED(ui.LangAudioDD);
 }
 
 void EncodeGUI::RemoveAudioClick() {
@@ -42,6 +50,7 @@ void EncodeGUI::RemoveAudioClick() {
     Stream.removeAt(selectedAudio);
     IsTitle.removeAt(selectedAudio);
     Title.removeAt(selectedAudio);
+    IsLang.removeAt(selectedAudio);
 }
 
 void EncodeGUI::downmix_cb() {

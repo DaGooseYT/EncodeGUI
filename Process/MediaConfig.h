@@ -3,7 +3,7 @@
 #ifndef MEDIACONFIG_H
 #define MEDIACONFIG_H
 
-#include "..\Arguments\Argument.h"
+#include "../Arguments/Argument.h"
 
 #include <QStringList>
 
@@ -29,6 +29,7 @@ public:
 	static void SetMaxCllFall(int, int);
 	static void SetHDRPlus(QString);
 	static void SetMap(QString, QString, int);
+	static void SetMapMux(QString, int);
 	static void SetMapAll(QString, QString);
 	static void SetDownMix(double);
 	static void SetPixelFormat(QString);
@@ -39,6 +40,7 @@ public:
 	static void SetVideoProfileLevel(QString);
 	static void SetVideoBitrate(int);
 	static void SetAudioTitle(QString, QString);
+	static void SetAudioLang(QString, QString);
 	static void SetAudioBitrate(int, QString);
 	static void SetConstantRateFactor(int);
 	static void SetConstantQuantizer(int);

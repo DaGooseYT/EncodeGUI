@@ -3,6 +3,7 @@
 #ifndef VIDEOINFOREGEX_H
 #define VIDEOINFOREGEX_H
 
+#include "..\IO\VideoInfoList.h"
 #include "..\IO\VideoInfo.h"
 
 #include <QRegularExpression>
@@ -14,6 +15,7 @@
 class VideoInfoRegex {
 public:
 	static void DurationBitrateRegex(QString);
+	static void VkRegex(QString);
 	static void VideoInfoerRegex(QString);
 
 	static QString DurationLine;
@@ -31,6 +33,7 @@ private:
 		PixFormat = 8,
 		VideoInfoPart = 9,
 		Codec = 10,
+		Vk = 11
 	};
 
 	static QList<QRegularExpression> Indexer;

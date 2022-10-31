@@ -82,6 +82,10 @@ void MediaConfig::SetMap(QString type, QString s1, int s2) {
 	ArgumentList.append(Argument::MapVideo(type, s1, s2));
 }
 
+void MediaConfig::SetMapMux(QString type, int s1) {
+	ArgumentList.append(Argument::MapMux(type, s1));
+}
+
 void MediaConfig::SetMapAll(QString type, QString s1) {
 	ArgumentList.append(Argument::MapAll(type, s1));
 }
@@ -140,6 +144,10 @@ void MediaConfig::SetConstantVideoQuality(int quality) {
 
 void MediaConfig::SetAudioTitle(QString stream, QString text) {
 	ArgumentList.append(Argument::AudioTitle(stream, text));
+}
+
+void MediaConfig::SetAudioLang(QString stream, QString lang) {
+	ArgumentList.append(Argument::AudioLang(stream, lang));
 }
 
 void MediaConfig::SetConstantAudioQuality(int quality, QString stream) {

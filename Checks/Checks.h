@@ -7,6 +7,15 @@
 #include <QFile>
 #include <QDir>
 
+#define AVC 0
+#define HEVC 1
+#define PRORES 2
+#define THEORA 3
+#define VP9 4
+#define VC1 5
+#define MPEG2 6
+#define MPEG4 7
+
 #define AAC 0
 #define MP3 1
 #define AC3 2
@@ -32,6 +41,7 @@ public:
 	static bool CheckInput(QString);
 	static bool CheckOutput(QString);
 	static bool CheckOutputOverwrite(QString);
+	static bool CheckVideoCompatability(int, QString);
 	static bool CheckAudioCompatability(int, QString);
 	static bool CheckSubtitleCompatability(QString, QString);
 	static bool FileCheck(QString);

@@ -8,8 +8,10 @@ QList<int> Bitrate;
 QList<int> Stream;
 QList<bool> IsEncoding;
 QList<bool> IsTitle;
+QList<bool> IsLang;
 QStringList Title;
 QStringList AudioCodec;
+QStringList AudioLangs;
 
 QVariantList Varguments;
 QVariantList Vjob;
@@ -124,14 +126,23 @@ void EncodeGUI::AddAudioJob() {
         ui.AudioQueue->insertRow(ui.AudioQueue->rowCount());
 
         if (CHECKED(ui.EncodingAudioGB)) {
-            ui.AudioQueue->setItem(ui.AudioQueue->rowCount() - 1, 0, new QTableWidgetItem(QString("%1 (%2) - %3")
-                .arg(ui.SelectedAudioDD->currentIndex() + 1).arg(AudioInfo::GetLanguage(ui.SelectedAudioDD->currentIndex()).replace("?", "UND"))
-                    .arg(ui.AudioEncoderDD->currentText())));
+            if (!CHECKED(ui.LangAudioCB))
+                ui.AudioQueue->setItem(ui.AudioQueue->rowCount() - 1, 0, new QTableWidgetItem(QString("%1 (%2) - %3")
+                    .arg(ui.SelectedAudioDD->currentIndex() + 1).arg(AudioInfo::GetLanguage(ui.SelectedAudioDD->currentIndex()).replace("?", "UND"))
+                        .arg(ui.AudioEncoderDD->currentText())));
+            else
+                ui.AudioQueue->setItem(ui.AudioQueue->rowCount() - 1, 0, new QTableWidgetItem(QString("%1 (%2) - %3")
+                    .arg(ui.SelectedAudioDD->currentIndex() + 1).arg(ui.LangAudioDD->currentText().remove(QRegularExpression("[^\\(]*\\(")).remove(")")).arg(ui.AudioEncoderDD->currentText())));
         }
         else {
-            ui.AudioQueue->setItem(ui.AudioQueue->rowCount() - 1, 0, new QTableWidgetItem(QString("%1 (%2) - %3")
-                .arg(ui.SelectedAudioDD->currentIndex() + 1).arg(AudioInfo::GetLanguage(ui.SelectedAudioDD->currentIndex()).replace("?", "UND"))
-                    .arg(AudioInfo::GetCodec(ui.SelectedAudioDD->currentIndex()))));
+            if (!CHECKED(ui.LangAudioCB))
+                ui.AudioQueue->setItem(ui.AudioQueue->rowCount() - 1, 0, new QTableWidgetItem(QString("%1 (%2) - %3")
+                    .arg(ui.SelectedAudioDD->currentIndex() + 1).arg(AudioInfo::GetLanguage(ui.SelectedAudioDD->currentIndex()).replace("?", "UND"))
+                        .arg(AudioInfo::GetCodec(ui.SelectedAudioDD->currentIndex()))));
+            else
+                ui.AudioQueue->setItem(ui.AudioQueue->rowCount() - 1, 0, new QTableWidgetItem(QString("%1 (%2) - %3")
+                    .arg(ui.SelectedAudioDD->currentIndex() + 1).arg(ui.LangAudioDD->currentText().remove(QRegularExpression("[^\\(]*\\(")).remove(")"))
+                        .arg(AudioInfo::GetCodec(ui.SelectedAudioDD->currentIndex()))));
         }
 
         ui.AudioQueue->item(ui.AudioQueue->rowCount() - 1, 0)->setTextAlignment(Qt::AlignCenter);
@@ -144,6 +155,15 @@ void EncodeGUI::AddAudioJob() {
         else {
             Title << QString();
             IsTitle << false;
+        }
+
+        if (CHECKED(ui.LangAudioCB)) {
+            AudioLangs << ui.LangAudioDD->currentText().remove(QRegularExpression("[^\\(]*\\(")).remove(")");
+            IsLang << true;
+        }
+        else {
+            AudioLangs << QString();
+            IsLang << false;
         }
 
         if (CHECKED(ui.EncodingAudioGB)) {
@@ -196,28 +216,78 @@ void EncodeGUI::CreateJob() {
                         return;
                     }
                 }
+                if (CHECKED(ui.MultiGPUGB) && CHECKED(ui.UpscalingGB) && ui.GPU1IDNUD->value() == ui.GPU2IDNUD->value()) {
+                    MsgBoxHelper(MessageType::Error, "EncodeGUI error", "You cannot use the same GPU for the Dual-GPU setting (in Preferences > Encoding).", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+                }
 
                 QString container;
 
-                if (CHECKED(ui.AudioCB)) {
-                    switch (ui.VideoEncDD->currentIndex()) {
-                    case 0:
-                        container = ui.OutContainerx264DD->currentText();
-                        break;
-                    case 1:
-                        container = ui.OutContainerx265DD->currentText();
-                        break;
-                    case 2:
-                        container = ui.OutContainerProResDD->currentText();
-                        break;
-                    case 3:
-                        container = ui.OutContainerTheoraDD->currentText();
-                        break;
-                    case 4:
-                        container = ui.OutContainerVPXDD->currentText();
-                        break;
+                switch (ui.VideoEncDD->currentIndex()) {
+                case 0:
+                    container = ui.OutContainerx264DD->currentText();
+                    break;
+                case 1:
+                    container = ui.OutContainerx265DD->currentText();
+                    break;
+                case 2:
+                    container = ui.OutContainerProResDD->currentText();
+                    break;
+                case 3:
+                    container = ui.OutContainerTheoraDD->currentText();
+                    break;
+                case 4:
+                    container = ui.OutContainerVPXDD->currentText();
+                    break;
+                case 5:
+                    container = ui.OutContainerAV1DD->currentText();
+                    break;
+                case 6:
+                    container = ui.OutContainerMuxDD->currentText();
+                    break;
+                }
+                
+                if (ui.VideoEncDD->currentIndex() == 6) {
+                    int index = 0;
+
+                    if (VideoInfo::GetVideoCodec().contains("AVC"))
+                        index = 0;
+                    else if (VideoInfo::GetVideoCodec().contains("HEVC"))
+                        index = 1;
+                    else if (VideoInfo::GetVideoCodec().contains("ProRes"))
+                        index = 2;
+                    else if (VideoInfo::GetVideoCodec().contains("Theora"))
+                        index = 3;
+                    else if (VideoInfo::GetVideoCodec().contains("VP9") || VideoInfo::GetVideoCodec().contains("AV1") || VideoInfo::GetVideoCodec().contains("VP8"))
+                        index = 4;
+                    else if (VideoInfo::GetVideoCodec().contains("VC1"))
+                        index = 5;
+                    else if (VideoInfo::GetVideoCodec().contains("MPEG2"))
+                        index = 6;
+                    else if (VideoInfo::GetVideoCodec().contains("MPEG4"))
+                        index = 7;
+                    else {
+                        QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 video codec isn't supported for muxing.")
+                            .arg(VideoInfo::GetVideoCodec()), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+                        if (msg == QMessageBox::Help)
+                            QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
+                        return;
                     }
 
+                    if (!Checks::CheckVideoCompatability(index, container)) {
+                        QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 video codec isn't supported with the %2 output container.")
+                            .arg(VideoInfo::GetVideoCodec()).arg(container), QMessageBox::Ok, QMessageBox::Help, QMessageBox::NoButton);
+                        
+                        if (msg == QMessageBox::Help)
+                            QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+                        
+                        return;
+                    }
+                }
+
+                if (CHECKED(ui.AudioCB)) {
                     if (QString(ui.SaveOutTxtBox->text() + container).contains(ui.SelectInTxtBox->text()) && QString(ui.SaveOutTxtBox->text() + container).length() == ui.SelectInTxtBox->text().length() && !ui.SaveOutTxtBox->text().isEmpty()) {
                         MsgBoxHelper(MessageType::Error, "EncodeGUI error", "The output destination path cannot be equivalent to the source file path.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                         return;
@@ -225,8 +295,12 @@ void EncodeGUI::CreateJob() {
 
                     if (ui.AudioDD->currentIndex() == 1 && CHECKED(ui.EncodingAudioGB)) {
                         if (!Checks::CheckAudioCompatability(ui.AudioEncoderDD->currentIndex(), container)) {
-                            MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 audio codec isn't supported with the %2 output container.")
-                                .arg(ui.AudioEncoderDD->currentText()).arg(container), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                            QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 audio codec isn't supported with the %2 output container.")
+                                .arg(ui.AudioEncoderDD->currentText()).arg(container), QMessageBox::Ok, QMessageBox::Help, QMessageBox::NoButton);
+
+                            if (msg == QMessageBox::Help)
+                                QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
                             return;
                         }
                     }
@@ -261,14 +335,22 @@ void EncodeGUI::CreateJob() {
                             else if (AudioInfo::GetCodec(i).contains("TrueHD"))
                                 index = 12;
                             else {
-                                MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 audio codec isn't supported in EncodeGUI. Encode the the audio to a supported format using the built in audio encoding options.")
+                                QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 audio codec isn't supported in EncodeGUI. Encode the the audio to a supported format using the built in audio encoding options.")
                                     .arg(AudioInfo::GetCodec(i)), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+                                if (msg == QMessageBox::Help)
+                                    QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
                                 return;
                             }
 
                             if (!Checks::CheckAudioCompatability(index, container)) {
-                                MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 audio codec isn't supported with the %2 output container.")
-                                    .arg(AudioInfo::GetCodec(i)).arg(container), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                                QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("%1 audio codec isn't supported with the %2 output container.")
+                                    .arg(AudioInfo::GetCodec(i)).arg(container), QMessageBox::Ok, QMessageBox::Help, QMessageBox::NoButton);
+
+                                if (msg == QMessageBox::Help)
+                                    QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+
                                 return;
                             }
                         }
@@ -326,14 +408,20 @@ void EncodeGUI::CreateJob() {
                 QString jobDir = QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(id));
                 QDir().mkpath(jobDir);
 
-                QFile script = QString("%1\\%2.vpy").arg(jobDir).arg(id);;
-                script.open(QIODevice::WriteOnly);
+                if (ui.VideoEncDD->currentIndex() != 6) {
+                    QFile script = QString("%1\\%2.vpy").arg(jobDir).arg(id);;
+                    script.open(QIODevice::WriteOnly);
 
-                QTextStream stream(&script);
-                stream << BuildScript(VideoInfo::GetWidth(), VideoInfo::GetHeight(), id);
+                    QTextStream stream(&script);
 
-                script.close();
-                vapourScript << ConfigureVS(id); VvapourScript << ConfigureVS(id);
+                    stream << BuildScript(VideoInfo::GetWidth(), VideoInfo::GetHeight(), id);
+
+                    script.close();
+                    vapourScript << ConfigureVS(id); VvapourScript << ConfigureVS(id);
+                }
+                else {
+                    vapourScript << "novs"; VvapourScript << "novs";
+                }
 
                 QString tempFile = QString("%1.mkv").arg(id);
 
@@ -344,10 +432,17 @@ void EncodeGUI::CreateJob() {
                     AudioArgs << audioArgs; VaudioArgs << audioArgs;
                 }
                 else if (CHECKED(ui.AudioCB)) {
-                    AudioArgs << ConfigureAudioP(1, tempFile, container); VaudioArgs << ConfigureAudioP(1, tempFile, container);
+                    audioArgs.append(ConfigureAudioP(1, tempFile, container));
+                    AudioArgs << audioArgs; VaudioArgs << audioArgs;
                 }
-                else {
+                else if (!CHECKED(ui.SubtitlesCB)) {
                     AudioArgs << QString(" -an -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION); VaudioArgs << QString(" -an -metadata:g encoding_tool=\"EncodeGUI v%1\"").arg(VERSION);
+                }
+                    
+
+                if (CHECKED(ui.SubtitlesCB) && !CHECKED(ui.AudioCB)) {
+                    audioArgs.append(ConfigureSubtitle(1, container, id));
+                    AudioArgs << audioArgs;
                 }
 
                 switch (ui.VideoEncDD->currentIndex()) {
@@ -404,7 +499,12 @@ void EncodeGUI::CreateJob() {
                 WriteLog(QString("Job with ID %1 successfully added to the Job Queue.").arg(id), false, false, false);
 
                 if (!twoPass) {
-                    arguments << ConfigureArgs(container, id, audioArgs, subtitleArgs, twoPass, 0); Varguments << ConfigureArgs(container, id, audioArgs, subtitleArgs, twoPass, 0);
+                    if (ui.VideoEncDD->currentIndex() != 6) {
+                        arguments << ConfigureArgs(container, id, audioArgs, subtitleArgs, twoPass, 0); Varguments << ConfigureArgs(container, id, audioArgs, subtitleArgs, twoPass, 0);
+                    }
+                    else {
+                        arguments << ConfigureMux(container, audioArgs, subtitleArgs); Varguments << ConfigureMux(container, audioArgs, subtitleArgs);
+                    }
                 }
                 else {
                     arguments << ConfigureArgs(container, id, " -an", QString(), twoPass, 1); Varguments << ConfigureArgs(container, id, " -an", QString(), twoPass, 1);

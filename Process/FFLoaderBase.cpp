@@ -46,6 +46,15 @@ void FFLoader::Encode(QString ffmpeg, QString vsArgs, bool extracti) {
 	NewProcess(encode, QStringList(), ffmpeg);
 }
 
+void FFLoader::GPU() {
+	vk = new QProcess();
+
+	Connector(vk, ProcessType::VkInfo);
+	Connector(vk, ProcessType::VkFinish);
+
+	NewProcess(vk, QStringList() << "/C" << "vapoursynth\\vspipe.exe" << "-c" << "y4m" << "vapoursynth\\dummy.vpy" << "-", "cmd.exe");
+}
+
 void FFLoader::Action(bool sd) {
 	QProcess* proc = new QProcess();
 
@@ -79,6 +88,10 @@ void FFLoader::OutputDataVs() {
 	OutputData(vs, ProcessType::Vs);
 }
 
+void FFLoader::OutputDataVk() {
+	OutputData(vk, ProcessType::VkInfo);
+}
+
 void FFLoader::VideoFinished() {
 	Finisher(video, ProcessType::VideoFinish);
 }
@@ -89,6 +102,10 @@ void FFLoader::EncodeFinished() {
 
 void FFLoader::ExtractFinished() {
 	Finisher(encode, ProcessType::ExtractFinish);
+}
+
+void FFLoader::VkFinished() {
+	Finisher(vk, ProcessType::VkFinish);
 }
 
 void FFLoader::OutputData(QProcess* process, ProcessType type) {
@@ -127,6 +144,9 @@ void FFLoader::OutputData(QProcess* process, ProcessType type) {
 			if (ProgressInfoRegex::ExtractRegex(output, VideoInfoList::GetDuration(currentJob)))
 				emit ExtractInfo();
 			break;
+		case ProcessType::VkInfo:
+			VideoInfoRegex::VkRegex(output);
+			break;
 		}
 	}
 }
@@ -136,7 +156,10 @@ void FFLoader::Finisher(QProcess* process, ProcessType type) {
 	case ProcessType::EncodeFinish:
 		Disconnecter(process, ProcessType::EncodeFinish);
 		Disconnecter(process, ProcessType::Encode);
-		Disconnecter(vs, ProcessType::Vs);
+
+		if (vs)
+			Disconnecter(vs, ProcessType::Vs);
+
 		emit Completed();
 		break;
 	case ProcessType::VideoFinish:
@@ -148,6 +171,12 @@ void FFLoader::Finisher(QProcess* process, ProcessType type) {
 		Disconnecter(process, ProcessType::ExtractFinish);
 		Disconnecter(process, ProcessType::ExtractInfo);
 		emit ExtractComplete();
+		break;
+	case ProcessType::VkFinish:
+		Disconnecter(process, ProcessType::VkFinish);
+		Disconnecter(process, ProcessType::VkInfo);
+		emit VkComplete();
+		break;
 	}
 
 	Deconstruct(process);
@@ -167,6 +196,9 @@ void FFLoader::Connector(QProcess* process, ProcessType type) {
 	case ProcessType::ExtractInfo:
 		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::OutputDataExtract);
 		break;
+	case ProcessType::VkInfo:
+		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::OutputDataVk);
+		break;
 	case ProcessType::VideoFinish:
 		process->connect(process, &QProcess::finished, this, &FFLoader::VideoFinished);
 		break;
@@ -175,6 +207,9 @@ void FFLoader::Connector(QProcess* process, ProcessType type) {
 		break;
 	case ProcessType::ExtractFinish:
 		process->connect(process, &QProcess::finished, this, &FFLoader::ExtractFinished);
+		break;
+	case ProcessType::VkFinish:
+		process->connect(process, &QProcess::finished, this, &FFLoader::VkFinished);
 		break;
 	}
 }
@@ -193,6 +228,9 @@ void FFLoader::Disconnecter(QProcess* process, ProcessType type) {
 	case ProcessType::ExtractInfo:
 		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::OutputDataExtract);
 		break;
+	case ProcessType::VkInfo:
+		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::OutputDataVk);
+		break;
 	case ProcessType::VideoFinish:
 		process->disconnect(process, &QProcess::finished, this, &FFLoader::VideoFinished);
 		break;
@@ -201,6 +239,9 @@ void FFLoader::Disconnecter(QProcess* process, ProcessType type) {
 		break;
 	case ProcessType::ExtractFinish:
 		process->disconnect(process, &QProcess::finished, this, &FFLoader::ExtractFinished);
+		break;
+	case ProcessType::VkFinish:
+		process->disconnect(process, &QProcess::finished, this, &FFLoader::VkFinished);
 		break;
 	}
 

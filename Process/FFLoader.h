@@ -10,6 +10,7 @@
 #include "..\IO\VideoInfoList.h"
 
 #include <QProcess>
+#include <QtGlobal>
 #include <QTime>
 #include <QDir>
 
@@ -20,7 +21,9 @@ enum class ProcessType {
 	EncodeFinish,
 	Vs,
 	ExtractInfo,
-	ExtractFinish
+	ExtractFinish,
+	VkInfo,
+	VkFinish
 };
 
 class ProcessWorker : public QObject {
@@ -31,7 +34,7 @@ public:
 	void KillProcess(QProcess*);
 	void Deconstruct(QProcess*);
 
-	QProcess *video, *encode, *vs;
+	QProcess *video, *encode, *vs, *vk;
 	int currentJob;
 };
 
@@ -42,6 +45,7 @@ public:
 	void Encode(QString, QString, bool);
 	void VideoInfo(QString);
 	void Action(bool);
+	void GPU();
 	void Connector(QProcess*, ProcessType);
 	void Disconnecter(QProcess*, ProcessType);
 	void Finisher(QProcess*, ProcessType);
@@ -50,9 +54,11 @@ public:
 	void OutputDataExtract();
 	void OutputDataInfo();
 	void OutputDataVs();
+	void OutputDataVk();
 	void ExtractFinished();
 	void VideoFinished();
 	void EncodeFinished();
+	void VkFinished();
 
 	QElapsedTimer Timer;
 	QTime PauseTime;
@@ -61,6 +67,7 @@ signals:
 	void setVideoInfo();
 	void setProgress();
 	void Completed();
+	void VkComplete();
 	void ExtractInfo();
 	void ExtractComplete();
 	void Logs(QString);

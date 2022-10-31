@@ -15,6 +15,7 @@ void VideoInfoRegex::SetupPatterns() {
 	Indexer << QRegularExpression("\\)?,\\s([a-z]*)([0-9])([0-9])([0-9])p([0-9]*)\\w*,?\\(?");
 	Indexer << QRegularExpression("(Stream\\s#0:[0-9]*[^V]*Video:\\s*[^,]*)");
 	Indexer << QRegularExpression("([^\\s]*)");
+	Indexer << QRegularExpression("\\[[0-9]\\s([^\\]]*)\\]\\s*queueC=");
 }
 
 void VideoInfoRegex::DurationBitrateRegex(QString output) {
@@ -27,6 +28,23 @@ void VideoInfoRegex::DurationBitrateRegex(QString output) {
 		return;
 	else
 		DurationLine = matchDuration.captured(1);
+}
+
+void VideoInfoRegex::VkRegex(QString output) {
+	if (Indexer.isEmpty())
+		SetupPatterns();
+
+	QRegularExpressionMatch matchVk = Indexer.at(GetInfo::Vk).match(output);
+
+	QString name;
+
+	if (!matchVk.hasMatch())
+		return;
+	else {
+		name = matchVk.captured(1);
+
+		VideoInfoList::SetVk(name);
+	}
 }
 
 void VideoInfoRegex::VideoInfoerRegex(QString output) {
@@ -100,6 +118,8 @@ void VideoInfoRegex::VideoInfoerRegex(QString output) {
 		transfer.remove(',');
 		videoCodec.remove(',');
 
+		if (videoCodec.contains("h264"))
+			videoCodec = "AVC";
 		if (videoCodec.contains("theora"))
 			videoCodec = "Theora";
 		else if (videoCodec.contains("prores"))

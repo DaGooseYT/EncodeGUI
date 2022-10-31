@@ -24,6 +24,7 @@
 #include "QtNetwork/QNetworkReply"
 #include <QtWidgets/QMainWindow>
 #include <QDesktopServices>
+#include <QStyleFactory>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QCloseEvent>
@@ -47,7 +48,7 @@
 #define INFO 2
 #define QUESTION 3
 
-#define VERSION QString("1.0.7")
+#define VERSION QString("1.1.0")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -67,7 +68,8 @@ public:
     QString ConfigureVS(QString);
     QString ConfigureAudioP(int, QString, QString);
     QString ConfigureAudioM(int, int, QString, QString, QString);
-    void ConfigureSubtitle(int, QString);
+    QString ConfigureMux(QString, QString, QString);
+    QString ConfigureSubtitle(int, QString, QString);
     QString BuildScript(int, int, QString);
     QMessageBox::StandardButton MsgBoxHelper(MessageType, QString, QString, QMessageBox::StandardButton, QMessageBox::StandardButton, QMessageBox::StandardButton);
     void WriteLog(QString, bool, bool, bool);
@@ -131,8 +133,10 @@ private:
     QList<int> Stream;
     QList<bool> IsEncoding;
     QList<bool> IsTitle;
+    QList<bool> IsLang;
     QStringList Title;
     QStringList AudioCodec;
+    QStringList AudioLangs;
 
     QStringList FileStream;
 
@@ -143,11 +147,15 @@ private slots:
     void Start();
     void CreateJob();
     void OpenOutput();
+    void CheckGPU();
+    void VkFinished();
     void Skip();
     void MediaInfo();
+    void NextJob();
     void GoToUpdate();
     void GenOutput();
     void Later();
+    void AudioLang();
     void PatreonClick();
     void YouClick();
     void UpdateOpt();
@@ -155,10 +163,12 @@ private slots:
     void DisClick();
     void IgClick();
     void InputClick();
-    void JobsComplete();
     void HDRMeta();
     void ErrorMsg();
     void DelSource();
+    void DualGPU();
+    void GPU1();
+    void GPU2();
     void EnablePreview();
     void ScNUD();
     void OpenLogs();
@@ -233,6 +243,7 @@ private slots:
     void downmix_cb();
     void cpu_thread();
     void mode_vpx();
+    void mode_av1();
     void mode_theora();
     void hide_pre265();
     void hide_tun265();

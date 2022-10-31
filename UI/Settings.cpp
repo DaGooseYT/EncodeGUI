@@ -5,10 +5,10 @@ void EncodeGUI::LoadSysSetting() {
 
 	ui.EnablePreviewCB->setChecked(sys->value("preview", true).toBool());
 	ui.AutoDelSourceCB->setChecked(sys->value("delsource", false).toBool());
-	ui.CompleteMessageCB->setChecked(sys->value("complete", true).toBool());
 	ui.ErrorMessageCB->setChecked(sys->value("errormsg", true).toBool());
 	ui.UpdateOptCB->setChecked(sys->value("updateopt", true).toBool());
 	ui.GenerateOutCB->setChecked(sys->value("genout", false).toBool());
+	ui.NextJobCB->setChecked(sys->value("nextjob", true).toBool());
 
 	ui.JobsCB->setChecked(sys->value("jobs", true).toBool());
 	ui.FPSCB->setChecked(sys->value("fps", true).toBool());
@@ -20,6 +20,9 @@ void EncodeGUI::LoadSysSetting() {
 	ui.LimitThreadsCB->setChecked(sys->value("threads", false).toBool());
 	ui.SCThresholdCB->setChecked(sys->value("sc", false).toBool());
 	ui.SCThresholdNUD->setValue(sys->value("scvalue", 0.12).toDouble());
+	ui.MultiGPUGB->setChecked(sys->value("dgpu", false).toBool());
+	ui.GPU1IDNUD->setValue(sys->value("gpu1", 0).toInt());
+	ui.GPU2IDNUD->setValue(sys->value("gpu2", 1).toInt());
 
 	foreach(QVariant arg, sys->value("arguments", QVariantList()).toList())
 		arguments << arg.toString();
