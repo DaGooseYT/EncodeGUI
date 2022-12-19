@@ -1,3 +1,18 @@
+EncodeGUI v1.1.5 [Pre-release: 12/18/2022] [Regular release: 02/26/2023]
+
+- Add RIFE (CUDA/NCNN) model v4.6
+- Add RIFE (NCNN) model v2.3
+- Removed CPU interpolation graphics backend.
+- Removed color precision option in frame interpolation.
+- Non-integral frame interpolation is now supported using RIFE (CUDA/NCNN) with models v4.0 and v4.6.
+- Updated EncodeGUI AI (CUDA/NCNN) models.
+- Removed the TTA option in frame interpolation and placed SC threshold value in its spot.
+- Removed the color precision option in frame interpolation.
+- Allow resolution stretching in resize.
+- Updated VapourSynth libraries to latest revision (R61).
+
+=============================================================================================================
+
 EncodeGUI v1.1.2 [Pre-release: 10/23/2022] [Regular release: 12/18/2022]
 
 - Add anti-aliasing VapourSynth filter (EEDIAA)
