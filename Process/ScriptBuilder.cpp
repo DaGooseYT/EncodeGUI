@@ -18,16 +18,20 @@ void ScriptBuilder::SetSVPFlow(QString super, QString analyse, QString smooth, i
 	ScriptList.append(VapourSynth::SVPFlow(super, analyse, smooth, num, den));
 }
 
-void ScriptBuilder::SetWaifu2x(int noise, int scale, int model, int id, int thread, int precision) {
-	ScriptList.append(VapourSynth::Waifu2x(noise, scale, model, id, thread, precision));
+void ScriptBuilder::SetWaifu2x(int noise, int scale, int model, int id, int thread, int precision, bool dual, int gpu1, int gpu2) {
+	ScriptList.append(VapourSynth::Waifu2x(noise, scale, model, id, thread, precision, dual, gpu1, gpu2));
 }
 
-void ScriptBuilder::SetSRMD(int scale, int noise, int id, int thread, QString tta) {
-	ScriptList.append(VapourSynth::SRMD(scale, noise, id, thread, tta));
+void ScriptBuilder::SetSRMD(int scale, int noise, int id, int thread, QString tta, bool dual, int gpu1, int gpu2) {
+	ScriptList.append(VapourSynth::SRMD(scale, noise, id, thread, tta, dual, gpu1, gpu2));
 }
 
 void ScriptBuilder::SetRGB(QString matrix, QString transfer, QString primaries) {
 	ScriptList.append(VapourSynth::RGB(matrix, transfer, primaries));
+}
+
+void ScriptBuilder::SetAntiA() {
+	ScriptList.append(VapourSynth::AntiA());
 }
 
 void ScriptBuilder::SetColorsInOut(QString format, QString matrix_in, QString transfer_in, QString primaries_in, QString matrix, QString transfer, QString primaries) {

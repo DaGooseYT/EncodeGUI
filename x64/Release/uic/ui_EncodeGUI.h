@@ -182,6 +182,17 @@ public:
     QComboBox *BitDepthVPXDD;
     QLabel *SampleVPXLabel;
     QComboBox *SampleVPXDD;
+    QWidget *av1Tab;
+    QGroupBox *EncodingSettingAV1GB;
+    QLabel *EncodeModeAV1Label;
+    QComboBox *EncodeModeAV1DD;
+    QDoubleSpinBox *BitrateAV1NUD;
+    QSpinBox *crfAV1NUD;
+    QLabel *crfAV1Label;
+    QLabel *BitrateAV1Label;
+    QGroupBox *ColorsAV1GB;
+    QLabel *BitDepthAV1Label;
+    QComboBox *BitDepthAV1DD;
     QWidget *HDRTab;
     QGroupBox *HDRMetadataGB;
     QLabel *LightLevelLabel;
@@ -280,6 +291,10 @@ public:
     QLabel *Slash5Label;
     QComboBox *OutputTransferDD;
     QComboBox *OutputPrimsDD;
+    QWidget *LineTab;
+    QGroupBox *AntiAliasingGB;
+    QLabel *UseAALabel;
+    QCheckBox *UseAACB;
     QWidget *FiltersTab;
     QTabWidget *FiltersTabs;
     QWidget *ResizeTab;
@@ -314,6 +329,10 @@ public:
     QComboBox *RadiusDD;
     QLabel *StrengthLabel;
     QComboBox *StrengthDD;
+    QWidget *MiscFFTab;
+    QGroupBox *DeinterlaceGB;
+    QLabel *EnableDeintLabel;
+    QCheckBox *UseDeintCB;
     QWidget *AudioTab;
     QTableWidget *AudioQueue;
     QGroupBox *AudioSelectorGB;
@@ -332,22 +351,24 @@ public:
     QLabel *AudioQueueLabel;
     QCheckBox *AudioTitleCB;
     QLineEdit *AudioTitleTxtBox;
+    QCheckBox *LangAudioCB;
+    QComboBox *LangAudioDD;
     QWidget *PrefTab;
     QTabWidget *SettingsTabs;
     QWidget *EGUITab;
     QGroupBox *EGUISettingsGB;
     QCheckBox *EnablePreviewCB;
     QCheckBox *AutoDelSourceCB;
-    QCheckBox *CompleteMessageCB;
     QCheckBox *ErrorMessageCB;
     QLabel *ErrorMessageLabel;
-    QLabel *JobsCompleteLabel;
     QLabel *DeleteSourcesLabel;
     QLabel *EnablePreviewLabel;
     QLabel *UpdateOptLabel;
     QCheckBox *UpdateOptCB;
     QLabel *GenerateOutLabel;
     QCheckBox *GenerateOutCB;
+    QLabel *NexJobLabel;
+    QCheckBox *NextJobCB;
     QGroupBox *ProgressBarGB;
     QCheckBox *JobsCB;
     QCheckBox *FPSCB;
@@ -361,6 +382,12 @@ public:
     QDoubleSpinBox *SCThresholdNUD;
     QSpinBox *LimitThreadsNUD;
     QCheckBox *LimitThreadsCB;
+    QGroupBox *MultiGPUGB;
+    QPushButton *TestGPUBttn;
+    QSpinBox *GPU1IDNUD;
+    QSpinBox *GPU2IDNUD;
+    QLabel *GPU1IDLabel;
+    QLabel *GPU1IDLabel_2;
     QWidget *JobTab;
     QTableWidget *JobQueue;
     QLabel *JobQueueLabel;
@@ -369,7 +396,6 @@ public:
     QWidget *LogsTab;
     QGroupBox *LogsOutGB;
     QTextEdit *LogsOutRTxtBox;
-    QGroupBox *LogsGB;
     QPushButton *LogsDirBttn;
     QWidget *AboutTab;
     QGroupBox *AboutGUIGB;
@@ -427,6 +453,8 @@ public:
     QComboBox *OutContainerProResDD;
     QComboBox *OutContainerTheoraDD;
     QComboBox *OutContainerVPXDD;
+    QComboBox *OutContainerAV1DD;
+    QComboBox *OutContainerMuxDD;
 
     void setupUi(QMainWindow *EncodeGUIMV)
     {
@@ -474,6 +502,8 @@ public:
         EGUIGB->setGeometry(QRect(15, 34, 229, 151));
         EGUIGB->setAlignment(Qt::AlignCenter);
         VideoEncDD = new QComboBox(EGUIGB);
+        VideoEncDD->addItem(QString());
+        VideoEncDD->addItem(QString());
         VideoEncDD->addItem(QString());
         VideoEncDD->addItem(QString());
         VideoEncDD->addItem(QString());
@@ -1157,6 +1187,52 @@ public:
         SampleVPXDD->setObjectName(QString::fromUtf8("SampleVPXDD"));
         SampleVPXDD->setGeometry(QRect(165, 53, 61, 22));
         VideoTabs->addTab(VPXTab, QString());
+        av1Tab = new QWidget();
+        av1Tab->setObjectName(QString::fromUtf8("av1Tab"));
+        EncodingSettingAV1GB = new QGroupBox(av1Tab);
+        EncodingSettingAV1GB->setObjectName(QString::fromUtf8("EncodingSettingAV1GB"));
+        EncodingSettingAV1GB->setGeometry(QRect(12, 6, 266, 122));
+        EncodingSettingAV1GB->setAlignment(Qt::AlignCenter);
+        EncodeModeAV1Label = new QLabel(EncodingSettingAV1GB);
+        EncodeModeAV1Label->setObjectName(QString::fromUtf8("EncodeModeAV1Label"));
+        EncodeModeAV1Label->setGeometry(QRect(18, 24, 39, 16));
+        EncodeModeAV1DD = new QComboBox(EncodingSettingAV1GB);
+        EncodeModeAV1DD->addItem(QString());
+        EncodeModeAV1DD->addItem(QString());
+        EncodeModeAV1DD->setObjectName(QString::fromUtf8("EncodeModeAV1DD"));
+        EncodeModeAV1DD->setGeometry(QRect(65, 22, 183, 22));
+        BitrateAV1NUD = new QDoubleSpinBox(EncodingSettingAV1GB);
+        BitrateAV1NUD->setObjectName(QString::fromUtf8("BitrateAV1NUD"));
+        BitrateAV1NUD->setGeometry(QRect(176, 87, 72, 22));
+        BitrateAV1NUD->setDecimals(0);
+        BitrateAV1NUD->setMaximum(80000.000000000000000);
+        BitrateAV1NUD->setValue(2000.000000000000000);
+        crfAV1NUD = new QSpinBox(EncodingSettingAV1GB);
+        crfAV1NUD->setObjectName(QString::fromUtf8("crfAV1NUD"));
+        crfAV1NUD->setGeometry(QRect(205, 87, 43, 22));
+        crfAV1NUD->setMaximum(63);
+        crfAV1NUD->setValue(22);
+        crfAV1Label = new QLabel(EncodingSettingAV1GB);
+        crfAV1Label->setObjectName(QString::fromUtf8("crfAV1Label"));
+        crfAV1Label->setGeometry(QRect(18, 89, 73, 16));
+        BitrateAV1Label = new QLabel(EncodingSettingAV1GB);
+        BitrateAV1Label->setObjectName(QString::fromUtf8("BitrateAV1Label"));
+        BitrateAV1Label->setGeometry(QRect(19, 90, 61, 16));
+        ColorsAV1GB = new QGroupBox(av1Tab);
+        ColorsAV1GB->setObjectName(QString::fromUtf8("ColorsAV1GB"));
+        ColorsAV1GB->setGeometry(QRect(292, 6, 243, 58));
+        ColorsAV1GB->setAlignment(Qt::AlignCenter);
+        ColorsAV1GB->setCheckable(false);
+        ColorsAV1GB->setChecked(false);
+        BitDepthAV1Label = new QLabel(ColorsAV1GB);
+        BitDepthAV1Label->setObjectName(QString::fromUtf8("BitDepthAV1Label"));
+        BitDepthAV1Label->setGeometry(QRect(17, 22, 55, 20));
+        BitDepthAV1DD = new QComboBox(ColorsAV1GB);
+        BitDepthAV1DD->addItem(QString());
+        BitDepthAV1DD->addItem(QString());
+        BitDepthAV1DD->setObjectName(QString::fromUtf8("BitDepthAV1DD"));
+        BitDepthAV1DD->setGeometry(QRect(165, 21, 61, 22));
+        VideoTabs->addTab(av1Tab, QString());
         HDRTab = new QWidget();
         HDRTab->setObjectName(QString::fromUtf8("HDRTab"));
         HDRMetadataGB = new QGroupBox(HDRTab);
@@ -1658,6 +1734,21 @@ public:
         OutputPrimsDD->setObjectName(QString::fromUtf8("OutputPrimsDD"));
         OutputPrimsDD->setGeometry(QRect(412, 69, 82, 22));
         VSTabs->addTab(VSColorsTab, QString());
+        LineTab = new QWidget();
+        LineTab->setObjectName(QString::fromUtf8("LineTab"));
+        AntiAliasingGB = new QGroupBox(LineTab);
+        AntiAliasingGB->setObjectName(QString::fromUtf8("AntiAliasingGB"));
+        AntiAliasingGB->setGeometry(QRect(12, 7, 512, 57));
+        AntiAliasingGB->setAlignment(Qt::AlignCenter);
+        AntiAliasingGB->setCheckable(false);
+        AntiAliasingGB->setChecked(false);
+        UseAALabel = new QLabel(AntiAliasingGB);
+        UseAALabel->setObjectName(QString::fromUtf8("UseAALabel"));
+        UseAALabel->setGeometry(QRect(19, 21, 118, 21));
+        UseAACB = new QCheckBox(AntiAliasingGB);
+        UseAACB->setObjectName(QString::fromUtf8("UseAACB"));
+        UseAACB->setGeometry(QRect(480, 23, 17, 20));
+        VSTabs->addTab(LineTab, QString());
         VideoTabs->addTab(VSTab, QString());
         FiltersTab = new QWidget();
         FiltersTab->setObjectName(QString::fromUtf8("FiltersTab"));
@@ -1818,6 +1909,21 @@ public:
         StrengthDD->setObjectName(QString::fromUtf8("StrengthDD"));
         StrengthDD->setGeometry(QRect(385, 55, 107, 22));
         FiltersTabs->addTab(ColorsTab, QString());
+        MiscFFTab = new QWidget();
+        MiscFFTab->setObjectName(QString::fromUtf8("MiscFFTab"));
+        DeinterlaceGB = new QGroupBox(MiscFFTab);
+        DeinterlaceGB->setObjectName(QString::fromUtf8("DeinterlaceGB"));
+        DeinterlaceGB->setGeometry(QRect(12, 7, 511, 56));
+        DeinterlaceGB->setAlignment(Qt::AlignCenter);
+        DeinterlaceGB->setCheckable(false);
+        DeinterlaceGB->setChecked(false);
+        EnableDeintLabel = new QLabel(DeinterlaceGB);
+        EnableDeintLabel->setObjectName(QString::fromUtf8("EnableDeintLabel"));
+        EnableDeintLabel->setGeometry(QRect(19, 21, 124, 21));
+        UseDeintCB = new QCheckBox(DeinterlaceGB);
+        UseDeintCB->setObjectName(QString::fromUtf8("UseDeintCB"));
+        UseDeintCB->setGeometry(QRect(480, 23, 17, 20));
+        FiltersTabs->addTab(MiscFFTab, QString());
         VideoTabs->addTab(FiltersTab, QString());
         Tabs->addTab(VideoTab, QString());
         AudioTab = new QWidget();
@@ -1826,7 +1932,7 @@ public:
         if (AudioQueue->columnCount() < 1)
             AudioQueue->setColumnCount(1);
         AudioQueue->setObjectName(QString::fromUtf8("AudioQueue"));
-        AudioQueue->setGeometry(QRect(290, 35, 256, 244));
+        AudioQueue->setGeometry(QRect(290, 35, 256, 212));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -1859,7 +1965,7 @@ public:
         SelectedAudioDD->setGeometry(QRect(157, 22, 90, 22));
         EncodingAudioGB = new QGroupBox(AudioTab);
         EncodingAudioGB->setObjectName(QString::fromUtf8("EncodingAudioGB"));
-        EncodingAudioGB->setGeometry(QRect(15, 123, 261, 124));
+        EncodingAudioGB->setGeometry(QRect(15, 157, 261, 122));
         EncodingAudioGB->setAlignment(Qt::AlignCenter);
         EncodingAudioGB->setCheckable(true);
         EncodingAudioGB->setChecked(false);
@@ -1904,7 +2010,7 @@ public:
         AudioQualityNUD->setValue(6);
         AddAudioJob = new QPushButton(AudioTab);
         AddAudioJob->setObjectName(QString::fromUtf8("AddAudioJob"));
-        AddAudioJob->setGeometry(QRect(15, 255, 263, 24));
+        AddAudioJob->setGeometry(QRect(289, 256, 258, 24));
         AudioQueueLabel = new QLabel(AudioTab);
         AudioQueueLabel->setObjectName(QString::fromUtf8("AudioQueueLabel"));
         AudioQueueLabel->setGeometry(QRect(367, 5, 101, 25));
@@ -1918,6 +2024,51 @@ public:
         AudioTitleTxtBox = new QLineEdit(AudioTab);
         AudioTitleTxtBox->setObjectName(QString::fromUtf8("AudioTitleTxtBox"));
         AudioTitleTxtBox->setGeometry(QRect(73, 94, 204, 21));
+        LangAudioCB = new QCheckBox(AudioTab);
+        LangAudioCB->setObjectName(QString::fromUtf8("LangAudioCB"));
+        LangAudioCB->setGeometry(QRect(16, 126, 79, 21));
+        LangAudioDD = new QComboBox(AudioTab);
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->addItem(QString());
+        LangAudioDD->setObjectName(QString::fromUtf8("LangAudioDD"));
+        LangAudioDD->setGeometry(QRect(150, 127, 126, 22));
         Tabs->addTab(AudioTab, QString());
         PrefTab = new QWidget();
         PrefTab->setObjectName(QString::fromUtf8("PrefTab"));
@@ -1937,20 +2088,13 @@ public:
         AutoDelSourceCB = new QCheckBox(EGUISettingsGB);
         AutoDelSourceCB->setObjectName(QString::fromUtf8("AutoDelSourceCB"));
         AutoDelSourceCB->setGeometry(QRect(486, 47, 28, 20));
-        CompleteMessageCB = new QCheckBox(EGUISettingsGB);
-        CompleteMessageCB->setObjectName(QString::fromUtf8("CompleteMessageCB"));
-        CompleteMessageCB->setGeometry(QRect(486, 75, 31, 20));
-        CompleteMessageCB->setChecked(true);
         ErrorMessageCB = new QCheckBox(EGUISettingsGB);
         ErrorMessageCB->setObjectName(QString::fromUtf8("ErrorMessageCB"));
-        ErrorMessageCB->setGeometry(QRect(486, 101, 24, 24));
+        ErrorMessageCB->setGeometry(QRect(486, 73, 24, 24));
         ErrorMessageCB->setChecked(true);
         ErrorMessageLabel = new QLabel(EGUISettingsGB);
         ErrorMessageLabel->setObjectName(QString::fromUtf8("ErrorMessageLabel"));
-        ErrorMessageLabel->setGeometry(QRect(27, 101, 193, 20));
-        JobsCompleteLabel = new QLabel(EGUISettingsGB);
-        JobsCompleteLabel->setObjectName(QString::fromUtf8("JobsCompleteLabel"));
-        JobsCompleteLabel->setGeometry(QRect(27, 75, 189, 16));
+        ErrorMessageLabel->setGeometry(QRect(28, 73, 192, 20));
         DeleteSourcesLabel = new QLabel(EGUISettingsGB);
         DeleteSourcesLabel->setObjectName(QString::fromUtf8("DeleteSourcesLabel"));
         DeleteSourcesLabel->setGeometry(QRect(28, 47, 259, 16));
@@ -1959,17 +2103,24 @@ public:
         EnablePreviewLabel->setGeometry(QRect(28, 20, 238, 16));
         UpdateOptLabel = new QLabel(EGUISettingsGB);
         UpdateOptLabel->setObjectName(QString::fromUtf8("UpdateOptLabel"));
-        UpdateOptLabel->setGeometry(QRect(27, 130, 239, 18));
+        UpdateOptLabel->setGeometry(QRect(28, 102, 240, 18));
         UpdateOptCB = new QCheckBox(EGUISettingsGB);
         UpdateOptCB->setObjectName(QString::fromUtf8("UpdateOptCB"));
-        UpdateOptCB->setGeometry(QRect(486, 131, 20, 20));
+        UpdateOptCB->setGeometry(QRect(486, 103, 20, 20));
         UpdateOptCB->setChecked(true);
         GenerateOutLabel = new QLabel(EGUISettingsGB);
         GenerateOutLabel->setObjectName(QString::fromUtf8("GenerateOutLabel"));
-        GenerateOutLabel->setGeometry(QRect(27, 160, 249, 16));
+        GenerateOutLabel->setGeometry(QRect(28, 132, 249, 16));
         GenerateOutCB = new QCheckBox(EGUISettingsGB);
         GenerateOutCB->setObjectName(QString::fromUtf8("GenerateOutCB"));
-        GenerateOutCB->setGeometry(QRect(486, 160, 21, 20));
+        GenerateOutCB->setGeometry(QRect(486, 132, 21, 20));
+        NexJobLabel = new QLabel(EGUISettingsGB);
+        NexJobLabel->setObjectName(QString::fromUtf8("NexJobLabel"));
+        NexJobLabel->setGeometry(QRect(28, 160, 266, 16));
+        NextJobCB = new QCheckBox(EGUISettingsGB);
+        NextJobCB->setObjectName(QString::fromUtf8("NextJobCB"));
+        NextJobCB->setGeometry(QRect(486, 160, 21, 20));
+        NextJobCB->setChecked(true);
         ProgressBarGB = new QGroupBox(EGUITab);
         ProgressBarGB->setObjectName(QString::fromUtf8("ProgressBarGB"));
         ProgressBarGB->setGeometry(QRect(11, 199, 524, 51));
@@ -2022,6 +2173,29 @@ public:
         LimitThreadsCB = new QCheckBox(ProcessSettingsGB);
         LimitThreadsCB->setObjectName(QString::fromUtf8("LimitThreadsCB"));
         LimitThreadsCB->setGeometry(QRect(16, 22, 297, 20));
+        MultiGPUGB = new QGroupBox(tab_2);
+        MultiGPUGB->setObjectName(QString::fromUtf8("MultiGPUGB"));
+        MultiGPUGB->setGeometry(QRect(12, 104, 522, 145));
+        MultiGPUGB->setAlignment(Qt::AlignCenter);
+        MultiGPUGB->setCheckable(true);
+        MultiGPUGB->setChecked(false);
+        TestGPUBttn = new QPushButton(MultiGPUGB);
+        TestGPUBttn->setObjectName(QString::fromUtf8("TestGPUBttn"));
+        TestGPUBttn->setGeometry(QRect(14, 110, 492, 24));
+        GPU1IDNUD = new QSpinBox(MultiGPUGB);
+        GPU1IDNUD->setObjectName(QString::fromUtf8("GPU1IDNUD"));
+        GPU1IDNUD->setGeometry(QRect(457, 28, 49, 22));
+        GPU1IDNUD->setMaximum(7);
+        GPU2IDNUD = new QSpinBox(MultiGPUGB);
+        GPU2IDNUD->setObjectName(QString::fromUtf8("GPU2IDNUD"));
+        GPU2IDNUD->setGeometry(QRect(457, 68, 49, 22));
+        GPU2IDNUD->setMaximum(7);
+        GPU1IDLabel = new QLabel(MultiGPUGB);
+        GPU1IDLabel->setObjectName(QString::fromUtf8("GPU1IDLabel"));
+        GPU1IDLabel->setGeometry(QRect(16, 31, 71, 16));
+        GPU1IDLabel_2 = new QLabel(MultiGPUGB);
+        GPU1IDLabel_2->setObjectName(QString::fromUtf8("GPU1IDLabel_2"));
+        GPU1IDLabel_2->setGeometry(QRect(16, 70, 65, 16));
         SettingsTabs->addTab(tab_2, QString());
         Tabs->addTab(PrefTab, QString());
         JobTab = new QWidget();
@@ -2077,21 +2251,17 @@ public:
         LogsTab->setObjectName(QString::fromUtf8("LogsTab"));
         LogsOutGB = new QGroupBox(LogsTab);
         LogsOutGB->setObjectName(QString::fromUtf8("LogsOutGB"));
-        LogsOutGB->setGeometry(QRect(14, 8, 528, 211));
+        LogsOutGB->setGeometry(QRect(14, 8, 528, 239));
         LogsOutGB->setAlignment(Qt::AlignCenter);
         LogsOutRTxtBox = new QTextEdit(LogsOutGB);
         LogsOutRTxtBox->setObjectName(QString::fromUtf8("LogsOutRTxtBox"));
-        LogsOutRTxtBox->setGeometry(QRect(7, 18, 515, 185));
+        LogsOutRTxtBox->setGeometry(QRect(7, 18, 515, 214));
         LogsOutRTxtBox->viewport()->setProperty("cursor", QVariant(QCursor(Qt::IBeamCursor)));
         LogsOutRTxtBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         LogsOutRTxtBox->setReadOnly(true);
-        LogsGB = new QGroupBox(LogsTab);
-        LogsGB->setObjectName(QString::fromUtf8("LogsGB"));
-        LogsGB->setGeometry(QRect(14, 225, 528, 54));
-        LogsGB->setAlignment(Qt::AlignCenter);
-        LogsDirBttn = new QPushButton(LogsGB);
+        LogsDirBttn = new QPushButton(LogsTab);
         LogsDirBttn->setObjectName(QString::fromUtf8("LogsDirBttn"));
-        LogsDirBttn->setGeometry(QRect(175, 20, 183, 24));
+        LogsDirBttn->setGeometry(QRect(12, 258, 531, 24));
         Tabs->addTab(LogsTab, QString());
         AboutTab = new QWidget();
         AboutTab->setObjectName(QString::fromUtf8("AboutTab"));
@@ -2121,7 +2291,7 @@ public:
         PatreonMemeberLabel->setGeometry(QRect(25, 121, 180, 19));
         DonateToDaGooseBttn = new QPushButton(DonateGB);
         DonateToDaGooseBttn->setObjectName(QString::fromUtf8("DonateToDaGooseBttn"));
-        DonateToDaGooseBttn->setGeometry(QRect(245, 24, 103, 35));
+        DonateToDaGooseBttn->setGeometry(QRect(245, 24, 104, 35));
         QIcon icon1;
         icon1.addFile(QString::fromUtf8(":/EncodeGUI/pp_donate.png"), QSize(), QIcon::Normal, QIcon::Off);
         DonateToDaGooseBttn->setIcon(icon1);
@@ -2349,6 +2519,27 @@ public:
         OutContainerVPXDD->addItem(QString());
         OutContainerVPXDD->setObjectName(QString::fromUtf8("OutContainerVPXDD"));
         OutContainerVPXDD->setGeometry(QRect(382, 326, 58, 23));
+        OutContainerAV1DD = new QComboBox(centralWidget);
+        OutContainerAV1DD->addItem(QString());
+        OutContainerAV1DD->addItem(QString());
+        OutContainerAV1DD->addItem(QString());
+        OutContainerAV1DD->addItem(QString());
+        OutContainerAV1DD->addItem(QString());
+        OutContainerAV1DD->setObjectName(QString::fromUtf8("OutContainerAV1DD"));
+        OutContainerAV1DD->setGeometry(QRect(382, 326, 58, 23));
+        OutContainerMuxDD = new QComboBox(centralWidget);
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->addItem(QString());
+        OutContainerMuxDD->setObjectName(QString::fromUtf8("OutContainerMuxDD"));
+        OutContainerMuxDD->setGeometry(QRect(382, 326, 58, 23));
         EncodeGUIMV->setCentralWidget(centralWidget);
         QWidget::setTabOrder(SelectInBttn, VideoEncDD);
         QWidget::setTabOrder(VideoEncDD, AudioCB);
@@ -2512,8 +2703,7 @@ public:
         QWidget::setTabOrder(AudioTitleTxtBox, SettingsTabs);
         QWidget::setTabOrder(SettingsTabs, EnablePreviewCB);
         QWidget::setTabOrder(EnablePreviewCB, AutoDelSourceCB);
-        QWidget::setTabOrder(AutoDelSourceCB, CompleteMessageCB);
-        QWidget::setTabOrder(CompleteMessageCB, ErrorMessageCB);
+        QWidget::setTabOrder(AutoDelSourceCB, ErrorMessageCB);
         QWidget::setTabOrder(ErrorMessageCB, JobsCB);
         QWidget::setTabOrder(JobsCB, FPSCB);
         QWidget::setTabOrder(FPSCB, BitrateCB);
@@ -2571,7 +2761,7 @@ public:
 
     void retranslateUi(QMainWindow *EncodeGUIMV)
     {
-        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.0.7 (patron beta)", nullptr));
+        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.1.2 (free, stable)", nullptr));
 #if QT_CONFIG(tooltip)
         EGUILogo->setToolTip(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI :)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -2595,6 +2785,8 @@ public:
         VideoEncDD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", "ProRes", nullptr));
         VideoEncDD->setItemText(3, QCoreApplication::translate("EncodeGUIMV", "Theora", nullptr));
         VideoEncDD->setItemText(4, QCoreApplication::translate("EncodeGUIMV", "VP9", nullptr));
+        VideoEncDD->setItemText(5, QCoreApplication::translate("EncodeGUIMV", "AV1", nullptr));
+        VideoEncDD->setItemText(6, QCoreApplication::translate("EncodeGUIMV", "Muxing", nullptr));
 
 #if QT_CONFIG(tooltip)
         VideoEncDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The video encoder to use.", nullptr));
@@ -3072,6 +3264,31 @@ public:
         SampleVPXDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Sets the output color sampling.", nullptr));
 #endif // QT_CONFIG(tooltip)
         VideoTabs->setTabText(VideoTabs->indexOf(VPXTab), QCoreApplication::translate("EncodeGUIMV", "VP9", nullptr));
+        EncodingSettingAV1GB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Encoding", nullptr));
+        EncodeModeAV1Label->setText(QCoreApplication::translate("EncodeGUIMV", "Mode:", nullptr));
+        EncodeModeAV1DD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "Constant rate factor (1 pass)", nullptr));
+        EncodeModeAV1DD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "Average bitrate (1 pass)", nullptr));
+
+#if QT_CONFIG(tooltip)
+        EncodeModeAV1DD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The encoding mode to use.", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        BitrateAV1NUD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The bitrate to use for encoding.", nullptr));
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        crfAV1NUD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The CRF strength value to use for encoding.", nullptr));
+#endif // QT_CONFIG(tooltip)
+        crfAV1Label->setText(QCoreApplication::translate("EncodeGUIMV", "CRF Value:", nullptr));
+        BitrateAV1Label->setText(QCoreApplication::translate("EncodeGUIMV", "Bitrate:", nullptr));
+        ColorsAV1GB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Colors", nullptr));
+        BitDepthAV1Label->setText(QCoreApplication::translate("EncodeGUIMV", "Bit depth:", nullptr));
+        BitDepthAV1DD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "8-bit", nullptr));
+        BitDepthAV1DD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "10-bit", nullptr));
+
+#if QT_CONFIG(tooltip)
+        BitDepthAV1DD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Sets the output color depth.", nullptr));
+#endif // QT_CONFIG(tooltip)
+        VideoTabs->setTabText(VideoTabs->indexOf(av1Tab), QCoreApplication::translate("EncodeGUIMV", "AV1", nullptr));
 #if QT_CONFIG(tooltip)
         HDRMetadataGB->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Enables/disables HDR metadata.", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -3479,6 +3696,13 @@ public:
         OutputPrimsDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The output primaries.", nullptr));
 #endif // QT_CONFIG(tooltip)
         VSTabs->setTabText(VSTabs->indexOf(VSColorsTab), QCoreApplication::translate("EncodeGUIMV", "Colors", nullptr));
+#if QT_CONFIG(tooltip)
+        AntiAliasingGB->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Enables/disables sharpening in the video.", nullptr));
+#endif // QT_CONFIG(tooltip)
+        AntiAliasingGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Anti-Aliasing", nullptr));
+        UseAALabel->setText(QCoreApplication::translate("EncodeGUIMV", "Enable Anti-Aliasing:", nullptr));
+        UseAACB->setText(QString());
+        VSTabs->setTabText(VSTabs->indexOf(LineTab), QCoreApplication::translate("EncodeGUIMV", "Line", nullptr));
         VideoTabs->setTabText(VideoTabs->indexOf(VSTab), QCoreApplication::translate("EncodeGUIMV", "VapourSynth", nullptr));
 #if QT_CONFIG(tooltip)
         ResizeGB->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Enables resizing of the video.", nullptr));
@@ -3592,6 +3816,13 @@ public:
         StrengthDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The sharpening strength.", nullptr));
 #endif // QT_CONFIG(tooltip)
         FiltersTabs->setTabText(FiltersTabs->indexOf(ColorsTab), QCoreApplication::translate("EncodeGUIMV", "Colors", nullptr));
+#if QT_CONFIG(tooltip)
+        DeinterlaceGB->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Enables/disables sharpening in the video.", nullptr));
+#endif // QT_CONFIG(tooltip)
+        DeinterlaceGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Deinterlace", nullptr));
+        EnableDeintLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Enable Deinterlacing:", nullptr));
+        UseDeintCB->setText(QString());
+        FiltersTabs->setTabText(FiltersTabs->indexOf(MiscFFTab), QCoreApplication::translate("EncodeGUIMV", "Misc", nullptr));
         VideoTabs->setTabText(VideoTabs->indexOf(FiltersTab), QCoreApplication::translate("EncodeGUIMV", "FFMpeg", nullptr));
         Tabs->setTabText(Tabs->indexOf(VideoTab), QCoreApplication::translate("EncodeGUIMV", "Video", nullptr));
 #if QT_CONFIG(tooltip)
@@ -3650,20 +3881,61 @@ public:
 #if QT_CONFIG(tooltip)
         AudioTitleTxtBox->setToolTip(QString());
 #endif // QT_CONFIG(tooltip)
+        LangAudioCB->setText(QCoreApplication::translate("EncodeGUIMV", "Language:", nullptr));
+        LangAudioDD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "Arabic (ARA)", nullptr));
+        LangAudioDD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "Armenian (ARM)", nullptr));
+        LangAudioDD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", "Belarusian (BEL)", nullptr));
+        LangAudioDD->setItemText(3, QCoreApplication::translate("EncodeGUIMV", "Bulgarian (BUL)", nullptr));
+        LangAudioDD->setItemText(4, QCoreApplication::translate("EncodeGUIMV", "Chinese (CHI)", nullptr));
+        LangAudioDD->setItemText(5, QCoreApplication::translate("EncodeGUIMV", "Czech (CZE)", nullptr));
+        LangAudioDD->setItemText(6, QCoreApplication::translate("EncodeGUIMV", "Danish (DAN)", nullptr));
+        LangAudioDD->setItemText(7, QCoreApplication::translate("EncodeGUIMV", "Dutch (DUT)", nullptr));
+        LangAudioDD->setItemText(8, QCoreApplication::translate("EncodeGUIMV", "English (ENG)", nullptr));
+        LangAudioDD->setItemText(9, QCoreApplication::translate("EncodeGUIMV", "Finnish (FIN)", nullptr));
+        LangAudioDD->setItemText(10, QCoreApplication::translate("EncodeGUIMV", "French (FRE)", nullptr));
+        LangAudioDD->setItemText(11, QCoreApplication::translate("EncodeGUIMV", "Georgian (GEO)", nullptr));
+        LangAudioDD->setItemText(12, QCoreApplication::translate("EncodeGUIMV", "German (GER)", nullptr));
+        LangAudioDD->setItemText(13, QCoreApplication::translate("EncodeGUIMV", "Greek (GRE)", nullptr));
+        LangAudioDD->setItemText(14, QCoreApplication::translate("EncodeGUIMV", "Hebrew (HEB)", nullptr));
+        LangAudioDD->setItemText(15, QCoreApplication::translate("EncodeGUIMV", "Hindi (HIN)", nullptr));
+        LangAudioDD->setItemText(16, QCoreApplication::translate("EncodeGUIMV", "Hungarian (HUN)", nullptr));
+        LangAudioDD->setItemText(17, QCoreApplication::translate("EncodeGUIMV", "Icelandic (ICE)", nullptr));
+        LangAudioDD->setItemText(18, QCoreApplication::translate("EncodeGUIMV", "Indonesian (IND)", nullptr));
+        LangAudioDD->setItemText(19, QCoreApplication::translate("EncodeGUIMV", "Irish (GLE)", nullptr));
+        LangAudioDD->setItemText(20, QCoreApplication::translate("EncodeGUIMV", "Italian (ITA)", nullptr));
+        LangAudioDD->setItemText(21, QCoreApplication::translate("EncodeGUIMV", "Japanese (JPN)", nullptr));
+        LangAudioDD->setItemText(22, QCoreApplication::translate("EncodeGUIMV", "Korean (KOR)", nullptr));
+        LangAudioDD->setItemText(23, QCoreApplication::translate("EncodeGUIMV", "Latin (LAT)", nullptr));
+        LangAudioDD->setItemText(24, QCoreApplication::translate("EncodeGUIMV", "Latvian (LAV)", nullptr));
+        LangAudioDD->setItemText(25, QCoreApplication::translate("EncodeGUIMV", "Mongolian (MON)", nullptr));
+        LangAudioDD->setItemText(26, QCoreApplication::translate("EncodeGUIMV", "Norwegian (NOR)", nullptr));
+        LangAudioDD->setItemText(27, QCoreApplication::translate("EncodeGUIMV", "Portuguese (POR)", nullptr));
+        LangAudioDD->setItemText(28, QCoreApplication::translate("EncodeGUIMV", "Romanian (RUM)", nullptr));
+        LangAudioDD->setItemText(29, QCoreApplication::translate("EncodeGUIMV", "Russian (RUS)", nullptr));
+        LangAudioDD->setItemText(30, QCoreApplication::translate("EncodeGUIMV", "Serbian (SRP)", nullptr));
+        LangAudioDD->setItemText(31, QCoreApplication::translate("EncodeGUIMV", "Slovenian (SLV)", nullptr));
+        LangAudioDD->setItemText(32, QCoreApplication::translate("EncodeGUIMV", "Spanish (SPA)", nullptr));
+        LangAudioDD->setItemText(33, QCoreApplication::translate("EncodeGUIMV", "Swedish (SWE)", nullptr));
+        LangAudioDD->setItemText(34, QCoreApplication::translate("EncodeGUIMV", "Tamil (TAM)", nullptr));
+        LangAudioDD->setItemText(35, QCoreApplication::translate("EncodeGUIMV", "Thai (THA)", nullptr));
+        LangAudioDD->setItemText(36, QCoreApplication::translate("EncodeGUIMV", "Turkish (TUR)", nullptr));
+        LangAudioDD->setItemText(37, QCoreApplication::translate("EncodeGUIMV", "Ukrainian (UKR)", nullptr));
+        LangAudioDD->setItemText(38, QCoreApplication::translate("EncodeGUIMV", "Vietnamese (VIE)", nullptr));
+
         Tabs->setTabText(Tabs->indexOf(AudioTab), QCoreApplication::translate("EncodeGUIMV", "Audio", nullptr));
         EGUISettingsGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI Settings", nullptr));
         EnablePreviewCB->setText(QString());
         AutoDelSourceCB->setText(QString());
-        CompleteMessageCB->setText(QString());
         ErrorMessageCB->setText(QString());
         ErrorMessageLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Show process error message boxes:", nullptr));
-        JobsCompleteLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Show jobs complete message box:", nullptr));
         DeleteSourcesLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically delete source video after encode:", nullptr));
         EnablePreviewLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically open live encoding preview:", nullptr));
         UpdateOptLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically check for EncodeGUI updates:", nullptr));
         UpdateOptCB->setText(QString());
         GenerateOutLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically generate output file name:", nullptr));
         GenerateOutCB->setText(QString());
+        NexJobLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Automatically start next waiting job in the queue:", nullptr));
+        NextJobCB->setText(QString());
         ProgressBarGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Progress Bar", nullptr));
         JobsCB->setText(QCoreApplication::translate("EncodeGUIMV", "Jobs", nullptr));
         FPSCB->setText(QCoreApplication::translate("EncodeGUIMV", "FPS", nullptr));
@@ -3675,6 +3947,10 @@ public:
         ProcessSettingsGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Process Settings", nullptr));
         SCThresholdCB->setText(QCoreApplication::translate("EncodeGUIMV", "Scene change threshold (for interpolation):", nullptr));
         LimitThreadsCB->setText(QCoreApplication::translate("EncodeGUIMV", "Limit CPU encoding threads (can help lower temps):", nullptr));
+        MultiGPUGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Dual GPU Processing (for resolution upscaling)", nullptr));
+        TestGPUBttn->setText(QCoreApplication::translate("EncodeGUIMV", "Identify GPU Device IDs", nullptr));
+        GPU1IDLabel->setText(QCoreApplication::translate("EncodeGUIMV", "GPU #1 ID:", nullptr));
+        GPU1IDLabel_2->setText(QCoreApplication::translate("EncodeGUIMV", "GPU #2 ID:", nullptr));
         SettingsTabs->setTabText(SettingsTabs->indexOf(tab_2), QCoreApplication::translate("EncodeGUIMV", "Encoding", nullptr));
         Tabs->setTabText(Tabs->indexOf(PrefTab), QCoreApplication::translate("EncodeGUIMV", "Preferences", nullptr));
         QTableWidgetItem *___qtablewidgetitem = JobQueue->horizontalHeaderItem(0);
@@ -3689,18 +3965,17 @@ public:
         ClearJobsBttn->setText(QCoreApplication::translate("EncodeGUIMV", "Clear All Finished Jobs", nullptr));
         CancelQueueBttn->setText(QCoreApplication::translate("EncodeGUIMV", "Cancel All Jobs", nullptr));
         Tabs->setTabText(Tabs->indexOf(JobTab), QCoreApplication::translate("EncodeGUIMV", "Jobs", nullptr));
-        LogsOutGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "User Logs", nullptr));
+        LogsOutGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "User Logs (for user information ONLY)", nullptr));
 #if QT_CONFIG(tooltip)
         LogsOutRTxtBox->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The user logs.", nullptr));
 #endif // QT_CONFIG(tooltip)
-        LogsGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Process Logs", nullptr));
 #if QT_CONFIG(tooltip)
         LogsDirBttn->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Opens the directory to EncodeGUI's log files.", nullptr));
 #endif // QT_CONFIG(tooltip)
-        LogsDirBttn->setText(QCoreApplication::translate("EncodeGUIMV", "Open Logs Directory", nullptr));
+        LogsDirBttn->setText(QCoreApplication::translate("EncodeGUIMV", "Open Process Logs Directory", nullptr));
         Tabs->setTabText(Tabs->indexOf(LogsTab), QCoreApplication::translate("EncodeGUIMV", "Logs", nullptr));
         AboutGUIGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "About EncodeGUI", nullptr));
-        AboutGuiLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p align=\"center\"><span style=\" font-weight:700;\">EncodeGUI (encode-gooey) is the latest and greatest video encoding application. It features 5 different video codecs to use and AI backed filters such as frame interpolation, resolution upscaling, and DeNoise for a facinating experience. Find out more at </span><a href=\"https://encodegui.com\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://encodegui.com</span></a></p></body></html>", nullptr));
+        AboutGuiLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p align=\"center\"><span style=\" font-weight:700;\">EncodeGUI (encode-gooey) is the latest and greatest video encoding application. It features 5 different video codecs to use and AI backed filters such as frame interpolation, resolution upscaling, and DeNoise for a fascinating experience. Find out more at </span><a href=\"https://encodegui.com\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://encodegui.com</span></a></p></body></html>", nullptr));
         DonateGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Donate", nullptr));
         DonateToDaGooseLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700; color:#008000;\">DaGoose</span><span style=\" font-weight:700;\"> (lead developer &amp; owner):</span></p></body></html>", nullptr));
         DonateToGlitchLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700; color:#008000;\">Glitch</span><span style=\" font-weight:700;\"> (assistant developer):</span></p></body></html>", nullptr));
@@ -3804,6 +4079,29 @@ public:
 
 #if QT_CONFIG(tooltip)
         OutContainerVPXDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p>The selected output container </p><p>Note: can auto change based on selected video encoder</p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        OutContainerAV1DD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", ".mp4", nullptr));
+        OutContainerAV1DD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", ".mkv", nullptr));
+        OutContainerAV1DD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", ".avi", nullptr));
+        OutContainerAV1DD->setItemText(3, QCoreApplication::translate("EncodeGUIMV", ".asf", nullptr));
+        OutContainerAV1DD->setItemText(4, QCoreApplication::translate("EncodeGUIMV", ".webm", nullptr));
+
+#if QT_CONFIG(tooltip)
+        OutContainerAV1DD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p>The selected output container </p><p>Note: can auto change based on selected video encoder</p></body></html>", nullptr));
+#endif // QT_CONFIG(tooltip)
+        OutContainerMuxDD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", ".mp4", nullptr));
+        OutContainerMuxDD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", ".mkv", nullptr));
+        OutContainerMuxDD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", ".mov", nullptr));
+        OutContainerMuxDD->setItemText(3, QCoreApplication::translate("EncodeGUIMV", ".ts", nullptr));
+        OutContainerMuxDD->setItemText(4, QCoreApplication::translate("EncodeGUIMV", ".avi", nullptr));
+        OutContainerMuxDD->setItemText(5, QCoreApplication::translate("EncodeGUIMV", ".asf", nullptr));
+        OutContainerMuxDD->setItemText(6, QCoreApplication::translate("EncodeGUIMV", ".flv", nullptr));
+        OutContainerMuxDD->setItemText(7, QCoreApplication::translate("EncodeGUIMV", ".3gp", nullptr));
+        OutContainerMuxDD->setItemText(8, QCoreApplication::translate("EncodeGUIMV", ".ogv", nullptr));
+        OutContainerMuxDD->setItemText(9, QCoreApplication::translate("EncodeGUIMV", ".webm", nullptr));
+
+#if QT_CONFIG(tooltip)
+        OutContainerMuxDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p>The selected output container </p><p>Note: can auto change based on selected video encoder</p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
     } // retranslateUi
 

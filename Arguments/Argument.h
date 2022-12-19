@@ -3,7 +3,7 @@
 #ifndef ARGUMENT_H
 #define ARGUMENT_H
 
-#include <QString>
+#include <QtCore/QString>
 
 class Argument {
 protected:
@@ -21,10 +21,13 @@ protected:
 	static QString ReferenceFrame(int);
 	static QString MasterDisplay(QString);
 	static QString HDR10Opt();
+	static QString Deinterlace();
+	static QString DeinterlaceCUDA();
 	static QString Colors(QString, QString, QString, QString);
 	static QString MaxCllFall(int, int);
 	static QString HDRPlus(QString);
 	static QString MapVideo(QString, QString, int);
+	static QString MapMux(QString, int);
 	static QString MapAll(QString, QString);
 	static QString DownMix(double);
 	static QString PixelFormat(QString);
@@ -46,6 +49,7 @@ protected:
 	static QString FlipVideo(QString);
 	static QString NoAutoRotate();
 	static QString AudioTitle(QString, QString);
+	static QString AudioLang(QString, QString);
 	static QString Tier(int);
 	static QString SharpenVideo(QString, QString);
 	static QString AddTimecodes(int, int, int, int);

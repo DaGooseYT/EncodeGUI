@@ -26,7 +26,118 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VS\Colors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VS\RIFE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VS\SRMD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VS\SVPFlow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VS\VapourSynth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VS\Waifu2x.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\AV1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\AVC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="UI\EncodeGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\HEVC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Jobs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\MsgBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Preview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Script.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Theora.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Updater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\VPX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\VS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Regex\AudioSubInfoRegex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Regex\ProcessErrorRegex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Regex\ProgressInfoRegex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Regex\VideoInfoRegex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Process\FFLoaderBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Process\MediaConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Process\ProcessWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Process\ScriptBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\AudioInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\ProcessError.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\ProgressInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\SubtitleInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\VideoInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\VideoInfoList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Checks\Files.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Checks\Process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments\AudioArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Arguments\CodecArgs.cpp">
@@ -44,7 +155,19 @@
     <ClCompile Include="Arguments\HDRArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Arguments\IOArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Arguments\MapArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments\MiscArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments\MixArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments\PassArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Arguments\PresetArgs.cpp">
@@ -59,13 +182,16 @@
     <ClCompile Include="Arguments\ResolutionArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Arguments\TransposeArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Arguments\SharpenArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Arguments\TierArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Arguments\TimecodeArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments\TransposeArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Arguments\TuneArgs.cpp">
@@ -74,159 +200,15 @@
     <ClCompile Include="Arguments\VsPipeArgs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Arguments\MiscArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Process\FFLoaderBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Process\MediaConfig.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Checks\Files.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Checks\Process.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VS\RIFE.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VS\SVPFlow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VS\Waifu2x.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VS\SRMD.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\ProcessError.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VS\Colors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VS\VapourSynth.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\AVC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\HEVC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\VS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Jobs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\VPX.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\MsgBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Audio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Theora.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Arguments\MixArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Arguments\PassArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Arguments\IOArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Process\ProcessWorker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Arguments\TierArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Preview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\ProgressInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\VideoInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Regex\VideoInfoRegex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Regex\AudioSubInfoRegex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Regex\ProcessErrorRegex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\AudioInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\SubtitleInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\VideoInfoList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Regex\ProgressInfoRegex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Process\ScriptBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Arguments\AudioArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Updater.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Arguments\Argument.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Checks\Checks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VS\VapourSynth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\VideoInfo.h">
+    <ClInclude Include="UI\Preview.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IO\ProgressInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\AudioInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\SubtitleInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\VideoInfoList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\ProcessError.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Regex\VideoInfoRegex.h">
+    <ClInclude Include="UI\Updater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Regex\AudioSubInfoRegex.h">
@@ -238,16 +220,37 @@
     <ClInclude Include="Regex\ProgressInfoRegex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Process\ScriptBuilder.h">
+    <ClInclude Include="Regex\VideoInfoRegex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Process\MediaConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Preview.h">
+    <ClInclude Include="Process\ScriptBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Updater.h">
+    <ClInclude Include="IO\AudioInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\ProcessError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\ProgressInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\SubtitleInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\VideoInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\VideoInfoList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Checks\Checks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Arguments\Argument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -62,6 +62,9 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 		if (ui.BitDepthVPXDD->currentIndex() == 2 && ui.SampleVPXDD->currentIndex() == 2)
 			format = "YUV420P8";
 		break;
+	case 5:
+		format = "YUV420P8";
+		break;
 	}
 
 	if (!ui.ColorPropsGB->isChecked()) {
@@ -133,6 +136,9 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 	ScriptBuilder::SetInclude();
 	ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\LSMASHSource.dll"));
 
+	if (CHECKED(ui.UseAACB))
+		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\EEDI2.dll")); 
+
 	if (CHECKED(ui.UpscalingGB)) {
 		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\waifu2x.dll"));
 		ScriptBuilder::SetPlugin(QDir::toNativeSeparators(QDir::currentPath() + "\\vapoursynth\\plugins\\srmd.dll"));
@@ -146,6 +152,9 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 	}
 
 	ScriptBuilder::SetInput(ui.SelectInTxtBox->text(), jobID);
+
+	if (CHECKED(ui.UseAACB))
+		ScriptBuilder::SetAntiA();
 
 	if (CHECKED(ui.InterpolationCB)) {
 		QString fp, tta, uhd, sc, remv;
@@ -319,7 +328,6 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 		if (CHECKED(ui.InterpolationCB) && ui.ToolInterpDD->currentIndex() == 2) {}
 		else
 			ScriptBuilder::SetColorsOut(format, matrix_in, transfer_in, primaries_in);
-				
 
 	ScriptBuilder::SetConcludeClip();
 
@@ -351,12 +359,23 @@ void EncodeGUI::UpscaleMD(int width, int height) {
 		tta = "False";
 
 	if (ui.ToolUpscaleDD->currentIndex() == 0)
-		if (ui.ModelUpscaleDD->currentIndex() != 3)
-			ScriptBuilder::SetWaifu2x(noise, 2, ui.ModelUpscaleDD->currentIndex(), id, thread, fp);
-		else
-			ScriptBuilder::SetWaifu2x(noise, 1, 2, id, thread, fp);
+		if (ui.ModelUpscaleDD->currentIndex() != 3) {
+			if (CHECKED(ui.MultiGPUGB))
+				ScriptBuilder::SetWaifu2x(noise, 2, ui.ModelUpscaleDD->currentIndex(), id, thread, fp, true, ui.GPU1IDNUD->value(), ui.GPU2IDNUD->value());
+			else
+				ScriptBuilder::SetWaifu2x(noise, 2, ui.ModelUpscaleDD->currentIndex(), id, thread, fp, false, 0, 0);
+		}
+		else {
+			if (CHECKED(ui.MultiGPUGB))
+				ScriptBuilder::SetWaifu2x(noise, 1, 2, id, thread, fp, true, ui.GPU1IDNUD->value(), ui.GPU2IDNUD->value());
+			else
+				ScriptBuilder::SetWaifu2x(noise, 1, 2, id, thread, fp, false, 0, 0);
+		}
 	else
-		ScriptBuilder::SetSRMD(scale, ui.NoiseLabelSDDD->currentIndex(), id, thread, tta);
+		if (CHECKED(ui.MultiGPUGB))
+			ScriptBuilder::SetSRMD(scale, ui.NoiseLabelSDDD->currentIndex(), id, thread, tta, true, ui.GPU1IDNUD->value(), ui.GPU2IDNUD->value());
+		else
+			ScriptBuilder::SetSRMD(scale, ui.NoiseLabelSDDD->currentIndex(), id, thread, tta, false, 0, 0);
 }
 
 int EncodeGUI::DecimalCounter(QString value) {

@@ -1,81 +1,89 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_linux|x64">
+      <Configuration>Release_linux</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0908C6D5-D40F-4717-BCBA-6E9C53814CFA}</ProjectGuid>
+    <ProjectGuid>{098B73F3-16E7-4914-A051-CA4327E63F49}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
-    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <ApplicationType Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">Linux</ApplicationType>
+    <ApplicationTypeRevision Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">Generic</TargetLinuxPlatform>
+    <LinuxProjectType Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>Remote_GCC_1_0</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteCopyIncludeDirectories>
+    </RemoteCopyIncludeDirectories>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>6.2.2</QtInstall>
-    <QtModules>core;gui;widgets;networkauth</QtModules>
-    <QtBuildConfig>debug</QtBuildConfig>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.2.2</QtInstall>
-    <QtModules>core;network;gui;widgets</QtModules>
+    <QtModules>core;gui;network;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'" Label="QtSettings">
+    <QtInstall>6.4.0</QtInstall>
+    <QtModules>core;gui;network;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+    <QtQMakeTemplate>app</QtQMakeTemplate>
+    <QtPathBinaries>6.4.0/gcc_64/bin</QtPathBinaries>
+    <QtPathLibraryExecutables>6.4.0/gcc_64/lib</QtPathLibraryExecutables>
+    <QtHeaderSearchPath>
+    </QtHeaderSearchPath>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
   </Target>
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(QtMsBuild)\Qt.props" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(QtMsBuild)\Qt.props" />
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <ManagedAssembly>true</ManagedAssembly>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">
+    <ProjectPublicIncludePath>C:\Users\Goose\AppData\Local\Microsoft\Linux\HeaderCache\1.0\-2016259881\home\goose\Qt\6.4.0\gcc_64\include;C:\Users\Goose\AppData\Local\Microsoft\Linux\HeaderCache\1.0\-2016259881\usr\include;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
+    <IncludePath>
+    </IncludePath>
+    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_linux|x64'">
     <ClCompile>
-      <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>C:\Users\Goose\source\repos\EncodeGUI\VS;C:\Users\Goose\source\repos\EncodeGUI;C:\Users\Goose\source\repos\EncodeGUI\Arguments;C:\Users\Goose\source\repos\EncodeGUI\UI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
     </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
-    <ClCompile>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <Optimization>Disabled</Optimization>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-    </ClCompile>
+    <QtRcc>
+      <AdditionalIncludeDirectories>/include</AdditionalIncludeDirectories>
+    </QtRcc>
     <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
@@ -90,6 +98,11 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'" Label="Configuration">
+    <ClCompile>
+      <PositionIndependentCode>true</PositionIndependentCode>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Arguments\AudioArgs.cpp" />
@@ -107,10 +120,10 @@
     <ClCompile Include="Arguments\ProfileArgs.cpp" />
     <ClCompile Include="Arguments\RateControlArgs.cpp" />
     <ClCompile Include="Arguments\ResolutionArgs.cpp" />
-    <ClCompile Include="Arguments\TierArgs.cpp" />
-    <ClCompile Include="Arguments\TransposeArgs.cpp" />
     <ClCompile Include="Arguments\SharpenArgs.cpp" />
+    <ClCompile Include="Arguments\TierArgs.cpp" />
     <ClCompile Include="Arguments\TimecodeArgs.cpp" />
+    <ClCompile Include="Arguments\TransposeArgs.cpp" />
     <ClCompile Include="Arguments\TuneArgs.cpp" />
     <ClCompile Include="Arguments\VsPipeArgs.cpp" />
     <ClCompile Include="Checks\Files.cpp" />
@@ -121,9 +134,7 @@
     <ClCompile Include="IO\SubtitleInfo.cpp" />
     <ClCompile Include="IO\VideoInfo.cpp" />
     <ClCompile Include="IO\VideoInfoList.cpp" />
-    <ClCompile Include="main.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
-    </ClCompile>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Process\FFLoaderBase.cpp" />
     <ClCompile Include="Process\MediaConfig.cpp" />
     <ClCompile Include="Process\ProcessWorker.cpp" />
@@ -133,8 +144,11 @@
     <ClCompile Include="Regex\ProgressInfoRegex.cpp" />
     <ClCompile Include="Regex\VideoInfoRegex.cpp" />
     <ClCompile Include="UI\Audio.cpp" />
+    <ClCompile Include="UI\AV1.cpp" />
+    <ClCompile Include="UI\AVC.cpp" />
     <ClCompile Include="UI\Config.cpp" />
     <ClCompile Include="UI\EncodeGUI.cpp" />
+    <ClCompile Include="UI\HEVC.cpp" />
     <ClCompile Include="UI\Jobs.cpp" />
     <ClCompile Include="UI\MsgBox.cpp" />
     <ClCompile Include="UI\Preview.cpp" />
@@ -144,8 +158,6 @@
     <ClCompile Include="UI\Updater.cpp" />
     <ClCompile Include="UI\VPX.cpp" />
     <ClCompile Include="UI\VS.cpp" />
-    <ClCompile Include="UI\AVC.cpp" />
-    <ClCompile Include="UI\HEVC.cpp" />
     <ClCompile Include="VS\Colors.cpp" />
     <ClCompile Include="VS\RIFE.cpp" />
     <ClCompile Include="VS\SRMD.cpp" />
@@ -161,18 +173,18 @@
     <ClInclude Include="IO\ProgressInfo.h" />
     <ClInclude Include="IO\SubtitleInfo.h" />
     <ClInclude Include="IO\VideoInfo.h" />
-    <QtMoc Include="Process\FFLoader.h" />
     <ClInclude Include="IO\VideoInfoList.h" />
     <ClInclude Include="Process\MediaConfig.h" />
     <ClInclude Include="Process\ScriptBuilder.h" />
+    <QtMoc Include="Process\FFLoader.h" />
     <ClInclude Include="Regex\AudioSubInfoRegex.h" />
     <ClInclude Include="Regex\ProcessErrorRegex.h" />
     <ClInclude Include="Regex\ProgressInfoRegex.h" />
     <ClInclude Include="Regex\VideoInfoRegex.h" />
     <ClInclude Include="UI\Preview.h" />
     <ClInclude Include="UI\Updater.h" />
-    <ClInclude Include="VS\VapourSynth.h" />
     <QtMoc Include="UI\EncodeGUI.h" />
+    <ClInclude Include="VS\VapourSynth.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="UI\EncodeGUI.ui" />

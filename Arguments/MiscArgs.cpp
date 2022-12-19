@@ -40,3 +40,19 @@ QString Argument::AddColin() {
 QString Argument::ConcludeFilters() {
 	return QString("\"");
 }
+
+/// <summary>
+/// Applies the YADIF deinterlacing filter.
+/// </summary>
+/// <returns>String representation of the argument.</returns>
+QString Argument::Deinterlace() {
+	return QString("yadif");
+}
+
+/// <summary>
+/// Applies the YADIF (CUDA) deinterlacing filter.
+/// </summary>
+/// <returns>String representation of the argument.</returns>
+QString Argument::DeinterlaceCUDA() {
+	return QString("yadif_cuda");
+}

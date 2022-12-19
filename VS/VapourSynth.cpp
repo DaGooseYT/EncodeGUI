@@ -11,7 +11,7 @@ QString VapourSynth::Plugin(QString path) {
 /// Includes required python nodes.
 /// </summary>
 QString VapourSynth::Include() {
-	return QString("# This file was generated using EncodeGUI\n# This script is availible to you under the MIT license: Copyright (C) 2022 DaGoose.\n\nfrom vsrife import RIFE\nimport tempfile\nimport vapoursynth as vs\nfrom vapoursynth import core\n\n");
+	return QString("# This file was generated using EncodeGUI\n# This script is available to you under the MIT license: Copyright (C) 2022 DaGoose.\n\nfrom vsrife import RIFE\nimport tempfile\nimport muvsfunc as mf\nimport vapoursynth as vs\nfrom vapoursynth import core\n\n");
 }
 
 /// <summary>
@@ -46,4 +46,12 @@ QString VapourSynth::ConcludeClip() {
 /// <returns>String representation of the script.</returns>
 QString VapourSynth::NewLine() {
 	return QString("\n");
+}
+
+/// <summary>
+/// Anti-Aliasing (EIDAA)
+/// </summary>
+/// <returns>String representation of the script.</returns>
+QString VapourSynth::AntiA() {
+	return QString("clip = mf.ediaa(clip)\n\n");
 }
