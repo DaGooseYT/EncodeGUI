@@ -17,7 +17,7 @@ Support for issues and directions for how to submit a proper issue/bug report ar
 Requires `Qt 6 SDK` and MS `Visual Studio` or `Cmake`.
 Install the Qt Visual Studio extension and compile using the built in Visual Studio tools.
 
-**Note: The Qt designer UI files for EncodeGUI and the Preview windows will remain confidential.**
+**Note: The Qt designer UI files for EncodeGUI and the Preview windows are not included in this source code.**
 
 # Licensing
 EncodeGUI's source code is licensed under the AGPL v3.0. See `LICENSE` for more details. Early released versions of EncodeGUI are licensed under a custom license. Read it at https://encodegui.com/privacy-terms.html.
