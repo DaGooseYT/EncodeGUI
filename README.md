@@ -15,7 +15,7 @@ Support for issues and directions for how to submit a proper issue/bug report ar
 
 # Compilation
 Requires `Qt 6 SDK` and MS `Visual Studio` or `Cmake`.
-Compile it like any other C/C++ source code.
+Install the Qt Visual Studio extension and compile using the built in Visual Studio tools.
 
 **Note: The Qt designer UI files for EncodeGUI and the Preview windows will remain confidential.**
 
