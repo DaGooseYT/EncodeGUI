@@ -1,3 +1,13 @@
+EncodeGUI v1.1.7 [Pre-release: 02/26/2023] [Regular release: 05/07/2023]
+
+- Changed job queue layout; output path is now viewed through a button with a message box pop up.
+- Add input path column to the job queue.
+- Dolby Vision metadata import via HEVC.
+- Frame extraction for live encoding preview is now an optional setting.
+- Add HuffYUV as a supported muxing codec.
+
+=============================================================================================================
+
 EncodeGUI v1.1.5 [Pre-release: 12/18/2022] [Regular release: 02/26/2023]
 
 - Add RIFE (CUDA/NCNN) model v4.6
