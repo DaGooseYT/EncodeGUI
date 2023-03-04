@@ -160,18 +160,11 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 		QString fp, tta, uhd, sc, remv;
 		int model, thread, num, den, multi, model2;
 		int id = ui.GPUInterpDD->currentIndex();
+		double model3;
 		double inFPS = VideoInfo::GetFrameRate().toDouble();
 		double outFPS = ui.OutputFPSNUD->value();
 		double scale = 1.0;
 
-		if (ui.PrecisionDD->currentIndex() == 0)
-			fp = "False";
-		else
-			fp = "True";
-		if (CHECKED(ui.TTACB))
-			tta = "True";
-		else
-			tta = "False";
 		if (CHECKED(ui.SceneChangeCB))
 			sc = "True";
 		else
@@ -184,8 +177,11 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 		else
 			uhd = "False";
 
+		tta = "False";
+
 		model = ui.RIFEModelVKDD->currentIndex();
 		model2 = ui.ModelInterpDD->currentIndex();
+		model3 = ui.RIFEModelCADD->currentText().remove("v").toDouble();
 		thread = ui.GPUThreadDD->currentIndex() + 1;
 		multi = Multi(inFPS, outFPS);
 
@@ -214,35 +210,39 @@ QString EncodeGUI::BuildScript(int width, int height, QString jobID) {
 			ScriptBuilder::SetRGB(matrix_in, transfer_in, primaries_in);
 
 			if (CHECKED(ui.SceneChangeCB))
-				if (CHECKED(ui.SCThresholdCB))
-					ScriptBuilder::SetSCDetect(QString("%1").arg(ui.SCThresholdNUD->value()));
-				else
-					ScriptBuilder::SetSCDetect(QString("0.12"));
+				ScriptBuilder::SetSCDetect(QString("%1").arg(ui.SCThresholdNUD->value()));
 
 			if (CHECKED(ui.UpscalingGB))
 				UpscaleMD(width, height);
 
 			switch (ui.BackendDD->currentIndex()) {
 			case 0:
-				ScriptBuilder::SetRIFECuda("cuda", multi, scale, id, fp);
-				break;
-			case 1:
 				if (ui.ToolInterpDD->currentIndex() == 1)
-					ScriptBuilder::SetRIFENcnn(model, id, thread, tta, uhd, sc);
+					ScriptBuilder::SetRIFECuda(id, model3, num, den, scale, sc);
 				else
 					if (model2 == 0)
-						ScriptBuilder::SetRIFENcnn(3, id, thread, tta, uhd, sc);
+						ScriptBuilder::SetRIFECuda(id, 4.6, QString("%1").arg((multi - 1) * inFPS).remove(".").toInt(), den, scale, sc);
+					else if (model2 == 1)
+						ScriptBuilder::SetRIFECuda(id, 4.0, QString("%1").arg((multi - 1) * inFPS).remove(".").toInt(), den, scale, sc);
+				break;
+			case 1:
+				if (ui.ToolInterpDD->currentIndex() == 1) {
+					if (ui.RIFEModelVKDD->currentIndex() < 4)
+						ScriptBuilder::SetRIFENcnn(model, id, thread, tta, uhd, sc);
+					else
+						ScriptBuilder::SetRIFENcnnNew(model, id, thread, num, den, tta, uhd, sc);
+				}
+				else
+					if (model2 == 0)
+						ScriptBuilder::SetRIFENcnnNew(5, id, thread, QString("%1").arg((multi - 1) * inFPS).remove(".").toInt(), den, tta, uhd, sc);
 					else if (model2 == 1)
 						ScriptBuilder::SetRIFENcnn(1, id, thread, tta, uhd, sc);
 					else if (model2 == 2)
 						ScriptBuilder::SetRIFENcnn(0, id, thread, tta, uhd, sc);
 				break;
-			case 2:
-				ScriptBuilder::SetRIFECuda("cpu", multi, scale, id, fp);
-				break;
 			}
 
-			if (ui.ToolInterpDD->currentIndex() == 0 && inFPS * Multi(inFPS, outFPS) != outFPS) {
+			if (ui.ToolInterpDD->currentIndex() == 0 && inFPS * multi != outFPS) {
 				ScriptBuilder::SetColorsOut("YUV420P8", "709", "709", "709");
 
 				if (ui.BackendDD->currentIndex() == 0 || ui.BackendDD->currentIndex() == 2)

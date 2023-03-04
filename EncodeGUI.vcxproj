@@ -37,7 +37,7 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.2.2</QtInstall>
+    <QtInstall>6.2.4</QtInstall>
     <QtModules>core;gui;network;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
@@ -176,6 +176,9 @@
     <ClInclude Include="IO\VideoInfoList.h" />
     <ClInclude Include="Process\MediaConfig.h" />
     <ClInclude Include="Process\ScriptBuilder.h" />
+    <ClInclude Include="x64\Release\uic\ui_EncodeGUI.h" />
+    <ClInclude Include="x64\Release\uic\ui_Preview.h" />
+    <ClInclude Include="x64\Release\uic\ui_Updater.h" />
     <QtMoc Include="Process\FFLoader.h" />
     <ClInclude Include="Regex\AudioSubInfoRegex.h" />
     <ClInclude Include="Regex\ProcessErrorRegex.h" />

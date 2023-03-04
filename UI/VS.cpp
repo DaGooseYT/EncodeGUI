@@ -13,36 +13,41 @@ void EncodeGUI::hide_interpgpu() {
     }
 }
 
+void EncodeGUI::ModelVK() {
+    if (ui.RIFEModelVKDD->currentIndex() < 4) {
+        SET_VISIBLE(ui.Times2Label);
+        SET_VISIBLE(ui.EqualsLabel);
+        SET_DISABLED(ui.OutputFPSNUD);
+
+        ui.OutputFPSNUD->setValue(static_cast<double>(VideoInfo::GetFrameRate().toDouble()) * 2.0);
+    }
+    else {
+        SET_INVISIBLE(ui.Times2Label);
+        SET_INVISIBLE(ui.EqualsLabel);
+        SET_ENABLED(ui.OutputFPSNUD);
+    }
+}
+
 void EncodeGUI::hide_interpgpucb() {
     switch (ui.BackendDD->currentIndex()) {
     case 0:
         ui.UseGPUCB->setChecked(true);
-        ui.TTACB->setChecked(false);
         SET_DISABLED(ui.UseGPUCB);
-        SET_DISABLED(ui.TTACB);
-        SET_DISABLED(ui.TTALabel);
-        SET_INVISIBLE(ui.GPUThreadInterpLabel);
-        SET_INVISIBLE(ui.GPUThreadDD);
-        SET_VISIBLE(ui.PrecisionLabel);
-        SET_VISIBLE(ui.PrecisionDD);
+        SET_DISABLED(ui.GPUThreadDD);
         SET_INVISIBLE(ui.Times2Label);
+        SET_INVISIBLE(ui.EqualsLabel);
+        SET_ENABLED(ui.OutputFPSNUD);
 
         if (ui.ToolInterpDD->currentIndex() != 0) {
             SET_VISIBLE(ui.RIFEModelCADD);
             SET_INVISIBLE(ui.RIFEModelVKDD);
-            SET_DISABLED(ui.OutputFPSNUD);
         }
         else if (ui.ToolInterpDD->currentIndex() == 0) {
-            SET_DISABLED(ui.ModelInterpDD);
+            ui.ModelInterpDD->removeItem(2);
             ui.ModelInterpDD->setCurrentIndex(0);
-            InterpFactor();
         }
-        if (ui.ToolInterpDD->currentIndex() == 1) {
-            SET_VISIBLE(ui.EksLabel);
-            SET_VISIBLE(ui.InterpFactorNUD);
-            SET_VISIBLE(ui.EqualsLabel);
-            InterpFactor();
-        }
+
+        ui.BackendDD->removeItem(2);
 
         break;
     case 1:
@@ -51,66 +56,20 @@ void EncodeGUI::hide_interpgpucb() {
             SET_VISIBLE(ui.RIFEModelVKDD);
         }
         else
-            SET_ENABLED(ui.ModelInterpDD);
+            if (ui.ModelInterpDD->count() != 3)
+                ui.ModelInterpDD->addItem("Slow");
 
         if (ui.ToolInterpDD->currentIndex() == 1) {
-            SET_DISABLED(ui.OutputFPSNUD);
-            SET_VISIBLE(ui.EqualsLabel);
             SET_VISIBLE(ui.Times2Label);
 
-            ui.OutputFPSNUD->setValue(static_cast<double>(VideoInfo::GetFrameRate().toDouble()) * 2.0);
-        }
-        else
-            SET_INVISIBLE(ui.EqualsLabel);
-
-        ui.UseGPUCB->setChecked(true);
-        SET_DISABLED(ui.UseGPUCB);
-        SET_INVISIBLE(ui.EksLabel);
-        SET_ENABLED(ui.TTACB);
-        SET_ENABLED(ui.TTALabel);
-        SET_INVISIBLE(ui.InterpFactorNUD);
-        SET_VISIBLE(ui.GPUThreadInterpLabel);
-        SET_VISIBLE(ui.GPUThreadDD);
-        SET_INVISIBLE(ui.PrecisionLabel);
-        SET_INVISIBLE(ui.PrecisionDD);
-        break;
-    case 2:
-        ui.TTACB->setChecked(false);
-        SET_DISABLED(ui.TTACB);
-        SET_DISABLED(ui.TTALabel);
-        SET_INVISIBLE(ui.Times2Label);
-        SET_INVISIBLE(ui.GPUThreadInterpLabel);
-        SET_INVISIBLE(ui.GPUThreadDD);
-
-        if (ui.ToolInterpDD->currentIndex() != 0) {
-            if (ui.ToolInterpDD->currentIndex() != 2)
-                SET_VISIBLE(ui.RIFEModelCADD);
-
-            SET_INVISIBLE(ui.RIFEModelVKDD);
-        }
-        else {
-            SET_DISABLED(ui.ModelInterpDD);
-            ui.ModelInterpDD->setCurrentIndex(0);
-        }
-        if (ui.ToolInterpDD->currentIndex() != 2) {
-            ui.UseGPUCB->setChecked(false);
+            ui.UseGPUCB->setChecked(true);
             SET_DISABLED(ui.UseGPUCB);
-            SET_VISIBLE(ui.PrecisionLabel);
-            SET_VISIBLE(ui.PrecisionDD);
 
-            if (ui.ToolInterpDD->currentIndex() != 0)
-                SET_DISABLED(ui.OutputFPSNUD);
+            ModelVK();
         }
-        else {
-            ui.UseGPUCB->setChecked(false);
-            SET_ENABLED(ui.UseGPUCB);
-        }
-        if (ui.ToolInterpDD->currentIndex() == 1) {
-            SET_VISIBLE(ui.EksLabel);
-            SET_VISIBLE(ui.InterpFactorNUD);
-            SET_VISIBLE(ui.EqualsLabel);
-            SET_DISABLED(ui.OutputFPSNUD);
-        }
+
+        SET_ENABLED(ui.GPUThreadDD);
+        ui.BackendDD->removeItem(2);
 
         break;
     }
@@ -130,28 +89,31 @@ void EncodeGUI::tool_interp() {
         SET_VISIBLE(ui.ModelInterpLabel);
         SET_VISIBLE(ui.ModelInterpDD);
         SET_INVISIBLE(ui.RIFEModelCADD);
-        SET_VISIBLE(ui.TTALabel);
-        SET_VISIBLE(ui.TTACB);
+        SET_VISIBLE(ui.SCThresholdLabel);
+        SET_VISIBLE(ui.SCThresholdNUD);
         SET_INVISIBLE(ui.InterpModeLabel);
         SET_INVISIBLE(ui.RIFEModelVKDD);
         SET_VISIBLE(ui.GPUThreadInterpLabel);
         SET_VISIBLE(ui.GPUThreadDD);
         SET_INVISIBLE(ui.ParamsCB);
         SET_ENABLED(ui.OutputFPSNUD);
-        SET_INVISIBLE(ui.EksLabel);
-        SET_INVISIBLE(ui.InterpFactorNUD);
         SET_INVISIBLE(ui.EqualsLabel);
         SET_INVISIBLE(ui.Times2Label);
+        SET_INVISIBLE(ui.EqualsLabel);
+        SET_ENABLED(ui.OutputFPSNUD);
 
         if (!VideoInfo::GetFrameRate().contains("?"))
             ui.OutputFPSNUD->setMinimum(VideoInfo::GetFrameRate().toDouble() * static_cast<double>(1.25));
 
         if (ui.BackendDD->currentIndex() == 0 || ui.BackendDD->currentIndex() == 2) {
-            SET_DISABLED(ui.ModelInterpDD);
+            ui.ModelInterpDD->removeItem(2);
             ui.ModelInterpDD->setCurrentIndex(0);
         }
         else
-            SET_ENABLED(ui.ModelInterpDD);
+            if (ui.ModelInterpDD->count() != 3)
+                ui.ModelInterpDD->addItem("Slow");
+
+        ui.BackendDD->removeItem(2);
 
         hide_interpgpucb();
         hide_params();
@@ -167,26 +129,18 @@ void EncodeGUI::tool_interp() {
         SET_VISIBLE(ui.SceneChangeLabel);
         SET_VISIBLE(ui.SceneChangeCB);
         SET_VISIBLE(ui.ModelInterpLabel);
-        SET_VISIBLE(ui.TTACB);
+        SET_VISIBLE(ui.SCThresholdLabel);
+        SET_VISIBLE(ui.SCThresholdNUD);
         SET_INVISIBLE(ui.ModelInterpDD);
-        SET_VISIBLE(ui.TTALabel);
         SET_VISIBLE(ui.GPUThreadInterpLabel);
         SET_VISIBLE(ui.GPUThreadDD);
         SET_INVISIBLE(ui.ParamsCB);
 
-        if (ui.BackendDD->currentIndex() == 2) {
-            SET_VISIBLE(ui.EksLabel);
-            SET_VISIBLE(ui.InterpFactorNUD);
-            SET_VISIBLE(ui.EqualsLabel);
-            SET_DISABLED(ui.OutputFPSNUD);
-        }
         if (ui.BackendDD->currentIndex() == 1)
-            SET_VISIBLE(ui.EqualsLabel);
+            ModelVK();
 
-        if (!VideoInfo::GetFrameRate().contains("?"))
-            ui.OutputFPSNUD->setMinimum(VideoInfo::GetFrameRate().toDouble() * static_cast<double>(ui.InterpFactorNUD->value()));
+        ui.BackendDD->removeItem(2);
 
-        InterpFactor();
         hide_interpgpucb();
         hide_params();
         break;
@@ -200,8 +154,8 @@ void EncodeGUI::tool_interp() {
         SET_VISIBLE(ui.ArtefactMaskDD);
         SET_INVISIBLE(ui.SceneChangeLabel);
         SET_INVISIBLE(ui.SceneChangeCB);
-        SET_INVISIBLE(ui.TTALabel);
-        SET_INVISIBLE(ui.TTACB);
+        SET_INVISIBLE(ui.SCThresholdLabel);
+        SET_INVISIBLE(ui.SCThresholdNUD);
         SET_INVISIBLE(ui.ModelInterpLabel);
         SET_INVISIBLE(ui.ModelInterpDD);
         SET_INVISIBLE(ui.RIFEModelCADD);
@@ -210,12 +164,11 @@ void EncodeGUI::tool_interp() {
         SET_INVISIBLE(ui.GPUThreadDD);
         SET_VISIBLE(ui.ParamsCB);
         SET_ENABLED(ui.OutputFPSNUD);
-        SET_INVISIBLE(ui.EksLabel);
-        SET_INVISIBLE(ui.InterpFactorNUD);
         SET_INVISIBLE(ui.EqualsLabel);
         SET_INVISIBLE(ui.Times2Label);
-        SET_INVISIBLE(ui.PrecisionLabel);
-        SET_INVISIBLE(ui.PrecisionDD);
+
+        ui.BackendDD->addItem("OpenCL");
+        ui.BackendDD->setCurrentIndex(2);
 
         if (ui.BackendDD->currentIndex() == 2)
             SET_ENABLED(ui.UseGPUCB);

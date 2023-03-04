@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'Updater.ui'
 **
-** Created by: Qt User Interface Compiler version 6.2.2
+** Created by: Qt User Interface Compiler version 6.2.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -34,6 +34,8 @@ public:
         if (Updater->objectName().isEmpty())
             Updater->setObjectName(QString::fromUtf8("Updater"));
         Updater->resize(551, 294);
+        Updater->setMinimumSize(QSize(551, 294));
+        Updater->setMaximumSize(QSize(551, 294));
         TitleLabel = new QLabel(Updater);
         TitleLabel->setObjectName(QString::fromUtf8("TitleLabel"));
         TitleLabel->setGeometry(QRect(175, 7, 200, 32));

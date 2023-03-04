@@ -18,8 +18,6 @@ void EncodeGUI::LoadSysSetting() {
 	ui.PercentageCB->setChecked(sys->value("percent", true).toBool());
 
 	ui.LimitThreadsCB->setChecked(sys->value("threads", false).toBool());
-	ui.SCThresholdCB->setChecked(sys->value("sc", false).toBool());
-	ui.SCThresholdNUD->setValue(sys->value("scvalue", 0.12).toDouble());
 	ui.MultiGPUGB->setChecked(sys->value("dgpu", false).toBool());
 	ui.GPU1IDNUD->setValue(sys->value("gpu1", 0).toInt());
 	ui.GPU2IDNUD->setValue(sys->value("gpu2", 1).toInt());

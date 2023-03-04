@@ -10,14 +10,12 @@
 #include "../Process/MediaConfig.h"
 #include "../Process/FFLoader.h"
 #include "../Checks/Checks.h"
-#include "UI_EncodeGUI.h"
+#include "ui_EncodeGUI.h"
 #include "Preview.h"
 #include "Updater.h"
 
-#ifdef Q_OS_WINDOWS
 #include "Windows.h"
 #include "DxGi.h"
-#endif
 
 #include "QtNetwork/QNetworkAccessManager"
 #include "QtNetwork/QNetworkRequest"
@@ -48,7 +46,7 @@
 #define INFO 2
 #define QUESTION 3
 
-#define VERSION QString("1.1.0")
+#define VERSION QString("1.1.5")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -154,6 +152,7 @@ private slots:
     void NextJob();
     void GoToUpdate();
     void GenOutput();
+    void ModelVK();
     void Later();
     void AudioLang();
     void PatreonClick();
@@ -170,9 +169,7 @@ private slots:
     void GPU1();
     void GPU2();
     void EnablePreview();
-    void ScNUD();
     void OpenLogs();
-    void InterpFactor();
     void ExtracterInfo();
     void ExtracterComplete();
     void NewExtract();

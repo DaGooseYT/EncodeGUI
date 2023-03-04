@@ -7,8 +7,9 @@
 
 class VapourSynth {
 protected:
-	static QString RIFECuda(QString, int, double, int, QString);
+	static QString RIFECuda(int, double, int, int, double, QString);
 	static QString RIFENcnn(int, int, int, QString, QString, QString);
+	static QString RIFENcnnNew(int, int, int, int, int, QString, QString, QString);
 	static QString SVPFlowNoob(QString, int, int, int, int, int, int);
 	static QString SVPFlow(QString, QString, QString, int, int);
 	static QString Waifu2x(int, int, int, int, int, int, bool, int, int);

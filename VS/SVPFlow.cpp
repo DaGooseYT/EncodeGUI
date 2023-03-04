@@ -13,7 +13,7 @@
 /// <returns>String representation of the script.</returns>
 QString VapourSynth::SVPFlowNoob(QString useGPU, int id, int shader, int mask, int mode, int num, int den) {
 	QString super, analyse, smooth, complete;
-	
+
 	if (useGPU.contains("True")) {
 		super = QString("{scale:{up:2},gpu:1}");
 		analyse = QString("{gpu:1,vectors:3,block:{w:16,h:16,overlap:2},main:{search:{distance:0,coarse:{distance:-10,bad:{sad:2000}}}},refine:[{thsad:250}]}");

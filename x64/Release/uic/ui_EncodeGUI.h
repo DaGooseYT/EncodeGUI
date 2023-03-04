@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'EncodeGUI.ui'
 **
-** Created by: Qt User Interface Compiler version 6.2.2
+** Created by: Qt User Interface Compiler version 6.2.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -228,9 +228,7 @@ public:
     QCheckBox *SceneChangeCB;
     QDoubleSpinBox *OutputFPSNUD;
     QLabel *OutFPSLabel;
-    QLabel *TTALabel;
     QLabel *SceneChangeLabel;
-    QCheckBox *TTACB;
     QComboBox *BackendDD;
     QLabel *SlashLabel;
     QLabel *ShaderLabel;
@@ -238,8 +236,6 @@ public:
     QComboBox *RIFEModelCADD;
     QComboBox *ShaderDD;
     QCheckBox *ParamsCB;
-    QLabel *EksLabel;
-    QSpinBox *InterpFactorNUD;
     QLabel *EqualsLabel;
     QLabel *InterpModeLabel;
     QComboBox *InterpModeDD;
@@ -251,9 +247,9 @@ public:
     QLineEdit *AnalyseTxtBox;
     QLabel *SmoothLabel;
     QLineEdit *SmoothTxtBox;
-    QLabel *PrecisionLabel;
-    QComboBox *PrecisionDD;
     QLabel *Times2Label;
+    QDoubleSpinBox *SCThresholdNUD;
+    QLabel *SCThresholdLabel;
     QWidget *UpscalingTab;
     QGroupBox *UpscalingGB;
     QLabel *GPUThreadUpscaleLabel;
@@ -378,8 +374,6 @@ public:
     QCheckBox *PercentageCB;
     QWidget *tab_2;
     QGroupBox *ProcessSettingsGB;
-    QCheckBox *SCThresholdCB;
-    QDoubleSpinBox *SCThresholdNUD;
     QSpinBox *LimitThreadsNUD;
     QCheckBox *LimitThreadsCB;
     QGroupBox *MultiGPUGB;
@@ -494,6 +488,7 @@ public:
         SampleVidCB = new QCheckBox(InputGB);
         SampleVidCB->setObjectName(QString::fromUtf8("SampleVidCB"));
         SampleVidCB->setGeometry(QRect(16, 17, 111, 20));
+        SampleVidCB->setChecked(false);
         ColorSpaceCB = new QCheckBox(InputGB);
         ColorSpaceCB->setObjectName(QString::fromUtf8("ColorSpaceCB"));
         ColorSpaceCB->setGeometry(QRect(16, 60, 100, 21));
@@ -1359,7 +1354,7 @@ public:
         ToolInterpDD->setGeometry(QRect(275, 25, 97, 22));
         ToolInterpLabel = new QLabel(InterpolationCB);
         ToolInterpLabel->setObjectName(QString::fromUtf8("ToolInterpLabel"));
-        ToolInterpLabel->setGeometry(QRect(22, 28, 130, 16));
+        ToolInterpLabel->setGeometry(QRect(23, 28, 130, 16));
         UseGPUCB = new QCheckBox(InterpolationCB);
         UseGPUCB->setObjectName(QString::fromUtf8("UseGPUCB"));
         UseGPUCB->setGeometry(QRect(23, 56, 75, 20));
@@ -1390,7 +1385,7 @@ public:
         ModelInterpDD->setGeometry(QRect(422, 87, 69, 22));
         SceneChangeCB = new QCheckBox(InterpolationCB);
         SceneChangeCB->setObjectName(QString::fromUtf8("SceneChangeCB"));
-        SceneChangeCB->setGeometry(QRect(478, 147, 25, 20));
+        SceneChangeCB->setGeometry(QRect(477, 119, 25, 20));
         SceneChangeCB->setChecked(true);
         OutputFPSNUD = new QDoubleSpinBox(InterpolationCB);
         OutputFPSNUD->setObjectName(QString::fromUtf8("OutputFPSNUD"));
@@ -1401,16 +1396,10 @@ public:
         OutputFPSNUD->setValue(60.000000000000000);
         OutFPSLabel = new QLabel(InterpolationCB);
         OutFPSLabel->setObjectName(QString::fromUtf8("OutFPSLabel"));
-        OutFPSLabel->setGeometry(QRect(22, 178, 69, 16));
-        TTALabel = new QLabel(InterpolationCB);
-        TTALabel->setObjectName(QString::fromUtf8("TTALabel"));
-        TTALabel->setGeometry(QRect(22, 117, 166, 16));
+        OutFPSLabel->setGeometry(QRect(23, 178, 69, 16));
         SceneChangeLabel = new QLabel(InterpolationCB);
         SceneChangeLabel->setObjectName(QString::fromUtf8("SceneChangeLabel"));
-        SceneChangeLabel->setGeometry(QRect(22, 147, 195, 16));
-        TTACB = new QCheckBox(InterpolationCB);
-        TTACB->setObjectName(QString::fromUtf8("TTACB"));
-        TTACB->setGeometry(QRect(478, 119, 22, 20));
+        SceneChangeLabel->setGeometry(QRect(23, 118, 195, 16));
         BackendDD = new QComboBox(InterpolationCB);
         BackendDD->addItem(QString());
         BackendDD->addItem(QString());
@@ -1429,9 +1418,12 @@ public:
         RIFEModelVKDD->addItem(QString());
         RIFEModelVKDD->addItem(QString());
         RIFEModelVKDD->addItem(QString());
+        RIFEModelVKDD->addItem(QString());
+        RIFEModelVKDD->addItem(QString());
         RIFEModelVKDD->setObjectName(QString::fromUtf8("RIFEModelVKDD"));
         RIFEModelVKDD->setGeometry(QRect(436, 87, 55, 22));
         RIFEModelCADD = new QComboBox(InterpolationCB);
+        RIFEModelCADD->addItem(QString());
         RIFEModelCADD->addItem(QString());
         RIFEModelCADD->setObjectName(QString::fromUtf8("RIFEModelCADD"));
         RIFEModelCADD->setGeometry(QRect(437, 87, 54, 22));
@@ -1447,14 +1439,6 @@ public:
         ParamsCB = new QCheckBox(InterpolationCB);
         ParamsCB->setObjectName(QString::fromUtf8("ParamsCB"));
         ParamsCB->setGeometry(QRect(379, 57, 118, 20));
-        EksLabel = new QLabel(InterpolationCB);
-        EksLabel->setObjectName(QString::fromUtf8("EksLabel"));
-        EksLabel->setGeometry(QRect(349, 179, 20, 16));
-        InterpFactorNUD = new QSpinBox(InterpolationCB);
-        InterpFactorNUD->setObjectName(QString::fromUtf8("InterpFactorNUD"));
-        InterpFactorNUD->setGeometry(QRect(361, 176, 40, 22));
-        InterpFactorNUD->setMinimum(2);
-        InterpFactorNUD->setMaximum(10);
         EqualsLabel = new QLabel(InterpolationCB);
         EqualsLabel->setObjectName(QString::fromUtf8("EqualsLabel"));
         EqualsLabel->setGeometry(QRect(408, 179, 21, 16));
@@ -1470,7 +1454,7 @@ public:
         InterpModeDD->setGeometry(QRect(419, 116, 72, 22));
         ArtefactMaskLabel = new QLabel(InterpolationCB);
         ArtefactMaskLabel->setObjectName(QString::fromUtf8("ArtefactMaskLabel"));
-        ArtefactMaskLabel->setGeometry(QRect(22, 147, 98, 16));
+        ArtefactMaskLabel->setGeometry(QRect(23, 147, 98, 16));
         ArtefactMaskDD = new QComboBox(InterpolationCB);
         ArtefactMaskDD->addItem(QString());
         ArtefactMaskDD->addItem(QString());
@@ -1483,7 +1467,7 @@ public:
         SuperTxtBox->setGeometry(QRect(113, 88, 378, 21));
         SuperLabel = new QLabel(InterpolationCB);
         SuperLabel->setObjectName(QString::fromUtf8("SuperLabel"));
-        SuperLabel->setGeometry(QRect(24, 88, 74, 16));
+        SuperLabel->setGeometry(QRect(23, 89, 74, 16));
         AnalyseLabel = new QLabel(InterpolationCB);
         AnalyseLabel->setObjectName(QString::fromUtf8("AnalyseLabel"));
         AnalyseLabel->setGeometry(QRect(23, 119, 57, 16));
@@ -1492,21 +1476,23 @@ public:
         AnalyseTxtBox->setGeometry(QRect(113, 118, 378, 21));
         SmoothLabel = new QLabel(InterpolationCB);
         SmoothLabel->setObjectName(QString::fromUtf8("SmoothLabel"));
-        SmoothLabel->setGeometry(QRect(22, 148, 67, 16));
+        SmoothLabel->setGeometry(QRect(23, 149, 67, 16));
         SmoothTxtBox = new QLineEdit(InterpolationCB);
         SmoothTxtBox->setObjectName(QString::fromUtf8("SmoothTxtBox"));
         SmoothTxtBox->setGeometry(QRect(113, 148, 378, 21));
-        PrecisionLabel = new QLabel(InterpolationCB);
-        PrecisionLabel->setObjectName(QString::fromUtf8("PrecisionLabel"));
-        PrecisionLabel->setGeometry(QRect(379, 59, 57, 16));
-        PrecisionDD = new QComboBox(InterpolationCB);
-        PrecisionDD->addItem(QString());
-        PrecisionDD->addItem(QString());
-        PrecisionDD->setObjectName(QString::fromUtf8("PrecisionDD"));
-        PrecisionDD->setGeometry(QRect(439, 56, 52, 22));
         Times2Label = new QLabel(InterpolationCB);
         Times2Label->setObjectName(QString::fromUtf8("Times2Label"));
         Times2Label->setGeometry(QRect(390, 179, 23, 16));
+        SCThresholdNUD = new QDoubleSpinBox(InterpolationCB);
+        SCThresholdNUD->setObjectName(QString::fromUtf8("SCThresholdNUD"));
+        SCThresholdNUD->setEnabled(false);
+        SCThresholdNUD->setGeometry(QRect(442, 147, 49, 22));
+        SCThresholdNUD->setMaximum(1.000000000000000);
+        SCThresholdNUD->setSingleStep(0.010000000000000);
+        SCThresholdNUD->setValue(0.120000000000000);
+        SCThresholdLabel = new QLabel(InterpolationCB);
+        SCThresholdLabel->setObjectName(QString::fromUtf8("SCThresholdLabel"));
+        SCThresholdLabel->setGeometry(QRect(23, 148, 133, 16));
         VSTabs->addTab(InterpolationTab, QString());
         UpscalingTab = new QWidget();
         UpscalingTab->setObjectName(QString::fromUtf8("UpscalingTab"));
@@ -1526,7 +1512,7 @@ public:
         ToolUpscaleDD->setGeometry(QRect(377, 25, 114, 22));
         ToolUpscaleLabel = new QLabel(UpscalingGB);
         ToolUpscaleLabel->setObjectName(QString::fromUtf8("ToolUpscaleLabel"));
-        ToolUpscaleLabel->setGeometry(QRect(22, 28, 49, 16));
+        ToolUpscaleLabel->setGeometry(QRect(23, 28, 49, 16));
         GPUThreadUpscaleDD = new QComboBox(UpscalingGB);
         GPUThreadUpscaleDD->addItem(QString());
         GPUThreadUpscaleDD->addItem(QString());
@@ -1568,10 +1554,10 @@ public:
         Precision2xDD->addItem(QString());
         Precision2xDD->addItem(QString());
         Precision2xDD->setObjectName(QString::fromUtf8("Precision2xDD"));
-        Precision2xDD->setGeometry(QRect(443, 149, 49, 22));
+        Precision2xDD->setGeometry(QRect(442, 149, 49, 22));
         OutResolutionLabel = new QLabel(UpscalingGB);
         OutResolutionLabel->setObjectName(QString::fromUtf8("OutResolutionLabel"));
-        OutResolutionLabel->setGeometry(QRect(22, 180, 103, 16));
+        OutResolutionLabel->setGeometry(QRect(23, 180, 103, 16));
         Width2xNUD = new QSpinBox(UpscalingGB);
         Width2xNUD->setObjectName(QString::fromUtf8("Width2xNUD"));
         Width2xNUD->setGeometry(QRect(213, 179, 52, 22));
@@ -2100,7 +2086,7 @@ public:
         DeleteSourcesLabel->setGeometry(QRect(28, 47, 259, 16));
         EnablePreviewLabel = new QLabel(EGUISettingsGB);
         EnablePreviewLabel->setObjectName(QString::fromUtf8("EnablePreviewLabel"));
-        EnablePreviewLabel->setGeometry(QRect(28, 20, 238, 16));
+        EnablePreviewLabel->setGeometry(QRect(28, 20, 329, 16));
         UpdateOptLabel = new QLabel(EGUISettingsGB);
         UpdateOptLabel->setObjectName(QString::fromUtf8("UpdateOptLabel"));
         UpdateOptLabel->setGeometry(QRect(28, 102, 240, 18));
@@ -2154,18 +2140,8 @@ public:
         tab_2->setObjectName(QString::fromUtf8("tab_2"));
         ProcessSettingsGB = new QGroupBox(tab_2);
         ProcessSettingsGB->setObjectName(QString::fromUtf8("ProcessSettingsGB"));
-        ProcessSettingsGB->setGeometry(QRect(11, 5, 523, 91));
+        ProcessSettingsGB->setGeometry(QRect(11, 5, 523, 59));
         ProcessSettingsGB->setAlignment(Qt::AlignCenter);
-        SCThresholdCB = new QCheckBox(ProcessSettingsGB);
-        SCThresholdCB->setObjectName(QString::fromUtf8("SCThresholdCB"));
-        SCThresholdCB->setGeometry(QRect(16, 58, 250, 20));
-        SCThresholdNUD = new QDoubleSpinBox(ProcessSettingsGB);
-        SCThresholdNUD->setObjectName(QString::fromUtf8("SCThresholdNUD"));
-        SCThresholdNUD->setEnabled(false);
-        SCThresholdNUD->setGeometry(QRect(458, 57, 49, 22));
-        SCThresholdNUD->setMaximum(1.000000000000000);
-        SCThresholdNUD->setSingleStep(0.010000000000000);
-        SCThresholdNUD->setValue(0.120000000000000);
         LimitThreadsNUD = new QSpinBox(ProcessSettingsGB);
         LimitThreadsNUD->setObjectName(QString::fromUtf8("LimitThreadsNUD"));
         LimitThreadsNUD->setEnabled(false);
@@ -2175,7 +2151,7 @@ public:
         LimitThreadsCB->setGeometry(QRect(16, 22, 297, 20));
         MultiGPUGB = new QGroupBox(tab_2);
         MultiGPUGB->setObjectName(QString::fromUtf8("MultiGPUGB"));
-        MultiGPUGB->setGeometry(QRect(12, 104, 522, 145));
+        MultiGPUGB->setGeometry(QRect(12, 71, 522, 145));
         MultiGPUGB->setAlignment(Qt::AlignCenter);
         MultiGPUGB->setCheckable(true);
         MultiGPUGB->setChecked(false);
@@ -2348,7 +2324,7 @@ public:
         EncoderLabel->setGeometry(QRect(16, 19, 49, 16));
         DurationLabel = new QLabel(VideoInfoGB);
         DurationLabel->setObjectName(QString::fromUtf8("DurationLabel"));
-        DurationLabel->setGeometry(QRect(16, 34, 56, 20));
+        DurationLabel->setGeometry(QRect(16, 34, 62, 20));
         ResolutionLabel = new QLabel(VideoInfoGB);
         ResolutionLabel->setObjectName(QString::fromUtf8("ResolutionLabel"));
         ResolutionLabel->setGeometry(QRect(16, 51, 63, 20));
@@ -2636,20 +2612,17 @@ public:
         QWidget::setTabOrder(GPUThreadDD, ModelInterpDD);
         QWidget::setTabOrder(ModelInterpDD, SceneChangeCB);
         QWidget::setTabOrder(SceneChangeCB, OutputFPSNUD);
-        QWidget::setTabOrder(OutputFPSNUD, TTACB);
-        QWidget::setTabOrder(TTACB, BackendDD);
+        QWidget::setTabOrder(OutputFPSNUD, BackendDD);
         QWidget::setTabOrder(BackendDD, RIFEModelVKDD);
         QWidget::setTabOrder(RIFEModelVKDD, RIFEModelCADD);
         QWidget::setTabOrder(RIFEModelCADD, ShaderDD);
         QWidget::setTabOrder(ShaderDD, ParamsCB);
-        QWidget::setTabOrder(ParamsCB, InterpFactorNUD);
-        QWidget::setTabOrder(InterpFactorNUD, InterpModeDD);
+        QWidget::setTabOrder(ParamsCB, InterpModeDD);
         QWidget::setTabOrder(InterpModeDD, ArtefactMaskDD);
         QWidget::setTabOrder(ArtefactMaskDD, SuperTxtBox);
         QWidget::setTabOrder(SuperTxtBox, AnalyseTxtBox);
         QWidget::setTabOrder(AnalyseTxtBox, SmoothTxtBox);
-        QWidget::setTabOrder(SmoothTxtBox, PrecisionDD);
-        QWidget::setTabOrder(PrecisionDD, UpscalingGB);
+        QWidget::setTabOrder(SmoothTxtBox, UpscalingGB);
         QWidget::setTabOrder(UpscalingGB, ToolUpscaleDD);
         QWidget::setTabOrder(ToolUpscaleDD, GPUThreadUpscaleDD);
         QWidget::setTabOrder(GPUThreadUpscaleDD, GPUUpscaleDD);
@@ -2710,9 +2683,7 @@ public:
         QWidget::setTabOrder(BitrateCB, TimeLeftCB);
         QWidget::setTabOrder(TimeLeftCB, TimeElapsedCB);
         QWidget::setTabOrder(TimeElapsedCB, PercentageCB);
-        QWidget::setTabOrder(PercentageCB, SCThresholdCB);
-        QWidget::setTabOrder(SCThresholdCB, SCThresholdNUD);
-        QWidget::setTabOrder(SCThresholdNUD, LimitThreadsNUD);
+        QWidget::setTabOrder(PercentageCB, LimitThreadsNUD);
         QWidget::setTabOrder(LimitThreadsNUD, LimitThreadsCB);
         QWidget::setTabOrder(LimitThreadsCB, ClearJobsBttn);
         QWidget::setTabOrder(ClearJobsBttn, CancelQueueBttn);
@@ -2761,7 +2732,7 @@ public:
 
     void retranslateUi(QMainWindow *EncodeGUIMV)
     {
-        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.1.2 (free, stable)", nullptr));
+        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.1.5 (free, stable)", nullptr));
 #if QT_CONFIG(tooltip)
         EGUILogo->setToolTip(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI :)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -3416,12 +3387,7 @@ public:
         OutputFPSNUD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "The output FPS.", nullptr));
 #endif // QT_CONFIG(tooltip)
         OutFPSLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Output FPS:", nullptr));
-        TTALabel->setText(QCoreApplication::translate("EncodeGUIMV", "Test time augmentation (TTA):", nullptr));
         SceneChangeLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Use scene change detection:", nullptr));
-#if QT_CONFIG(tooltip)
-        TTACB->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Enables test time augmentation (slow!).", nullptr));
-#endif // QT_CONFIG(tooltip)
-        TTACB->setText(QString());
         BackendDD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "CUDA", nullptr));
         BackendDD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "Vulkan (NCNN)", nullptr));
         BackendDD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", "CPU", nullptr));
@@ -3432,14 +3398,17 @@ public:
         SlashLabel->setText(QCoreApplication::translate("EncodeGUIMV", "/", nullptr));
         ShaderLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Shader:", nullptr));
         RIFEModelVKDD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "v1.8", nullptr));
-        RIFEModelVKDD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "v2.4", nullptr));
-        RIFEModelVKDD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", "v3.1", nullptr));
-        RIFEModelVKDD->setItemText(3, QCoreApplication::translate("EncodeGUIMV", "v4.0", nullptr));
+        RIFEModelVKDD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "v2.3", nullptr));
+        RIFEModelVKDD->setItemText(2, QCoreApplication::translate("EncodeGUIMV", "v2.4", nullptr));
+        RIFEModelVKDD->setItemText(3, QCoreApplication::translate("EncodeGUIMV", "v3.1", nullptr));
+        RIFEModelVKDD->setItemText(4, QCoreApplication::translate("EncodeGUIMV", "v4.0", nullptr));
+        RIFEModelVKDD->setItemText(5, QCoreApplication::translate("EncodeGUIMV", "v4.6", nullptr));
 
 #if QT_CONFIG(tooltip)
         RIFEModelVKDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Sets the RIFE model to use for NCNN.", nullptr));
 #endif // QT_CONFIG(tooltip)
         RIFEModelCADD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "v4.0", nullptr));
+        RIFEModelCADD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "v4.6", nullptr));
 
 #if QT_CONFIG(tooltip)
         RIFEModelCADD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Sets the RIFE model to use for CUDA.", nullptr));
@@ -3458,10 +3427,6 @@ public:
         ParamsCB->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Enables/disables manual entry for SVPFlow params.", nullptr));
 #endif // QT_CONFIG(tooltip)
         ParamsCB->setText(QCoreApplication::translate("EncodeGUIMV", "Overwrite params", nullptr));
-        EksLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p>x</p></body></html>", nullptr));
-#if QT_CONFIG(tooltip)
-        InterpFactorNUD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Sets the interpolation factor for RIFE CUDA.", nullptr));
-#endif // QT_CONFIG(tooltip)
         EqualsLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700;\">=</span></p></body></html>", nullptr));
         InterpModeLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Interpolation mode:", nullptr));
         InterpModeDD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "Uniform", nullptr));
@@ -3490,14 +3455,8 @@ public:
 #if QT_CONFIG(tooltip)
         SmoothTxtBox->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Allows manual entry for smooth params in SVPFlow.", nullptr));
 #endif // QT_CONFIG(tooltip)
-        PrecisionLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Precision:", nullptr));
-        PrecisionDD->setItemText(0, QCoreApplication::translate("EncodeGUIMV", "fp32", nullptr));
-        PrecisionDD->setItemText(1, QCoreApplication::translate("EncodeGUIMV", "fp16", nullptr));
-
-#if QT_CONFIG(tooltip)
-        PrecisionDD->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Sets the color precision for the interpolated video.", nullptr));
-#endif // QT_CONFIG(tooltip)
         Times2Label->setText(QCoreApplication::translate("EncodeGUIMV", "x2", nullptr));
+        SCThresholdLabel->setText(QCoreApplication::translate("EncodeGUIMV", "Scene change threshold:", nullptr));
         VSTabs->setTabText(VSTabs->indexOf(InterpolationTab), QCoreApplication::translate("EncodeGUIMV", "Interpolation", nullptr));
 #if QT_CONFIG(tooltip)
         UpscalingGB->setToolTip(QCoreApplication::translate("EncodeGUIMV", "Enables/disables resolution upscaling.", nullptr));
@@ -3945,7 +3904,6 @@ public:
         PercentageCB->setText(QCoreApplication::translate("EncodeGUIMV", "Percentage", nullptr));
         SettingsTabs->setTabText(SettingsTabs->indexOf(EGUITab), QCoreApplication::translate("EncodeGUIMV", "EncodeGUI", nullptr));
         ProcessSettingsGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Process Settings", nullptr));
-        SCThresholdCB->setText(QCoreApplication::translate("EncodeGUIMV", "Scene change threshold (for interpolation):", nullptr));
         LimitThreadsCB->setText(QCoreApplication::translate("EncodeGUIMV", "Limit CPU encoding threads (can help lower temps):", nullptr));
         MultiGPUGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Dual GPU Processing (for resolution upscaling)", nullptr));
         TestGPUBttn->setText(QCoreApplication::translate("EncodeGUIMV", "Identify GPU Device IDs", nullptr));

@@ -2,12 +2,16 @@
 
 QString ScriptBuilder::ScriptList;
 
-void ScriptBuilder::SetRIFECuda(QString device, int multi, double scale, int id, QString fp) {
-	ScriptList.append(VapourSynth::RIFECuda(device, multi, scale, id, fp));
+void ScriptBuilder::SetRIFECuda(int id, double model, int num, int den, double scale, QString sc) {
+	ScriptList.append(VapourSynth::RIFECuda(id, model, num, den, scale, sc));
 }
 
 void ScriptBuilder::SetRIFENcnn(int model, int id, int thread, QString tta, QString uhd, QString sc) {
 	ScriptList.append(VapourSynth::RIFENcnn(model, id, thread, tta, uhd, sc));
+}
+
+void ScriptBuilder::SetRIFENcnnNew(int model, int id, int thread, int num, int den, QString tta, QString uhd, QString sc) {
+	ScriptList.append(VapourSynth::RIFENcnnNew(model, id, thread, num, den, tta, uhd, sc));
 }
 
 void ScriptBuilder::SetSVPFlowNoob(QString useGPU, int id, int shader, int mask, int mode, int num, int den) {

@@ -253,6 +253,15 @@
     <ClInclude Include="Arguments\Argument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="x64\Release\uic\ui_EncodeGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="x64\Release\uic\ui_Preview.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="x64\Release\uic\ui_Updater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UI\EncodeGUI.h">

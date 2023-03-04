@@ -66,7 +66,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ui.Profile264GB, SIGNAL(toggled(bool)), this, SLOT(profile_gb264()));
     connect(ui.Reference264Sldr, SIGNAL(valueChanged(int)), this, SLOT(refsldr_264()));
     connect(ui.BFrame264Sldr, SIGNAL(valueChanged(int)), this, SLOT(bsldr_264()));
-    connect(ui.SCThresholdCB, SIGNAL(stateChanged(int)), this, SLOT(ThresholdNUD()));
+    connect(ui.SceneChangeCB, SIGNAL(stateChanged(int)), this, SLOT(ThresholdNUD()));
     connect(ui.LimitThreadsCB, SIGNAL(stateChanged(int)), this, SLOT(cpu_thread()));
     connect(ui.Hardware265CB, SIGNAL(stateChanged(int)), this, SLOT(hdwr_265()));
     connect(ui.EncodeMode265DD, SIGNAL(currentIndexChanged(int)), this, SLOT(mode_265()));
@@ -92,6 +92,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ui.CancelQueueBttn, SIGNAL(clicked(bool)), this, SLOT(CancelAllClick()));
     connect(ui.ClearJobsBttn, SIGNAL(clicked(bool)), this, SLOT(ClearFinished()));
     connect(ui.AddAudioJob, SIGNAL(clicked(bool)), this, SLOT(AddAudioJob()));
+    connect(ui.RIFEModelVKDD, SIGNAL(currentIndexChanged(int)), this, SLOT(ModelVK()));
     connect(ui.LogsDirBttn, SIGNAL(clicked(bool)), this, SLOT(OpenLogs()));
     connect(ui.PreviewBttn, SIGNAL(clicked(bool)), this, SLOT(OpenPreview()));
     connect(ui.AutoAdjCB, SIGNAL(stateChanged(int)), this, SLOT(AutoAjustU()));
@@ -112,7 +113,6 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     connect(ui.PercentageCB, SIGNAL(stateChanged(int)), this, SLOT(PercentCB()));
     connect(ui.DonateToDaGooseBttn, SIGNAL(clicked(bool)), this, SLOT(DonateDaGoose()));
     connect(ui.DonateToGlitchBttn, SIGNAL(clicked(bool)), this, SLOT(DonateGlitch()));
-    connect(ui.InterpFactorNUD, SIGNAL(valueChanged(int)), this, SLOT(InterpFactor()));
     connect(ui.PatreonBttn, SIGNAL(clicked(bool)), this, SLOT(PatreonClick()));
     connect(ui.YoutubeBttn, SIGNAL(clicked(bool)), this, SLOT(YouClick()));
     connect(ui.DiscordBttn, SIGNAL(clicked(bool)), this, SLOT(DisClick()));
@@ -172,6 +172,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     refsldr_265();
     bsldr_265();
     hide_interpgpucb();
+    ThresholdNUD();
     tool_interp();
     hide_params();
     hide_upscale();
@@ -179,7 +180,6 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     AutoAdjustUD();
     AutoAdjust();
     AutoAdjustDD();
-    InterpFactor();
     FlipDD();
     AudioTitle();
     AlgoDD();
@@ -187,6 +187,8 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
     //fix disabled bug
     ui.InterpolationCB->setChecked(true);
     ui.InterpolationCB->setChecked(false);
+    ui.SceneChangeCB->setChecked(true);
+    ui.SceneChangeCB->setChecked(false);
     ui.UpscalingGB->setChecked(true);
     ui.UpscalingGB->setChecked(false);
     ui.Preset264DD->setCurrentIndex(6);
@@ -199,14 +201,15 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent)
 
     WriteLog(QString("Welcome to EncodeGUI! You are using the v%1 (free, stable) build.").arg(VERSION), false, false, false);
     WriteLog("This is a user information log and will not be accepted in an issue/bug report.", true, false, false);
-    WriteLog("Visit https://encodegui.com/support.html for directions on how to submit a proper issue/bug report.", false, false, false);
+    WriteLog("Visit https://encodegui.com/support for directions on how to submit a proper issue/bug report.", false, false, false);
 
     GPUFinished();
     CheckEncoders();
     GetProcessor();
 
+    ui.BackendDD->removeItem(2);
+
     connect(ui.AutoDelSourceCB, SIGNAL(stateChanged(int)), this, SLOT(DelSource()));
-    connect(ui.SCThresholdNUD, SIGNAL(valueChanged(double)), this, SLOT(ScNUD()));
 
     connect(new QShortcut(QKeySequence(Qt::Key_F1), this), &QShortcut::activated, []() { QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html")); });
 
@@ -397,12 +400,6 @@ void EncodeGUI::dropEvent(QDropEvent* d) {
     if (CHECKED(ui.SampleVidCB))
         MsgBoxHelper(MessageType::Error, "EncodeGUI error", "EncodeGUI is currently not accepting drag and drop input as the sample video input option is enabled.", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     else {
-        VideoInfo::ClearAll();
-        AudioInfo::ClearAll();
-        SubtitleInfo::ClearAll();
-
-        VideoInfoRegex::DurationLine.clear();
-
         QString ffprobe = QDir::toNativeSeparators(QDir::currentPath() + QString("\\ffmpeg\\ffprobe.exe"));
         QString input = QDir::toNativeSeparators(urlList.at(0).toLocalFile());
 
@@ -416,7 +413,7 @@ void EncodeGUI::Skip() {
 }
 
 void EncodeGUI::GoToUpdate() {
-    QDesktopServices::openUrl(QUrl("https://encodegui.com/downloads.html"));
+    QDesktopServices::openUrl(QUrl("https://encodegui.com/downloads"));
     up->close();
 }
 
@@ -466,12 +463,6 @@ void EncodeGUI::SetVideoInfo() {
 }
 
 void EncodeGUI::input_bttn() {
-    VideoInfo::ClearAll();
-    AudioInfo::ClearAll();
-    SubtitleInfo::ClearAll();
-
-    VideoInfoRegex::DurationLine.clear();
-    
     QString input;
     QString ffprobe = QDir::toNativeSeparators(QDir::currentPath() + QString("\\ffmpeg\\ffprobe.exe"));
 
@@ -492,6 +483,12 @@ void EncodeGUI::GetVideoInfo(QString input, QString ffprobe) {
 
         if (!ui.SelectInTxtBox->text().isEmpty()) {
             disconnect(ui.AudioTrackDD, SIGNAL(currentIndexChanged(int)), this, SLOT(audio_track()));
+
+            VideoInfo::ClearAll();
+            AudioInfo::ClearAll();
+            SubtitleInfo::ClearAll();
+
+            VideoInfoRegex::DurationLine.clear();
 
             ui.AudioTrackDD->clear();
             ui.SelectedAudioDD->clear();
@@ -523,10 +520,6 @@ void EncodeGUI::HDRMeta() {
 
     if (!input.isEmpty())
         ui.DynamicHDRTxtBox->setText(QDir::toNativeSeparators(input));
-}
-
-void EncodeGUI::ScNUD() {
-    QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("scvalue", ui.SCThresholdNUD->value());
 }
 
 void EncodeGUI::GPU1() {
@@ -638,101 +631,95 @@ void EncodeGUI::RegexFinished() {
     if (VideoInfo::GetVideoCodec().contains("?")) {
         QMessageBox::critical(this, tr("Import file error"), tr("The selected input file is not a video. Only choose video files as the input.\n"));
         ui.SelectInTxtBox->setText(QString());
-	  return;
+        return;
     }
     else if (VideoInfo::GetDurationStrng().contains("?") && !VideoInfo::GetVideoCodec().contains("?")) {
-        WriteLog(QString("Warning: the source file (%1) duration could not be found. Some encoding progress info will be unavailible for the associated job.").arg(ui.SelectInTxtBox->text()), false, false, true);
+        WriteLog(QString("Warning: the source file (%1) duration could not be found. Some encoding progress info will be unavailable for the associated job.").arg(ui.SelectInTxtBox->text()), false, false, true);
         QMessageBox::warning(this, tr("Input Error"), tr("EncodeGUI was unable to find the duration of the selected file. As a result, encoding progress info for this source will be limited."));
     }
-    
+
     tool_interp();
 
-        if (CHECKED(ui.ColorSpaceCB)) {
-            if (VideoInfo::GetMatrix().contains("?") || VideoInfo::GetMatrix().contains("unknown")) {
-                VideoInfo::SetMatrix("bt709");
-                WriteLog("Color matrix for the selected source is unknown, assuming BT709.", false, false, false);
-            }
-            if (VideoInfo::GetTransfer().contains("?") || VideoInfo::GetTransfer().contains("unknown")) {
-                VideoInfo::SetTransfer("bt709");
-                WriteLog("Color transfer for the selected source is unknown, assuming BT709.", false, false, false);
-            }
-            if (VideoInfo::GetPrimaries().contains("?") || VideoInfo::GetPrimaries().contains("unknown")) {
-                VideoInfo::SetPrimaries("bt709");
-                WriteLog("Color primaries for the selected source is unknown, assuming BT709.", false, false, false);
-            }
+    if (CHECKED(ui.ColorSpaceCB)) {
+        if (VideoInfo::GetMatrix().contains("?") || VideoInfo::GetMatrix().contains("unknown")) {
+            VideoInfo::SetMatrix("bt709");
+            WriteLog("Color matrix for the selected source is unknown, assuming BT709.", false, false, false);
         }
-        
-        if (!ui.InterpolationCB->isChecked()) {
-            ui.InterpolationCB->setChecked(true);
-            ui.InterpolationCB->setChecked(false);
+        if (VideoInfo::GetTransfer().contains("?") || VideoInfo::GetTransfer().contains("unknown")) {
+            VideoInfo::SetTransfer("bt709");
+            WriteLog("Color transfer for the selected source is unknown, assuming BT709.", false, false, false);
         }
-
-        if (AudioInfo::TotalStreams() != 0) {
-            if (CHECKED(ui.GetVidInfoCB))
-                SET_ENABLED(ui.AudioTrackDD);
-
-            SET_ENABLED(ui.AudioCB);
-            ui.AudioCB->setChecked(true);
+        if (VideoInfo::GetPrimaries().contains("?") || VideoInfo::GetPrimaries().contains("unknown")) {
+            VideoInfo::SetPrimaries("bt709");
+            WriteLog("Color primaries for the selected source is unknown, assuming BT709.", false, false, false);
         }
-        if (SubtitleInfo::TotalStreams() != 0) {
-            SET_ENABLED(ui.SubtitlesDD);
-            SET_ENABLED(ui.SubtitlesCB);
-            ui.SubtitlesCB->setChecked(true);
-        }
-        else {
-            SET_DISABLED(ui.SubtitlesDD);
-            SET_DISABLED(ui.SubtitlesCB);
-            ui.SubtitlesCB->setChecked(false);
-        }
-        if (!SubtitleInfo::GetChapter()) {
-            SET_DISABLED(ui.ChaptersCB);
-            SET_DISABLED(ui.ChaptersLabel);
-            ui.ChaptersCB->setChecked(false);
-        }
-        else {
-            SET_ENABLED(ui.ChaptersCB);
-            SET_ENABLED(ui.ChaptersLabel);
-            ui.ChaptersCB->setChecked(true);
-        }
+    }
 
-        disconnect(ui.Height2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth2x()));
-        disconnect(ui.Width2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight2x()));
-        disconnect(ui.WidthNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth()));
-        disconnect(ui.HeightNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight()));
+    if (!ui.InterpolationCB->isChecked()) {
+        ui.InterpolationCB->setChecked(true);
+        ui.InterpolationCB->setChecked(false);
+    }
 
-        ModelUpscale();
+    if (AudioInfo::TotalStreams() != 0) {
+        if (CHECKED(ui.GetVidInfoCB))
+            SET_ENABLED(ui.AudioTrackDD);
 
-        ui.Width2xNUD->setMinimum(VideoInfo::GetWidth());
-        ui.Height2xNUD->setMinimum(VideoInfo::GetHeight());
+        SET_ENABLED(ui.AudioCB);
+        ui.AudioCB->setChecked(true);
+    }
+    if (SubtitleInfo::TotalStreams() != 0) {
+        SET_ENABLED(ui.SubtitlesDD);
+        SET_ENABLED(ui.SubtitlesCB);
+        ui.SubtitlesCB->setChecked(true);
+    }
+    else {
+        SET_DISABLED(ui.SubtitlesDD);
+        SET_DISABLED(ui.SubtitlesCB);
+        ui.SubtitlesCB->setChecked(false);
+    }
+    if (!SubtitleInfo::GetChapter()) {
+        SET_DISABLED(ui.ChaptersCB);
+        SET_DISABLED(ui.ChaptersLabel);
+        ui.ChaptersCB->setChecked(false);
+    }
+    else {
+        SET_ENABLED(ui.ChaptersCB);
+        SET_ENABLED(ui.ChaptersLabel);
+        ui.ChaptersCB->setChecked(true);
+    }
 
-        ui.WidthNUD->setMaximum(VideoInfo::GetWidth());
-        ui.HeightNUD->setMaximum(VideoInfo::GetHeight());
-        ui.WidthNUD->setValue(VideoInfo::GetWidth());
-        ui.HeightNUD->setValue(VideoInfo::GetHeight());
-        ui.EksNUD->setMaximum(VideoInfo::GetWidth());
-        ui.WhyNUD->setMaximum(VideoInfo::GetHeight());
-        ui.OutHeightNUD->setMaximum(VideoInfo::GetHeight());
-        ui.OutWidthNUD->setMaximum(VideoInfo::GetWidth());
+    disconnect(ui.Height2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth2x()));
+    disconnect(ui.Width2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight2x()));
+    disconnect(ui.WidthNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth()));
+    disconnect(ui.HeightNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight()));
 
-        connect(ui.Height2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth2x()));
-        connect(ui.Width2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight2x()));
-        connect(ui.WidthNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth()));
-        connect(ui.HeightNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight()));
+    ModelUpscale();
 
-        if (ui.Height2xNUD->value() > 4352) {
-            ui.Height2xNUD->setValue(4352);
-            ui.Height2xNUD->setMaximum(4352);
-            ui.HeightNUD->setValue(4352);
-            ui.HeightNUD->setMaximum(4352);
-        }
-        if (ui.Width2xNUD->value() > 8192) {
-            ui.Width2xNUD->setValue(8192);
-            ui.Width2xNUD->setMaximum(8192);
-            ui.WidthNUD->setValue(8192);
-            ui.WidthNUD->setMaximum(8192);
-        }
+    ui.Width2xNUD->setMinimum(VideoInfo::GetWidth());
+    ui.Height2xNUD->setMinimum(VideoInfo::GetHeight());
+    ui.WidthNUD->setValue(VideoInfo::GetWidth());
+    ui.HeightNUD->setValue(VideoInfo::GetHeight());
+    ui.EksNUD->setMaximum(VideoInfo::GetWidth());
+    ui.WhyNUD->setMaximum(VideoInfo::GetHeight());
+    ui.OutHeightNUD->setMaximum(VideoInfo::GetHeight());
+    ui.OutWidthNUD->setMaximum(VideoInfo::GetWidth());
 
-        InterpFactor();
+    connect(ui.Height2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth2x()));
+    connect(ui.Width2xNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight2x()));
+    connect(ui.WidthNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjWidth()));
+    connect(ui.HeightNUD, SIGNAL(valueChanged(int)), this, SLOT(AutoAdjHeight()));
+
+    if (ui.Height2xNUD->value() > 4352) {
+        ui.Height2xNUD->setValue(4352);
+        ui.Height2xNUD->setMaximum(4352);
+        ui.HeightNUD->setValue(4352);
+        ui.HeightNUD->setMaximum(4352);
+    }
+    if (ui.Width2xNUD->value() > 8192) {
+        ui.Width2xNUD->setValue(8192);
+        ui.Width2xNUD->setMaximum(8192);
+        ui.WidthNUD->setValue(8192);
+        ui.WidthNUD->setMaximum(8192);
     }
 
     SetAudioInfo();
@@ -770,13 +757,6 @@ void EncodeGUI::ModelUpscale() {
         ui.WidthNUD->setValue(8192);
         ui.WidthNUD->setMaximum(8192);
     }
-}
-
-void EncodeGUI::InterpFactor() {
-    if (ui.ToolInterpDD->currentIndex() == 1 && (ui.BackendDD->currentIndex() == 0 || ui.BackendDD->currentIndex() == 2))
-        ui.OutputFPSNUD->setValue(static_cast<double>(VideoInfo::GetFrameRate().toDouble()) * ui.InterpFactorNUD->value());
-    else if (ui.ToolInterpDD->currentIndex() == 1 && ui.BackendDD->currentIndex() == 1)
-        ui.OutputFPSNUD->setValue(static_cast<double>(VideoInfo::GetFrameRate().toDouble()) * 2.0);
 }
 
 void EncodeGUI::GetProcessor() {
@@ -917,7 +897,7 @@ void EncodeGUI::ClearFinished() {
 }
 
 void EncodeGUI::CancelMain() {
-    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All current progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the currently running job? All current progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (msg == QMessageBox::Yes) {
         if (ui.JobQueue->item(ffloader->currentJob, 1)->text().contains("Active")) {
@@ -948,7 +928,7 @@ void EncodeGUI::SetState() {
 }
 
 void EncodeGUI::CancelClick() {
-    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All current progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+    QMessageBox::StandardButton msg = MsgBoxHelper(MessageType::Question, "Cancel confirmation", "Are you sure you want to cancel the selected job? All progress will be lost.", QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (msg == QMessageBox::Yes) {
         if (ui.JobQueue->item(selectedJob, 1)->text().contains("Active")) {
@@ -1172,7 +1152,7 @@ void EncodeGUI::NewTask() {
             }
         }
         else {
-            MsgBoxHelper(MessageType::Error, "EncodeUI error", QString("The source video file at \"%1\" is missing or does not exist.").arg(inputList.at(ffloader->currentJob)), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+            MsgBoxHelper(MessageType::Error, "EncodeGUI error", QString("The source video file at \"%1\" is missing or does not exist.").arg(inputList.at(ffloader->currentJob)), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
             ui.JobQueue->item(ffloader->currentJob, 1)->setText("Failed");
             WriteLog(QString("Error: could not find source file for job %1").arg(job.at(ffloader->currentJob)), false, true, false);
             FileStream << QString("EncodeGUI error: could not find source file for job %1").arg(job.at(ffloader->currentJob));
@@ -1271,7 +1251,7 @@ void EncodeGUI::EncodeFinished() {
         if (msg == QMessageBox::Open)
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
         if (msg == QMessageBox::Help)
-            QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+            QDesktopServices::openUrl(QUrl("https://encodegui.com/support"));
 
         SetState();
     }
@@ -1285,7 +1265,7 @@ void EncodeGUI::EncodeFinished() {
         if (msg == QMessageBox::Open)
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
         if (msg == QMessageBox::Help)
-            QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+            QDesktopServices::openUrl(QUrl("https://encodegui.com/support"));
 
         SetState();
     }
@@ -1296,7 +1276,7 @@ void EncodeGUI::EncodeFinished() {
         if (msg == QMessageBox::Open)
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
         if (msg == QMessageBox::Help)
-            QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+            QDesktopServices::openUrl(QUrl("https://encodegui.com/support"));
 
         state.replace(ffloader->currentJob, "Failed");
         SetState();
@@ -1324,7 +1304,7 @@ void EncodeGUI::EncodeFinished() {
         if (msg == QMessageBox::Open)
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
         if (msg == QMessageBox::Help)
-            QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+            QDesktopServices::openUrl(QUrl("https://encodegui.com/support"));
 
         state.replace(ffloader->currentJob, "Failed");
         SetState();
@@ -1353,7 +1333,7 @@ void EncodeGUI::EncodeFinished() {
                 if (sb == QMessageBox::Open)
                     QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI\\job-%1").arg(job.at(ffloader->currentJob)))));
                 if (sb == QMessageBox::Help)
-                    QDesktopServices::openUrl(QUrl("https://encodegui.com/support.html"));
+                    QDesktopServices::openUrl(QUrl("https://encodegui.com/support"));
 
                 state.replace(ffloader->currentJob, "Failed");
                 SetState();
@@ -1494,11 +1474,6 @@ void EncodeGUI::OpenOutput() {
 
 void EncodeGUI::UpdateProgress() {
     ui.progressBar->setMaximum(100);
-
-    if (ProcessError::GetProbeError()) {
-        WriteLog(QString("Warning: unable to determine exact output frame rate for job %1 due to limited probe size.").arg(job.at(ffloader->currentJob)), false, false, true);
-        ProcessError::SetProbeError(false);
-    }
 
     if (!ProcessError::GetVkMemoryError() && !ProcessError::GetVkQueueError()) {
         QString progress;
@@ -1736,12 +1711,10 @@ void EncodeGUI::hide_sub() {
 }
 
 void EncodeGUI::ThresholdNUD() {
-    if (CHECKED(ui.SCThresholdCB))
+    if (CHECKED(ui.SceneChangeCB))
         SET_ENABLED(ui.SCThresholdNUD);
     else
         SET_DISABLED(ui.SCThresholdNUD);
-
-    QSettings(QSettings::NativeFormat, QSettings::UserScope, "DaGoose", "EncodeGUI").setValue("sc", CHECKED(ui.SCThresholdCB));
 }
 
 void EncodeGUI::AlgoDD() {
@@ -1813,6 +1786,9 @@ void EncodeGUI::HideEnc() {
             SET_VISIBLE(ui.OutContainerx264DD);
         }
 
+        ui.WidthNUD->setMaximum(3840);
+        ui.HeightNUD->setMaximum(2160);
+
         RemoveTabs(ui.x264Tab);
         break;
     case 1:
@@ -1820,6 +1796,9 @@ void EncodeGUI::HideEnc() {
             ui.VideoTabs->insertTab(0, ui.x265Tab, "HEVC");
             SET_VISIBLE(ui.OutContainerx265DD);
         }
+
+        ui.WidthNUD->setMaximum(8192);
+        ui.HeightNUD->setMaximum(4352);
 
         RemoveTabs(ui.x265Tab);
         break;
@@ -1829,6 +1808,9 @@ void EncodeGUI::HideEnc() {
             SET_VISIBLE(ui.OutContainerProResDD);
         }
 
+        ui.WidthNUD->setMaximum(8192);
+        ui.HeightNUD->setMaximum(4320);
+
         RemoveTabs(ui.ProResTab);
         break;
     case 3:
@@ -1836,6 +1818,9 @@ void EncodeGUI::HideEnc() {
             ui.VideoTabs->insertTab(0, ui.TheoraTab, "Theora");
             SET_VISIBLE(ui.OutContainerTheoraDD);
         }
+
+        ui.WidthNUD->setMaximum(1920);
+        ui.HeightNUD->setMaximum(1080);
 
         RemoveTabs(ui.TheoraTab);
         break;
@@ -1845,6 +1830,9 @@ void EncodeGUI::HideEnc() {
             SET_VISIBLE(ui.OutContainerVPXDD);
         }
 
+        ui.WidthNUD->setMaximum(8192);
+        ui.HeightNUD->setMaximum(4352);
+
         RemoveTabs(ui.VPXTab);
         break;
     case 5:
@@ -1853,6 +1841,9 @@ void EncodeGUI::HideEnc() {
             SET_VISIBLE(ui.OutContainerAV1DD);
         }
 
+        ui.WidthNUD->setMaximum(8192);
+        ui.HeightNUD->setMaximum(4352);
+
         RemoveTabs(ui.av1Tab);
         break;
     case 6:
@@ -1860,6 +1851,9 @@ void EncodeGUI::HideEnc() {
             ui.Tabs->removeTab(ui.Tabs->indexOf(ui.VideoTab));
             SET_VISIBLE(ui.OutContainerMuxDD);
         }
+
+        ui.WidthNUD->setMaximum(8192);
+        ui.HeightNUD->setMaximum(4352);
         
         RemoveTabs(ui.VideoTab);
         break;
