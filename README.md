@@ -19,7 +19,7 @@ Below is a list of key features in EnocdeGUI **where other competing software la
 - Features Intel hardware accelerated AV1 processing. 
 - Features the latest, exclusive AI and non-AI frame interpolation options: RIFE (NCNN/CUDA), EncodeGUI AI (NCNN/CUDA), SVPFlow (OpenGL)
 - Full HDR10(+) support with configurations allowing you to convert SDR videos to HDR, and visa versa.
-- Features VapourSynth filtering which **doesn't extract frames before rendering, allowing a faster render than nearly all competing software**. The only frame extraction that occurs is for the live encoding progress preview, which is very fast and uses very little resources.
+- Features VapourSynth filtering for ALL filters which **doesn't extract frames before rendering, allowing a faster render than nearly all competing software**.
 
 # Usage
 Documentation including the basic usage guide can be found at https://encodegui.com/docs/documentation.html.
