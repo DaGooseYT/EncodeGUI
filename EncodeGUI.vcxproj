@@ -86,6 +86,11 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtUic>
+      <ExecutionDescription />
+    </QtUic>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -105,100 +110,100 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Arguments\AudioArgs.cpp" />
-    <ClCompile Include="Arguments\CodecArgs.cpp" />
-    <ClCompile Include="Arguments\ColorsArgs.cpp" />
-    <ClCompile Include="Arguments\EntropyArgs.cpp" />
-    <ClCompile Include="Arguments\FrameArgs.cpp" />
-    <ClCompile Include="Arguments\HDRArgs.cpp" />
-    <ClCompile Include="Arguments\IOArgs.cpp" />
-    <ClCompile Include="Arguments\MapArgs.cpp" />
-    <ClCompile Include="Arguments\MiscArgs.cpp" />
-    <ClCompile Include="Arguments\MixArgs.cpp" />
-    <ClCompile Include="Arguments\PassArgs.cpp" />
-    <ClCompile Include="Arguments\PresetArgs.cpp" />
-    <ClCompile Include="Arguments\ProfileArgs.cpp" />
-    <ClCompile Include="Arguments\RateControlArgs.cpp" />
-    <ClCompile Include="Arguments\ResolutionArgs.cpp" />
-    <ClCompile Include="Arguments\SharpenArgs.cpp" />
-    <ClCompile Include="Arguments\TierArgs.cpp" />
-    <ClCompile Include="Arguments\TimecodeArgs.cpp" />
-    <ClCompile Include="Arguments\TransposeArgs.cpp" />
-    <ClCompile Include="Arguments\TuneArgs.cpp" />
-    <ClCompile Include="Arguments\VsPipeArgs.cpp" />
-    <ClCompile Include="Checks\Files.cpp" />
-    <ClCompile Include="Checks\Process.cpp" />
-    <ClCompile Include="IO\AudioInfo.cpp" />
-    <ClCompile Include="IO\ProcessError.cpp" />
-    <ClCompile Include="IO\ProgressInfo.cpp" />
-    <ClCompile Include="IO\SubtitleInfo.cpp" />
-    <ClCompile Include="IO\VideoInfo.cpp" />
-    <ClCompile Include="IO\VideoInfoList.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Process\FFLoaderBase.cpp" />
-    <ClCompile Include="Process\MediaConfig.cpp" />
-    <ClCompile Include="Process\ProcessWorker.cpp" />
-    <ClCompile Include="Process\ScriptBuilder.cpp" />
-    <ClCompile Include="Regex\AudioSubInfoRegex.cpp" />
-    <ClCompile Include="Regex\ProcessErrorRegex.cpp" />
-    <ClCompile Include="Regex\ProgressInfoRegex.cpp" />
-    <ClCompile Include="Regex\VideoInfoRegex.cpp" />
-    <ClCompile Include="UI\Audio.cpp" />
-    <ClCompile Include="UI\AV1.cpp" />
-    <ClCompile Include="UI\AVC.cpp" />
-    <ClCompile Include="UI\Config.cpp" />
-    <ClCompile Include="UI\EncodeGUI.cpp" />
-    <ClCompile Include="UI\HEVC.cpp" />
-    <ClCompile Include="UI\Jobs.cpp" />
-    <ClCompile Include="UI\MsgBox.cpp" />
-    <ClCompile Include="UI\Preview.cpp" />
-    <ClCompile Include="UI\Script.cpp" />
-    <ClCompile Include="UI\Settings.cpp" />
-    <ClCompile Include="UI\Theora.cpp" />
-    <ClCompile Include="UI\Updater.cpp" />
-    <ClCompile Include="UI\VPX.cpp" />
-    <ClCompile Include="UI\VS.cpp" />
-    <ClCompile Include="VS\Colors.cpp" />
-    <ClCompile Include="VS\RIFE.cpp" />
-    <ClCompile Include="VS\SRMD.cpp" />
-    <ClCompile Include="VS\SVPFlow.cpp" />
-    <ClCompile Include="VS\VapourSynth.cpp" />
-    <ClCompile Include="VS\Waifu2x.cpp" />
+    <ClCompile Include="src\args\audioargs.cpp" />
+    <ClCompile Include="src\args\codec.cpp" />
+    <ClCompile Include="src\args\colorsargs.cpp" />
+    <ClCompile Include="src\args\entropy.cpp" />
+    <ClCompile Include="src\args\frame.cpp" />
+    <ClCompile Include="src\args\hdr.cpp" />
+    <ClCompile Include="src\args\io.cpp" />
+    <ClCompile Include="src\args\map.cpp" />
+    <ClCompile Include="src\args\misc.cpp" />
+    <ClCompile Include="src\args\mix.cpp" />
+    <ClCompile Include="src\args\pass.cpp" />
+    <ClCompile Include="src\args\preset.cpp" />
+    <ClCompile Include="src\args\profile.cpp" />
+    <ClCompile Include="src\args\ratecontrol.cpp" />
+    <ClCompile Include="src\args\resolution.cpp" />
+    <ClCompile Include="src\args\sharpen.cpp" />
+    <ClCompile Include="src\args\tier.cpp" />
+    <ClCompile Include="src\args\timecode.cpp" />
+    <ClCompile Include="src\args\transpose.cpp" />
+    <ClCompile Include="src\args\tune.cpp" />
+    <ClCompile Include="src\args\vspipe.cpp" />
+    <ClCompile Include="src\checks\files.cpp" />
+    <ClCompile Include="src\checks\process.cpp" />
+    <ClCompile Include="src\io\audioinfo.cpp" />
+    <ClCompile Include="src\io\processerror.cpp" />
+    <ClCompile Include="src\io\progressinfo.cpp" />
+    <ClCompile Include="src\io\subtitleinfo.cpp" />
+    <ClCompile Include="src\io\videoinfo.cpp" />
+    <ClCompile Include="src\io\videoinfolist.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\process\ffloader.cpp" />
+    <ClCompile Include="src\process\mediaconfig.cpp" />
+    <ClCompile Include="src\process\processworker.cpp" />
+    <ClCompile Include="src\process\scriptbuilder.cpp" />
+    <ClCompile Include="src\regex\audiosubinforegex.cpp" />
+    <ClCompile Include="src\regex\processerrorregex.cpp" />
+    <ClCompile Include="src\regex\progressinforegex.cpp" />
+    <ClCompile Include="src\regex\videoinforegex.cpp" />
+    <ClCompile Include="src\ui\audio.cpp" />
+    <ClCompile Include="src\ui\av1.cpp" />
+    <ClCompile Include="src\ui\avc.cpp" />
+    <ClCompile Include="src\ui\config.cpp" />
+    <ClCompile Include="src\ui\encodegui.cpp" />
+    <ClCompile Include="src\ui\hevc.cpp" />
+    <ClCompile Include="src\ui\jobs.cpp" />
+    <ClCompile Include="src\ui\msgbox.cpp" />
+    <ClCompile Include="src\ui\preview.cpp" />
+    <ClCompile Include="src\ui\script.cpp" />
+    <ClCompile Include="src\ui\settings.cpp" />
+    <ClCompile Include="src\ui\theora.cpp" />
+    <ClCompile Include="src\ui\updater.cpp" />
+    <ClCompile Include="src\ui\vpx.cpp" />
+    <ClCompile Include="src\ui\vs.cpp" />
+    <ClCompile Include="src\vs\colors.cpp" />
+    <ClCompile Include="src\vs\rife.cpp" />
+    <ClCompile Include="src\vs\srmd.cpp" />
+    <ClCompile Include="src\vs\svpflow.cpp" />
+    <ClCompile Include="src\vs\vapoursynth.cpp" />
+    <ClCompile Include="src\vs\waifu2x.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Arguments\Argument.h" />
-    <ClInclude Include="Checks\Checks.h" />
-    <ClInclude Include="IO\AudioInfo.h" />
-    <ClInclude Include="IO\ProcessError.h" />
-    <ClInclude Include="IO\ProgressInfo.h" />
-    <ClInclude Include="IO\SubtitleInfo.h" />
-    <ClInclude Include="IO\VideoInfo.h" />
-    <ClInclude Include="IO\VideoInfoList.h" />
-    <ClInclude Include="Process\MediaConfig.h" />
-    <ClInclude Include="Process\ScriptBuilder.h" />
+    <ClInclude Include="include\args.hpp" />
+    <ClInclude Include="include\checks.hpp" />
+    <ClInclude Include="include\audioinfo.hpp" />
+    <ClInclude Include="include\processerror.hpp" />
+    <ClInclude Include="include\progressinfo.hpp" />
+    <ClInclude Include="include\subtitleinfo.hpp" />
+    <ClInclude Include="include\videoinfo.hpp" />
+    <ClInclude Include="include\videoinfolist.hpp" />
+    <ClInclude Include="include\mediaconfig.hpp" />
+    <ClInclude Include="include\scriptbuilder.hpp" />
     <ClInclude Include="x64\Release\uic\ui_EncodeGUI.h" />
     <ClInclude Include="x64\Release\uic\ui_Preview.h" />
     <ClInclude Include="x64\Release\uic\ui_Updater.h" />
-    <QtMoc Include="Process\FFLoader.h" />
-    <ClInclude Include="Regex\AudioSubInfoRegex.h" />
-    <ClInclude Include="Regex\ProcessErrorRegex.h" />
-    <ClInclude Include="Regex\ProgressInfoRegex.h" />
-    <ClInclude Include="Regex\VideoInfoRegex.h" />
-    <ClInclude Include="UI\Preview.h" />
-    <ClInclude Include="UI\Updater.h" />
-    <QtMoc Include="UI\EncodeGUI.h" />
-    <ClInclude Include="VS\VapourSynth.h" />
+    <QtMoc Include="include\ffloader.hpp" />
+    <ClInclude Include="include\audiosubinforegex.hpp" />
+    <ClInclude Include="include\processerrorregex.hpp" />
+    <ClInclude Include="include\progressinforegex.hpp" />
+    <ClInclude Include="include\videoinforegex.hpp" />
+    <ClInclude Include="include\preview.hpp" />
+    <ClInclude Include="include\updater.hpp" />
+    <QtMoc Include="include\encodegui.hpp" />
+    <ClInclude Include="include\vapoursynth.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="UI\EncodeGUI.ui" />
-    <QtUic Include="UI\Preview.ui" />
-    <QtUic Include="UI\Updater.ui" />
+    <QtUic Include="src\ui\encodegui.ui" />
+    <QtUic Include="src\ui\preview.ui" />
+    <QtUic Include="src\ui\updater.ui" />
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="Assets\EncodeGUI.qrc" />
+    <QtRcc Include="assets\EncodeGUI.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Assets\EncodeGUI.rc" />
+    <ResourceCompile Include="assets\EncodeGUI.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

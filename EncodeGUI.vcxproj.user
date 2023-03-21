@@ -10,9 +10,9 @@
     </SourceMap>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release_linux|x64'">
-    <QtLastBackgroundBuild>2023-02-26T02:54:20.6243724Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2023-02-26T09:19:01.2158288Z</QtLastBackgroundBuild>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtLastBackgroundBuild>2023-02-26T02:54:20.6683756Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2023-02-26T09:19:01.2554091Z</QtLastBackgroundBuild>
   </PropertyGroup>
 </Project>
