@@ -1,7 +1,7 @@
 # EncodeGUI
 ![alt text][egui]
 
-[egui]: https://github.com/DaGooseYT/EncodeGUI/blob/main/Assets/gui.png
+[egui]: https://github.com/DaGooseYT/EncodeGUI/blob/main/gui.png
 
 EncodeGUI (encode-gooey) is a free and open source video transcoder GUI that utilizes AI tools for a fascinating encoding experience. Find out more at it's website, https://encodegui.com
 
