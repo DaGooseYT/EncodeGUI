@@ -9,20 +9,14 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
-		Release_Linux|Any CPU = Release_Linux|Any CPU
-		Release_Linux|x64 = Release_Linux|x64
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|Any CPU.ActiveCfg = Release|x64
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|Any CPU.Build.0 = Release|x64
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|x64.ActiveCfg = Release|x64
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|x64.Build.0 = Release|x64
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Release_Linux|Any CPU.ActiveCfg = Release_Linux|x64
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Release_Linux|Any CPU.Build.0 = Release_Linux|x64
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Release_Linux|x64.ActiveCfg = Release_Linux|x64
-		{098B73F3-16E7-4914-A051-CA4327E63F49}.Release_Linux|x64.Build.0 = Release_Linux|x64
+		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|Any CPU.Build.0 = Debug|x64
+		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|x64.ActiveCfg = Debug|x64
+		{098B73F3-16E7-4914-A051-CA4327E63F49}.Debug|x64.Build.0 = Debug|x64
 		{098B73F3-16E7-4914-A051-CA4327E63F49}.Release|Any CPU.ActiveCfg = Release|x64
 		{098B73F3-16E7-4914-A051-CA4327E63F49}.Release|Any CPU.Build.0 = Release|x64
 		{098B73F3-16E7-4914-A051-CA4327E63F49}.Release|x64.ActiveCfg = Release|x64

@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -13,7 +17,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{098B73F3-16E7-4914-A051-CA4327E63F49}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
-    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
     <ApplicationType Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">Linux</ApplicationType>
     <ApplicationTypeRevision Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">Generic</TargetLinuxPlatform>
@@ -31,6 +35,9 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <RemoteCopyIncludeDirectories>
     </RemoteCopyIncludeDirectories>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
@@ -66,12 +73,22 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <IncludePath>$(ProjectDir)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_linux|x64'">
     <ProjectPublicIncludePath>C:\Users\Goose\AppData\Local\Microsoft\Linux\HeaderCache\1.0\-2016259881\home\goose\Qt\6.4.0\gcc_64\include;C:\Users\Goose\AppData\Local\Microsoft\Linux\HeaderCache\1.0\-2016259881\usr\include;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
     <IncludePath>
     </IncludePath>
     <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(ProjectDir)\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtDeploy>false</QtDeploy>
+    <QtBuildConfig>debug</QtBuildConfig>
+    <QtInstall>6.2.4</QtInstall>
+    <QtModules>core;gui;network;widgets</QtModules>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_linux|x64'">
     <ClCompile>
@@ -88,7 +105,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <QtUic>
-      <ExecutionDescription />
+      <QtUicFileName>ui_%(Filename).hpp</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtUic>
+      <QtUicFileName>ui_%(Filename).hpp</QtUicFileName>
+      <QtUicDir>$(ProjectDir)\include\windows</QtUicDir>
+      <ExecutionDescription>uic %(Identity)</ExecutionDescription>
     </QtUic>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
@@ -111,15 +135,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\args\audioargs.cpp" />
+    <ClCompile Include="src\args\bitrate.cpp" />
+    <ClCompile Include="src\args\chapters.cpp" />
     <ClCompile Include="src\args\codec.cpp" />
     <ClCompile Include="src\args\colorsargs.cpp" />
     <ClCompile Include="src\args\entropy.cpp" />
     <ClCompile Include="src\args\frame.cpp" />
     <ClCompile Include="src\args\hdr.cpp" />
-    <ClCompile Include="src\args\io.cpp" />
     <ClCompile Include="src\args\map.cpp" />
     <ClCompile Include="src\args\misc.cpp" />
-    <ClCompile Include="src\args\mix.cpp" />
     <ClCompile Include="src\args\pass.cpp" />
     <ClCompile Include="src\args\preset.cpp" />
     <ClCompile Include="src\args\profile.cpp" />
@@ -153,6 +177,7 @@
     <ClCompile Include="src\ui\avc.cpp" />
     <ClCompile Include="src\ui\config.cpp" />
     <ClCompile Include="src\ui\encodegui.cpp" />
+    <ClCompile Include="src\ui\enviornment.cpp" />
     <ClCompile Include="src\ui\hevc.cpp" />
     <ClCompile Include="src\ui\jobs.cpp" />
     <ClCompile Include="src\ui\msgbox.cpp" />
@@ -181,9 +206,9 @@
     <ClInclude Include="include\videoinfolist.hpp" />
     <ClInclude Include="include\mediaconfig.hpp" />
     <ClInclude Include="include\scriptbuilder.hpp" />
-    <ClInclude Include="x64\Release\uic\ui_EncodeGUI.h" />
-    <ClInclude Include="x64\Release\uic\ui_Preview.h" />
-    <ClInclude Include="x64\Release\uic\ui_Updater.h" />
+    <ClInclude Include="include\windows\ui_encodegui.hpp" />
+    <ClInclude Include="include\windows\ui_preview.hpp" />
+    <ClInclude Include="include\windows\ui_updater.hpp" />
     <QtMoc Include="include\ffloader.hpp" />
     <ClInclude Include="include\audiosubinforegex.hpp" />
     <ClInclude Include="include\processerrorregex.hpp" />
@@ -195,9 +220,9 @@
     <ClInclude Include="include\vapoursynth.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="src\ui\encodegui.ui" />
-    <QtUic Include="src\ui\preview.ui" />
-    <QtUic Include="src\ui\updater.ui" />
+    <QtUic Include="include\windows\encodegui.ui" />
+    <QtUic Include="include\windows\preview.ui" />
+    <QtUic Include="include\windows\updater.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="assets\EncodeGUI.qrc" />

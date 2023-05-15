@@ -155,16 +155,10 @@
     <ClCompile Include="src\args\hdr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\args\io.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\args\map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\args\misc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\args\mix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\args\pass.cpp">
@@ -198,6 +192,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\args\vspipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\args\bitrate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\args\chapters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\enviornment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -253,13 +256,13 @@
     <ClInclude Include="include\args.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="x64\Release\uic\ui_EncodeGUI.h">
+    <ClInclude Include="include\windows\ui_encodegui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="x64\Release\uic\ui_Preview.h">
+    <ClInclude Include="include\windows\ui_preview.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="x64\Release\uic\ui_Updater.h">
+    <ClInclude Include="include\windows\ui_updater.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -272,13 +275,13 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="src\ui\encodegui.ui">
+    <QtUic Include="include\windows\encodegui.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="src\ui\preview.ui">
+    <QtUic Include="include\windows\preview.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="src\ui\updater.ui">
+    <QtUic Include="include\windows\updater.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
