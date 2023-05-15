@@ -5,7 +5,7 @@
 
 EncodeGUI (encode-gooey) is a free and open source video transcoder GUI that utilizes AI tools for a fascinating encoding experience. Find out more at it's website, https://encodegui.com
 
-This repository only consists of the source code; no builds are hosted here. See https://encodegui.com/downloads.html for the latest builds.
+This repository only consists of the source code; no builds are hosted here. See https://encodegui.com/downloads for the latest builds.
 
 # Key Features
 Below is a list of key features in EnocdeGUI **where other competing software lacks**:
@@ -19,7 +19,7 @@ Below is a list of key features in EnocdeGUI **where other competing software la
 - Features Intel hardware accelerated AV1 processing. 
 - Features the latest, exclusive AI and non-AI frame interpolation options: RIFE (NCNN/CUDA), EncodeGUI AI (NCNN/CUDA), SVPFlow (OpenGL)
 - Full HDR10(+) support with configurations allowing you to convert SDR videos to HDR, and visa versa.
-- Full Dolby Vision support.
+- Dolby Vision support (beta).
 - Features VapourSynth filtering for ALL filters which **doesn't extract frames before rendering, allowing a faster render than nearly all competing software**.
 
 # Usage
