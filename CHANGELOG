@@ -1,10 +1,26 @@
-EncodeGUI v1.1.7 [Pre-release: 02/26/2023] [Regular release: 05/07/2023]
+EncodeGUI v1.2.0 [Pre-release: 05/14/2023] [Regular release: 08/06/2023]
+
+- Added the Subtitle queue for custom subtitle configurations.
+- Added the option to import audio and subtitles from external videos or standalone audio sources.
+- Added the task bar icon encoding progress bar.
+- Added the option to receive a desktop notification for when an encoding task is complete.
+- Batch (folder) encoding.
+- EncodeGUI MacOS with 100% native Apple Silicon support is now here (will be released a few days after the Windows release).
+- Dark theme UI that is adaptive to system configuration (MacOS only).
+- Features a custom compile of FFmpeg with VapourSynth cross compiled to allow an even faster rendering time for filters (MacOS only).
+
+=============================================================================================================
+
+EncodeGUI v1.1.7 [Pre-release: 02/26/2023] [Regular release: 05/14/2023]
 
 - Changed job queue layout; output path is now viewed through a button with a message box pop up.
 - Add input path column to the job queue.
+- Add job logs button column to the job queue.
 - Dolby Vision metadata import via HEVC.
 - Frame extraction for live encoding preview is now an optional setting.
 - Add HuffYUV as a supported muxing codec.
+- Fixed a bug where SVPFlow interpolation would output wrong frame rate.
+- Fixed a bug where total duration couldn't be found found on rare occasions.
 
 =============================================================================================================
 
