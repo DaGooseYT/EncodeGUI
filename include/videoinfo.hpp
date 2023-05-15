@@ -8,47 +8,47 @@
 
 class VideoInfo {
 public:
-	static void SetVideoCodec(QString);
-	static void SetDuration(QTime);
-	static void SetDurationStrng(QString);
-	static void SetResolution(QString);
-	static void SetWidth(int);
-	static void SetHeight(int);
-	static void SetBitrate(QString);
-	static void SetColors(QString);
-	static void SetMatrix(QString);
-	static void SetTransfer(QString);
-	static void SetPrimaries(QString);
-	static void SetFrameRate(QString);
+	static void setVideoCodec(QString videoCodec);
+	static void setDuration(QTime duration);
+	static void setDurationStrng(QString duration);
+	static void setResolution(QString resolution);
+	static void setWidth(int width);
+	static void setHeight(int height);
+	static void setBitrate(QString bitrate);
+	static void setColors(QString colors);
+	static void setMatrix(QString matrix);
+	static void setTransfer(QString transfer);
+	static void setPrimaries(QString primaries);
+	static void setFrameRate(QString frameRate);
 
-	static QString GetVideoCodec();
-	static QTime GetDuration();
-	static QString GetDurationStrng();
-	static QString GetResolution();
-	static int GetWidth();
-	static int GetHeight();
-	static QString GetBitrate();
-	static QString GetColors();
-	static QString GetMatrix();
-	static QString GetTransfer();
-	static QString GetPrimaries();
-	static QString GetFrameRate();
+	static QString getVideoCodec();
+	static QTime getDuration();
+	static QString getDurationStrng();
+	static QString getResolution();
+	static int getWidth();
+	static int getHeight();
+	static QString getBitrate();
+	static QString getColors();
+	static QString getMatrix();
+	static QString getTransfer();
+	static QString getPrimaries();
+	static QString getFrameRate();
 
-	static void ClearAll();
+	static void clearAll();
 
 private:
-	static QString VideoCodec;
-	static QTime Duration;
-	static QString DurationStrng;
-	static QString Resolution;
-	static int Width;
-	static int Height;
-	static QString Bitrate;
-	static QString Colors;
-	static QString Matrix;
-	static QString Transfer;
-	static QString Primaries;
-	static QString FrameRate;
+	static QString _videoCodec;
+	static QTime _duration;
+	static QString _durationStrng;
+	static QString _resolution;
+	static int _width;
+	static int _height;
+	static QString _bitrate;
+	static QString _colors;
+	static QString _matrix;
+	static QString _transfer;
+	static QString _primaries;
+	static QString _frameRate;
 };
 
 #endif // !VIDEOINFO_H

@@ -3,17 +3,17 @@
 #ifndef PROGRESSINFOREGEX_H
 #define PROGRESSINFOREGEX_H
 
-#include "progressinfo.hpp"
-
 #include <QtCore/QRegularExpression>
 #include <QtCore/QElapsedTimer>
 #include <QtCore/QTime>
 #include <QtCore/QList>
 
+#include "progressinfo.hpp"
+
 class ProgressInfoRegex {
 public:
-	static bool ProgressRegex(QString, QTime, int, QElapsedTimer, QTime);
-	static bool ExtractRegex(QString, QTime);
+	static bool progressRegex(QString output, QTime totalDuration, int totalFrames, QElapsedTimer timer, QTime pause);
+	static bool extractRegex(QString output, QTime totalDuration);
 
 private:
 	enum GetInfo {
@@ -23,9 +23,9 @@ private:
 		Time = 3
 	};
 
-	static QList<QRegularExpression> Indexer;
+	static QList<QRegularExpression> _indexer;
 
-	static void SetupPatterns();
+	static void setupPatterns();
 };
 
 #endif // !PROGRESSINFOREGEX_H

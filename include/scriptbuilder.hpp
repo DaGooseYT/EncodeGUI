@@ -3,34 +3,34 @@
 #ifndef SCRIPTBUILDER_H
 #define SCRIPTBUILDER_H
 
-#include "vapoursynth.hpp"
-
 #include <QtCore/QString>
+
+#include "vapoursynth.hpp"
 
 class ScriptBuilder : protected VapourSynth {
 public:
-	static QString GetScript();
-	static void SetRIFECuda(int, double, int, int, double, QString);
-	static void SetRIFENcnn(int, int, int, QString, QString, QString);
-	static void SetRIFENcnnNew(int, int, int, int, int, QString, QString, QString);
-	static void SetSVPFlowNoob(QString, int, int, int, int, int, int);
-	static void SetSVPFlow(QString, QString, QString, int, int);
-	static void SetWaifu2x(int, int, int, int, int, int, bool, int, int);
-	static void SetSRMD(int, int, int, int, QString, bool, int, int);
-	static void SetRGB(QString, QString, QString);
-	static void SetColorsInOut(QString, QString, QString, QString, QString, QString, QString);
-	static void SetColorsOut(QString, QString, QString, QString);
-	static void SetSCDetect(QString);
-	static void SetPlugin(QString);
-	static void SetInput(QString, QString);
-	static void SetAntiA();
-	static void SetInclude();
-	static void SetConcludeClip();
-	static void SetNewLine();
-	static void ClearScript();
+	static QString getScript();
+	static void setRIFECuda(int id, double model, int num, int den, double scale, QString sc, QString trt);
+	static void setRIFENcnn(int model, int id, int thread, QString tta, QString uhd, QString sc);
+	static void setRIFENcnnNew(int model, int id, int thread, int num, int den, QString tta, QString uhd, QString sc);
+	static void setSVPFlowNoob(QString useGPU, int id, int shader, int mask, int mode, int num, int den);
+	static void setSVPFlow(QString super, QString analyse, QString smooth, int num, int den);
+	static void setWaifu2x(int noise, int scale, int model, int id, int thread, int precision, bool dual, int gpu1, int gpu2);
+	static void setSRMD(int scale, int noise, int id, int thread, QString tta, bool dual, int gpu1, int gpu2);
+	static void setRGB(QString matrix, QString transfer, QString primaries);
+	static void setColorsInOut(QString format, QString matrixIn, QString transferIn, QString primariesIn, QString matrix, QString transfer, QString primaries);
+	static void setColorsOut(QString format, QString matrix, QString transfer, QString primaries);
+	static void setSCDetect(QString threshold);
+	static void setPlugin(QString path);
+	static void setInput(QString path, QString id);
+	static void setAntiA();
+	static void setInclude();
+	static void setConcludeClip();
+	static void setNewLine();
+	static void clearScript();
 
 private:
-	static QString ScriptList;
+	static QString _scriptList;
 };
 
-#endif // !SCRIPT
+#endif // !SCRIPTBUILDER_H

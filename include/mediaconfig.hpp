@@ -20,75 +20,94 @@
 #ifndef MEDIACONFIG_H
 #define MEDIACONFIG_H
 
-#include "args.hpp"
-
 #include <QStringList>
+
+#include "args.hpp"
 
 class MediaConfig : protected Argument {
 public:
-	static QString GetArguments();
-	static void Append(QString);
-	static void SetAudioChannels(QString, QString);
-	static void SetAudioRate(QString, QString);
-	static void SetVideoCodec(QString);
-	static void SetAudioCodec(QString);
-	static void SetAudioCodecMulti(QString, QString);
-	static void Setx265Params();
-	static void SetThreads(int);
-	static void SetColorsProRes(QString, QString, QString);
-	static void SetCrop(int, int, int, int);
-	static void SetEntropyCoding(int);
-	static void SetBFrames(int);
-	static void SetRefFrames(int);
-	static void SetMasterDisplay(QString);
-	static void SetHDR10Opt();
-	static void Setx265Colors(QString, QString, QString, QString);
-	static void SetMaxCllFall(int, int);
-	static void SetHDRPlus(QString);
-	static void SetDBVisionProfile(QString);
-	static void SetDBVisionRPU(QString);
-	static void SetMap(QString, QString, int);
-	static void SetMapMux(QString, int);
-	static void SetMapAll(QString, QString);
-	static void SetDownMix(double);
-	static void SetPixelFormat(QString);
-	static void SetPass(int);
-	static void SetTier(int);
-	static void SetVideoPreset(QString);
-	static void SetVideoProfile(QString);
-	static void SetVideoProfileLevel(QString);
-	static void SetVideoBitrate(int);
-	static void SetAudioTitle(QString, QString);
-	static void SetAudioLang(QString, QString);
-	static void SetAudioBitrate(int, QString);
-	static void SetConstantRateFactor(int);
-	static void SetConstantQuantizer(int);
-	static void SetQuantizer(int);
-	static void SetConstantVideoQuality(int);
-	static void SetConstantAudioQuality(int, QString);
-	static void SetVideoResolution(int, int);
-	static void SetVideoResizeAlgo(QString);
-	static void SetTransposeVideo(int);
-	static void SetFlipVideo(QString);
-	static void SetPassLogFile(QString);
-	static void SetNoAutoRotate();
-	static void SetSharpenVideo(QString, QString);
-	static void SetTimecodes(int, int, int, int);
-	static void SetVideoTune(QString);
-	static void SetVSPipe(QString, QString);
-	static void SetFFMpeg(QString);
-	static void SetOverride();
-	static void SetInput(QString);
-	static void SetOutput(QString);
-	static void SetDeinterlace();
-	static void SetComma();
-	static void SetColin();
-	static void SetFilters();
-	static void SetConcludeFilters();
-	static void ResetArguments();
+	static QStringList getArguments();
+	static void append(QString string);
+	static void setAudioChannels(QString channels, QString stream);
+	static void setAudioRate(QString rate, QString stream);
+	static void setVideoCodec(QString codec);
+	static void setAudioCodec(QString codec);
+	static void setSubtitleCodec(QString codec);
+	static void setVp9Quality(QString quality);
+	static void setFastPass();
+	static void setVideoChapters();
+	static void setAppleTag();
+	static void setAudioCodecMulti(QString codec, QString stream);
+	static void setx265Params();
+	static void setThreads(int threads);
+	static void setColorsProRes(QString matrix, QString transfer, QString primaries);
+	static void setCrop(int width, int height, int x, int y);
+	static void setEntropyCoding(int coder);
+	static void setBFrames(int bFrames);
+	static void setRefFrames(int refFrames);
+	static void setMasterDisplay(QString display);
+	static void setHDR10Opt();
+	static void setx265Colors(QString matrix, QString transfer, QString primaries, QString range);
+	static void setMaxCllFall(int cll, int fall);
+	static void setHDRPlus(QString path);
+	static void setDBVisionProfile(QString profile);
+	static void setDBVisionRPU(QString path);
+	static void setMap(QString type, QString s1, int s2);
+	static void setMapMux(QString type, int s1);
+	static void setMapAll(QString type, QString s1);
+	static void setMapSingle(QString type);
+	static void setDownMix(double channels);
+	static void setBuffer(int bitrate);
+	static void setPixelFormat(QString format);
+	static void setPass(int pass);
+	static void setTier(int index);
+	static void setVideoPreset(QString preset);
+	static void setVideoProfile(QString profile);
+	static void setVideoProfileLevel(QString level);
+	static void setVideoBitrate(int bitrate);
+	static void setAudioMetadata(QString stream);
+	static void setAudioTitle(QString title);
+	static void setAudioLang(QString lang);
+	static void setAudioBitrate(int bitrate, QString stream);
+	static void setConstantRateFactor(int crf);
+	static void setConstantQuantizer(int strength);
+	static void setQuantizer(int strength);
+	static void setConstantVideoQuality(int quality);
+	static void setConstantAudioQuality(int quality, QString stream);
+	static void setVideoResolution(int width, int height);
+	static void setVideoResizeAlgo(QString algo);
+	static void setTransposeVideo(int transpose);
+	static void setFlipVideo(QString flip);
+	static void setPassLogFile(QString path);
+	static void setNoAutoRotate();
+	static void setSharpenVideo(QString radius, QString strength);
+	static void setTimecodes(int hour, int minute, int second, int mSecond);
+	static void setVideoTune(QString tune);
+	static void setOverride();
+	static void setInput(QString path);
+	static void setOutput(QString path);
+	static void setMetaData1();
+	static void setMetaData2(QString str);
+	static void setDeinterlace();
+	static void setComma();
+	static void setStatsFile(QString path);
+	static void setAllThreads();
+	static void setColin();
+	static void setFilters();
+	static void setConcludeFilters();
+	static void setStartFilters();
+	static void setConcludeParams();
+	static void resetArguments();
+	static void setNullPath();
+	static void setVsPipe();
+	static void setVs();
 
 private:
-	static QString ArgumentList;
+	static QStringList _argumentList;
+	static QString _filterList;
+	static QString _paramsList;
+
+	static QStringList splitSpace(QString args);
 };
 
 #endif // !MEDIACONFIG_H

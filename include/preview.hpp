@@ -3,17 +3,18 @@
 #ifndef PREVIEW_H
 #define PREVIEW_H
 
-#include "../x64/Release/uic/ui_preview.h"
 #include <QDialog>
+
+#include "windows/ui_preview.hpp"
 
 class Preview : public QDialog {
 public:
-	Preview(QWidget* parent = Q_NULLPTR);
-	void SetPicture(QString);
-	void SetScaled(bool);
+	Preview(QWidget *parent = Q_NULLPTR);
+	void setPicture(QString path);
+	void setScaled(bool scale);
 
 private:
-	Ui::PreviewWindow pw;
+	Ui::PreviewWindow _pw;
 };
 
 #endif // !PREVIEW_H

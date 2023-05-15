@@ -8,35 +8,35 @@
 
 class ProgressInfo {
 public:
-	static void SetTimeLeft(QTime);
-	static void SetTimeElapsed(QTime);
-	static void SetProcessedFrames(int);
-	static void SetTotalFrames(int);
-	static void SetTime(QTime);
-	static void SetFps(QString);
-	static void SetBitrate(QString);
-	static void SetPercentage(double);
+	static void setTimeLeft(QTime timeLeft);
+	static void setTimeElapsed(QTime timeElapsed);
+	static void setProcessedFrames(int processedFrames);
+	static void setTotalFrames(int totalFrames);
+	static void setTime(QTime time);
+	static void setFps(QString fps);
+	static void setBitrate(QString bitrate);
+	static void setPercentage(double percentage);
 
-	static QTime GetTimeLeft();
-	static QTime GetTimeElapsed();
-	static int GetProcessedFrames();
-	static int GetTotalFrames();
-	static QTime GetTime();
-	static QString GetFps();
-	static QString GetBitrate();
-	static double GetPercentage();
+	static QTime getTimeLeft();
+	static QTime getTimeElapsed();
+	static int getProcessedFrames();
+	static int getTotalFrames();
+	static QTime getTime();
+	static QString getFps();
+	static QString getBitrate();
+	static double getPercentage();
 
-	static void ClearAll();
+	static void clearAll();
 
 private:
-	static QTime TimeLeft;
-	static QTime TimeElapsed;
-	static int ProcessedFrames;
-	static int TotalFrames;
-	static QTime Time;
-	static QString Fps;
-	static QString Bitrate;
-	static double Percentage;
+	static QTime _timeLeft;
+	static QTime _timeElapsed;
+	static int _processedFrames;
+	static int _totalFrames;
+	static QTime _time;
+	static QString _fps;
+	static QString _bitrate;
+	static double _percentage;
 };
 
 #endif // !PROGRESSINFO_H

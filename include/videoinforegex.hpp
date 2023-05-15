@@ -3,22 +3,22 @@
 #ifndef VIDEOINFOREGEX_H
 #define VIDEOINFOREGEX_H
 
-#include "videoinfolist.hpp"
-#include "videoinfo.hpp"
-
 #include <QRegularExpression>
 #include <QElapsedTimer>
 #include <QString>
 #include <QList>
 #include <QTime>
 
+#include "videoinfolist.hpp"
+#include "videoinfo.hpp"
+
 class VideoInfoRegex {
 public:
-	static void DurationBitrateRegex(QString);
-	static void VkRegex(QString);
-	static void VideoInfoerRegex(QString);
+	static void durationBitrateRegex(QString output);
+	static void vkRegex(QString output);
+	static void videoInfoerRegex(QString output);
 
-	static QString DurationLine;
+	static QString _durationLine;
 
 private:
 	enum GetInfo {
@@ -36,9 +36,9 @@ private:
 		Vk = 11
 	};
 
-	static QList<QRegularExpression> Indexer;
+	static QList<QRegularExpression> _indexer;
 
-	static void SetupPatterns();
+	static void setupPatterns();
 };
 
 #endif // !VIDEOINFOREGEX_H

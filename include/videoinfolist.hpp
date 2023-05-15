@@ -9,25 +9,25 @@
 
 class VideoInfoList {
 public:
-	static void SetDuration(QTime);
-	static void SetFrameRate(QString);
-	static void SetVk(QString);
+	static void setDuration(QTime duration);
+	static void setFrameRate(QString frameRate);
+	static void setVk(QString name);
 
-	static QTime GetDuration(int);
-	static QString GetFrameRate(int);
-	static QString GetVk(int);
+	static QTime getDuration(int index);
+	static QString getFrameRate(int index);
+	static QString getVk(int index);
 
-	static void RemoveDuration(int);
-	static void RemoveFrameRate(int);
+	static void removeDuration(int index);
+	static void removeFrameRate(int index);
 
-	static void ClearAll();
-	static void ClearVk();
-	static int TotalVk();
+	static void clearAll();
+	static void clearVk();
+	static int totalVk();
 
 private:
-	static QList<QTime> Duration;
-	static QStringList FrameRate;
-	static QStringList Vk;
+	static QList<QTime> _duration;
+	static QStringList _frameRate;
+	static QStringList _vk;
 };
 
 #endif // !VIDEOINFOLIST_H

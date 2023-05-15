@@ -3,15 +3,15 @@
 #ifndef PROCESSERRORREGEX_H
 #define PROCESSERRORREGEX_H
 
-#include "processerror.hpp"
-
 #include <QtCore/QRegularExpression>
 #include <QtCore/QList>
 
+#include "processerror.hpp"
+
 class ProcessErrorRegex {
 public:
-	static void ErrorRegex(QString);
-	static void ClearBools();
+	static void errorRegex(QString output);
+	static void clearBools();
 
 private:
 	enum GetError {
@@ -26,16 +26,23 @@ private:
 		Probe = 8,
 		Ncnn = 9,
 		NvencBit = 10,
-		Page = 11
+		Page = 11,
+		Dolby = 12,
+		Alloc = 13,
+		GpuInstance = 14,
+		IndexFile = 15,
+		IndexDevice = 16,
+		InvalidGPU = 17,
+		Vram = 18
 	};
 
-	static QList<bool> IndexerBool;
-	static QList<QRegularExpression> IndexerRegex;
+	static QList<bool> _indexerBool;
+	static QList<QRegularExpression> _indexerRegex;
 
-	static int MinThreads;
-	static int MaxThreads;
+	static int _minThreads;
+	static int _maxThreads;
 
-	static void SetupPatterns();
+	static void setupPatterns();
 };
 
 #endif // !PROCESSERRORREGEX_H

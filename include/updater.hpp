@@ -3,22 +3,23 @@
 #ifndef UPDATER
 #define UPDATER
 
-#include "../x64/Release/uic/ui_updater.h"
-
 #include <QtWidgets/QPushButton>
 #include <QDialog>
+
+#include "windows/ui_updater.hpp"
 
 class Update : public QDialog {
 public:
 	Update(QWidget* parent = Q_NULLPTR);
-	void SetText(QString);
+	void setText(QString);
 
-	QPushButton* GetSkip();
-	QPushButton* GetNow();
-	QPushButton* GetLater();
+	Ui::Updater *getUpdate();
+	QPushButton *getSkip();
+	QPushButton *getNow();
+	QPushButton *getLater();
 
 private:
-	Ui::Updater up;
+	Ui::Updater *_up;
 };
 
 #endif // !UPDATER

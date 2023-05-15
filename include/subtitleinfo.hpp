@@ -8,27 +8,27 @@
 
 class SubtitleInfo {
 public:
-	static void SetLanguage(QString);
-	static void SetStream(QString);
-	static void SetCodec(QString);
-	static void SetChapter(bool);
+	static void setLanguage(QString language);
+	static void setStream(QString stream);
+	static void setCodec(QString codec);
+	static void setChapter(bool chapter);
 
-	static QString GetLanguage(int);
-	static QString GetStream(int);
-	static QString GetCodec(int);
-	static bool GetChapter();
+	static QString getLanguage(int index);
+	static QString getStream(int index);
+	static QString getCodec(int index);
+	static bool getChapter();
 
-	static int TotalStreams();
-	static void AddStreams();
-	static void ClearAll();
-	static bool IsEmpty();
+	static int totalStreams();
+	static void addStreams();
+	static void clearAll();
+	static bool isEmpty();
 
 private:
-	static QStringList Language;
-	static QStringList Stream;
-	static QStringList Codec;
-	static int Streams;
-	static bool Chapter;
+	static QStringList _language;
+	static QStringList _stream;
+	static QStringList _codec;
+	static int _streams;
+	static bool _chapter;
 };
 
 #endif // !SUBTITLEINFO_H

@@ -7,23 +7,23 @@
 
 class VapourSynth {
 protected:
-	static QString RIFECuda(int, double, int, int, double, QString);
-	static QString RIFENcnn(int, int, int, QString, QString, QString);
-	static QString RIFENcnnNew(int, int, int, int, int, QString, QString, QString);
-	static QString SVPFlowNoob(QString, int, int, int, int, int, int);
-	static QString SVPFlow(QString, QString, QString, int, int);
-	static QString Waifu2x(int, int, int, int, int, int, bool, int, int);
-	static QString SRMD(int, int, int, int, QString, bool, int, int);
-	static QString RGB(QString, QString, QString);
-	static QString ColorsInOut(QString, QString, QString, QString, QString, QString, QString);
-	static QString ColorsOut(QString, QString, QString, QString);
-	static QString SCDetect(QString);
-	static QString Plugin(QString);
-	static QString Input(QString, QString);
-	static QString Include();
-	static QString AntiA();
-	static QString ConcludeClip();
-	static QString NewLine();
+	static QString rifeCuda(int id, double model, int num, int den, double scale, QString sc, QString trt);
+	static QString rifeNcnn(int model, int id, int thread, QString tta, QString uhd, QString sc);
+	static QString rifeNcnnNew(int model, int id, int thread, int num, int den, QString tta, QString uhd, QString sc);
+	static QString svpFlowNoob(QString useGPU, int id, int shader, int mask, int mode, int num, int den);
+	static QString svpFlow(QString super, QString analyse, QString smooth, int num, int den);
+	static QString waifu2x(int noise, int scale, int model, int id, int thread, int precision, bool dual, int gpu1, int gpu2);
+	static QString srmd(int scale, int noise, int id, int thread, QString tta, bool dual, int gpu1, int gpu2);
+	static QString rgb(QString matrix, QString transfer, QString primaries);
+	static QString colorsInOut(QString format, QString matrixIn, QString transferIn, QString primariesIn, QString matrix, QString transfer, QString primaries);
+	static QString colorsOut(QString format, QString matrix, QString transfer, QString primaries);
+	static QString scDetect(QString threshold);
+	static QString plugin(QString path);
+	static QString input(QString path, QString id);
+	static QString include();
+	static QString antiA();
+	static QString concludeClip();
+	static QString newLine();
 };
 
 #endif // !VAPOURSYNTH_H

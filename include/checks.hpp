@@ -15,6 +15,7 @@
 #define VC1 5
 #define MPEG2 6
 #define MPEG4 7
+#define HUFFYUV 8
 
 #define AAC 0
 #define MP3 1
@@ -32,19 +33,19 @@
 
 class Checks {
 public:
-	static bool CheckFFMpeg(QString);
-	static bool CheckFFProbe(QString);
-	static bool CheckVsPipe(QString);
-	static bool CheckVsScript(QString);
-	static bool CheckVapourSynth(QString);
-	static bool CheckInputExists(QString);
-	static bool CheckInput(QString);
-	static bool CheckOutput(QString);
-	static bool CheckOutputOverwrite(QString);
-	static bool CheckVideoCompatability(int, QString);
-	static bool CheckAudioCompatability(int, QString);
-	static bool CheckSubtitleCompatability(QString, QString);
-	static bool FileCheck(QString);
+	static bool checkFFMpeg(QString path);
+	static bool checkFFProbe(QString path);
+	static bool checkVsPipe(QString path);
+	static bool checkVsScript(QString path);
+	static bool checkVapourSynth(QString path);
+	static bool checkInputExists(QString path);
+	static bool checkInput(QString input);
+	static bool checkOutput(QString output);
+	static bool checkOutputOverwrite(QString path);
+	static bool checkVideoCompatability(int format, QString container);
+	static bool checkAudioCompatability(int format, QString container);
+	static bool checkSubtitleCompatability(QString format, QString container);
+	static bool fileCheck(QString path);
 };
 
 #endif // !CHECKS_H

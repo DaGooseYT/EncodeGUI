@@ -16,6 +16,7 @@
  ****************************************************************************/
 
 #pragma once
+
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "Opengl32.lib")
@@ -23,33 +24,34 @@
 #ifndef ENCODEGUI_H
 #define ENCODEGUI_H
 
-#include "../x64/Release/uic/ui_encodegui.h"
-#include "scriptbuilder.hpp"
-#include "mediaconfig.hpp"
-#include "ffloader.hpp"
-#include "checks.hpp"
-#include "preview.hpp"
-#include "updater.hpp"
-
-#include "Windows.h"
-#include "DxGi.h"
-
 #include "QtNetwork/QNetworkAccessManager"
 #include "QtNetwork/QNetworkRequest"
 #include "QtNetwork/QNetworkReply"
 #include <QtWidgets/QMainWindow>
-#include <QDesktopServices>
-#include <QStyleFactory>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QCloseEvent>
-#include <QMetaType>
-#include <QShortcut>
-#include <QSettings>
-#include <QMimeData>
-#include <QProcess>
-#include <QVector>
-#include <QMenu>
+#include <QtWidgets/QPushButton>
+#include <QtGui/QDesktopServices>
+#include <QtWidgets/QStyleFactory>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtGui/QCloseEvent>
+#include <QtCore/QMetaType>
+#include <QtGui/QShortcut>
+#include <QtCore/QSettings>
+#include <QtCore/QMimeData>
+#include <QtCore/QProcess>
+#include <QtCore/QVector>
+#include <QtWidgets/QMenu>
+
+#include "scriptbuilder.hpp"
+#include "mediaconfig.hpp"
+#include "ffloader.hpp"
+#include "checks.hpp"
+#include "windows/ui_encodegui.hpp"
+#include "preview.hpp"
+#include "updater.hpp"
+
+#include "windows.h"
+#include "dxgi.h"
 
 #define FOR_EACH(total) for (int i = 0; i < total; i++)
 #define SET_ENABLED(control) (control->setEnabled(true))
@@ -58,12 +60,12 @@
 #define SET_INVISIBLE(control) (control->setVisible(false))
 #define CHECKED(control) (control->isChecked())
 
-#define ERROR 0
-#define WARNING 1
-#define INFO 2
-#define QUESTION 3
+#define VSPIPEPATH (QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\vspipe.exe")))
+#define FFMPEGPATH_WIN (QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\lib\\ffmpeg.exe")))
+#define TEMPPATH_WIN (QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\Temp")))
+#define LOGPATH_WIN (QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\EncodeGUI")))
 
-#define VERSION QString("1.1.5")
+#define VERSION QString("1.1.7")
 
 class EncodeGUI : public QMainWindow {
     Q_OBJECT
@@ -76,204 +78,222 @@ public:
         Question = 3
     };
 
-    EncodeGUI(QWidget* parent = Q_NULLPTR);
+    EncodeGUI(QWidget *parent = Q_NULLPTR);
     ~EncodeGUI();
 
-    QString ConfigureArgs(QString, QString, QString, QString, bool, int);
-    QString ConfigureVS(QString);
-    QString ConfigureAudioP(int, QString, QString);
-    QString ConfigureAudioM(int, int, QString, QString, QString);
-    QString ConfigureMux(QString, QString, QString);
-    QString ConfigureSubtitle(int, QString, QString);
-    QString BuildScript(int, int, QString);
-    QMessageBox::StandardButton MsgBoxHelper(MessageType, QString, QString, QMessageBox::StandardButton, QMessageBox::StandardButton, QMessageBox::StandardButton);
-    void WriteLog(QString, bool, bool, bool);
-    void SetVideoInfo();
-    void SetAudioInfo();
-    int Multi(double, double);
-    int Devices;
-
-    QStringList arguments;
-    QStringList job;
-    QStringList vapourScript;
-    QStringList inputList;
-    QStringList outputList;
-    QStringList tempList;
-    QStringList state;
-
-    QVariantList Varguments;
-    QVariantList Vjob;
-    QVariantList VvapourScript;
-    QVariantList VinputList;
-    QVariantList VoutputList;
-    QVariantList VtempList;
-    QVariantList Vstate;
-    QVariantList VaudioArgs;
-    QVariantList Vduration;
-    QVariantList VframeRate;
+    QStringList configureArgs(QString container, QString id, bool twoPass, int pass);
+    QStringList configureVS(QString id);
+    QStringList configureAudioP(int stream, QString id, QString container);
+    QStringList configureAudioM(int stream, int stream2, QString stream3, QString id, QString container);
+    QStringList configureMux(QString container, QStringList audio, QStringList subtitles);
+    QStringList configureSubtitle(int stream, QString container, QString id);
+    QString buildScript(int width, int height, QString jobID);
+    QMessageBox::StandardButton msgBoxHelper(MessageType type, QString title, QString message, QMessageBox::StandardButton button1, QMessageBox::StandardButton button2, QMessageBox::StandardButton button3);
+    void writeLog(QString log, bool bold, bool red, bool yellow);
+    void setVideoInfo();
+    void setAudioInfo();
 
 private:
-    Ui::EncodeGUIMV ui;
+    Ui::EncodeGUIMV *_ui;
 
-    void RemoveTabs(QWidget*);
-    void UpscaleMD(int, int);
-    void RemoveAudio();
-    void NewTask();
-    void GetVideoInfo(QString, QString);
-    void dragEnterEvent(QDragEnterEvent* d);
-    void dropEvent(QDropEvent* d);
-    void NewJob();
-    void Updater();
-    void SaveSettings();
-    void SetState();
-    void SetJobSetting();
-    int DecimalCounter(QString);
-    int Counter(QString);
-    void setup_queue();
-    void CheckEncoders();
-    void GetProcessor();
-    void LoadSysSetting();
-    void Paletter(QLabel*);
+    void removeTabs(QWidget *tab);
+    void upscaleMD(int width, int height);
+    void removeAudio();
+    void newTask();
+    void getVideoInfo(QString input, QString ffprobe);
+    void dragEnterEvent(QDragEnterEvent *d);
+    void dropEvent(QDropEvent *d);
+    void newJob();
+    void updater();
+    void saveSettings();
+    void reIndexBttns();
+    void setState();
+    void setJobSetting();
+    int decimalCounter(QString value);
+    void setupQueue();
+    void checkEncoders();
+    void getProcessor();
+    void queueScrollBar();
+    void bttns();
+    void writeLogFile(QString content);
+    void loadSysSetting();
+    void paletter(QLabel *label);
+    int multi(double inFPS, double outFPS);
+    QString checkEnviornment();
 
-    int selectedJob;
-    int selectedAudio;
+    int _devices;
+    int _selectedJob;
+    int _selectedAudio;
+    bool _encodingAudio;
 
-    QString winDir;
-    QStringList AudioArgs;
+    QString _winDir;
+    QString _vers;
 
-    Preview* preview;
+    FFLoader *_ffloader;
+    Preview *_preview;
+    Update *_up;
+    
+    QVariantList _vapourScript;
+    QVariantList _audioArgs;
+    QVariantList _arguments;
+    QStringList *_gpuNames;
+    QStringList *_job;
+    QStringList *_inputList;
+    QStringList *_outputList;
+    QStringList *_tempList;
+    QStringList *_state;
 
-    QStringList Channels;
-    QList<int> Quality;
-    QList<int> Bitrate;
-    QList<int> Stream;
-    QList<bool> IsEncoding;
-    QList<bool> IsTitle;
-    QList<bool> IsLang;
-    QStringList Title;
-    QStringList AudioCodec;
-    QStringList AudioLangs;
+    QVariantList _sArguments;
+    QVariantList _sJob;
+    QVariantList _sVapourScript;
+    QVariantList _sInputList;
+    QVariantList _sOutputList;
+    QVariantList _sTempList;
+    QVariantList _sState;
+    QVariantList _sAudioArgs;
+    QVariantList _sDuration;
+    QVariantList _sFrameRate;
 
-    QStringList FileStream;
+    QStringList *_channels;
+    QList<int> *_quality;
+    QList<int> *_bitrate;
+    QList<int> *_stream;
+    QList<bool> *_isEncoding;
+    QList<bool> *_isTitle;
+    QList<bool> *_isLang;
+    QStringList *_title;
+    QStringList *_audioCodec;
+    QStringList *_audioLangs;
 
-    QFile LogFile;
-    FFLoader* ffloader;
+    QTextStream *_logsStream;
+    QFile *_logFile;
+
+    QList<QPushButton*> *_inputBttn;
+    QList<QPushButton*> *_outputBttn;
+    QList<QPushButton*> *_logsBttn;
 
 private slots:
-    void Start();
-    void CreateJob();
-    void OpenOutput();
-    void CheckGPU();
-    void VkFinished();
-    void Skip();
-    void MediaInfo();
-    void NextJob();
-    void GoToUpdate();
-    void GenOutput();
-    void ModelVK();
-    void Later();
-    void AudioLang();
-    void PatreonClick();
-    void YouClick();
-    void UpdateOpt();
-    void UpdaterFinished();
-    void DisClick();
-    void IgClick();
-    void InputClick();
-    void HDRMeta();
-    void ErrorMsg();
-    void DelSource();
-    void DualGPU();
-    void GPU1();
-    void GPU2();
-    void EnablePreview();
-    void OpenLogs();
-    void ExtracterInfo();
-    void ExtracterComplete();
-    void NewExtract();
-    void OpenPreview();
-    void WriteFile(QString);
-    void CancelAllClick();
-    void CancelClick();
-    void CancelMain();
-    void AddAudioJob();
-    void AutoAjustU();
-    void AutoAdjWidth2x();
-    void AutoAdjWidth();
-    void ThresholdNUD();
-    void JobsCB();
-    void FpsCB();
-    void BitrateCB();
-    void OpenJobLogs();
-    void TimeLeftCB();
-    void TimerCB();
-    void PercentCB();
-    void ModelUpscale();
-    void AlgoDD();
-    void ModelUpScaleGB();
-    void UpscaleGB();
-    void ResizeGB();
-    void FlipDD();
-    void AutoAdjHeight();
-    void AutoAdjHeight2x();
-    void AutoAdjust();
-    void AutoAdjustDD();
-    void AutoAdjustUD();
-    void ClearFinished();
-    void RemoveAudioClick();
-    void RemoveJob();
-    void ResetJob();
-    void JobContext(QPoint);
-    void AudioSubContext(QPoint);
-    void PauseClick();
-    void UpdateProgress();
-    void EncodeFinished();
-    void AudioTitle();
-    void GPUFinished();
-    void RegexFinished();
-    void DonateDaGoose();
-    void DonateGlitch();
-    void HideEnc();
-    void hide_aud();
-    void hide_sub();
-    void hdwr_264();
-    void mode_264();
-    void hide_pre264();
-    void hide_tun264();
-    void profile_264();
-    void profile_vpx();
-    void input_bttn();
-    void profile_gb264();
-    void refsldr_264();
-    void bsldr_264();
-    void OutBttn();
-    void SampleVid();
-    void refsldr_265();
-    void bsldr_265();
-    void hdwr_265();
-    void hdwr_265d();
-    void hdwr_264d();
-    void mode_265();
-    void audio_dd();
-    void downmix_cb();
-    void cpu_thread();
-    void mode_vpx();
-    void mode_av1();
-    void mode_theora();
-    void hide_pre265();
-    void hide_tun265();
-    void profile_265();
-    void profile_gb265();
-    void hide_audtab();
-    void hide_interpgpu();
-    void hide_interpgpucb();
-    void tool_interp();
-    void audio_track();
-    void hide_params();
-    void hide_upscale();
+    void start();
+    void createJob();
+    void openOutput();
+    void checkGPU();
+    void vkFinished();
+    void skip();
+    void mediaInfo();
+    void nextJob();
+    void goToUpdate();
+    void genOutput();
+    void logsClick();
+    void modelVK();
+    void later();
+    void audioLang();
+    void patreonClick();
+    void youClick();
+    void updateOpt();
+    void updaterFinished();
+    void extractRPUFinished();
+    void disClick();
+    void igClick();
+    void inputClick();
+    void outputClick();
+    void hdrMeta();
+    void errorMsg();
+    void delSource();
+    void dualGPU();
+    void gpu1();
+    void gpu2();
+    void enablePreview();
+    void openLogs();
+    void extracterInfo();
+    void extracterComplete();
+    void newExtract();
+    void openPreview();
+    void cancelAllClick();
+    void cancelClick();
+    void cancelMain();
+    void addAudioJob();
+    void autoAjustU();
+    void jobBttn();
+    void jobBttn2();
+    void autoAdjWidth2x();
+    void autoAdjWidth();
+    void thresholdNUD();
+    void jobsCB();
+    void fpsCB();
+    void bitrateCB();
+    void openJobLogs();
+    void timeLeftCB();
+    void timerCB();
+    void percentCB();
+    void modelUpscale();
+    void algoDD();
+    void rpu();
+    void modelUpScaleGB();
+    void upscaleGB();
+    void resizeGB();
+    void flipDD();
+    void autoAdjHeight();
+    void autoAdjHeight2x();
+    void autoAdjust();
+    void autoAdjustDD();
+    void autoAdjustUD();
+    void clearFinished();
+    void removeAudioClick();
+    void removeJob();
+    void resetJob();
+    void pauseClick();
+    void updateProgress();
+    void encodeFinished();
+    void audioTitle();
+    void gpuFinished();
+    void regexFinished();
+    void donateDaGoose();
+    void donateGlitch();
+    void hideEnc();
+    void hideAud();
+    void hideSub();
+    void hdwr264();
+    void mode264();
+    void hidePre264();
+    void hideTun264();
+    void profile264();
+    void profileVpx();
+    void inputBttn();
+    void profileGB264();
+    void refsldr264();
+    void bsldr264();
+    void outBttn();
+    void sampleVid();
+    void refsldr265();
+    void bsldr265();
+    void hdwr265();
+    void hdwr265d();
+    void hdwr264d();
+    void mode265();
+    void audioDD();
+    void downmixCB();
+    void cpuThread();
+    void modeVpx();
+    void modeAv1();
+    void modeTheora();
+    void hidePre265();
+    void hideTun265();
+    void profile265();
+    void profileGB265();
+    void hideAudTab();
+    void hideInterpGpu();
+    void hideInterpGpuCB();
+    void toolInterp();
+    void audioTrack();
+    void hideParams();
+    void hideUpscale();
+    void writeFile(QString);
+    void jobContext(QPoint);
+    void audioSubContext(QPoint);
     
 protected:
-    void closeEvent(QCloseEvent*);
+    void closeEvent(QCloseEvent *event);
+    void showEvent(QShowEvent *event);
 };
 
 #endif // !ENCODEGUI_H

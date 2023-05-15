@@ -20,16 +20,16 @@
 #ifndef FFLOADER_H
 #define FFLOADER_H
 
+#include <QProcess>
+#include <QtGlobal>
+#include <QTime>
+#include <QDir>
+
 #include "audiosubinforegex.hpp"
 #include "processerrorregex.hpp"
 #include "progressinforegex.hpp"
 #include "videoinforegex.hpp"
 #include "videoinfolist.hpp"
-
-#include <QProcess>
-#include <QtGlobal>
-#include <QTime>
-#include <QDir>
 
 enum class ProcessType {
 	Encode,
@@ -40,54 +40,62 @@ enum class ProcessType {
 	ExtractInfo,
 	ExtractFinish,
 	VkInfo,
-	VkFinish
+	VkFinish,
+	ExtractRPU,
+	ExtractRPUFinish,
+	Dovi
 };
 
 class ProcessWorker : public QObject {
 public:
-	void NewProcess(QProcess*, QStringList, QString);
-	void PauseProcess(QProcess*, bool);
-	void CloseProcess(QProcess*);
-	void KillProcess(QProcess*);
-	void Deconstruct(QProcess*);
+	void newProcess(QProcess *process, QStringList arguments, QString program);
+	void pauseProcess(QProcess *process, bool pause);
+	void closeProcess(QProcess *process);
+	void killProcess(QProcess *process);
+	void deconstruct(QProcess *process);
 
-	QProcess *video, *encode, *vs, *vk;
-	int currentJob;
+	QProcess *_dovi, *_extract, *_video, *_encode, *_vs, *_vk;
+	int _currentJob;
 };
 
 class FFLoader : public ProcessWorker {
 	Q_OBJECT;
 
 public:
-	void Encode(QString, QString, bool);
-	void VideoInfo(QString);
-	void Action(bool);
-	void GPU();
-	void Connector(QProcess*, ProcessType);
-	void Disconnecter(QProcess*, ProcessType);
-	void Finisher(QProcess*, ProcessType);
-	void OutputData(QProcess*, ProcessType);
-	void OutputDataVideo();
-	void OutputDataExtract();
-	void OutputDataInfo();
-	void OutputDataVs();
-	void OutputDataVk();
-	void ExtractFinished();
-	void VideoFinished();
-	void EncodeFinished();
-	void VkFinished();
+	void encode(QStringList args, QStringList vsArgs, QString ffmpeg, QString vsPipe, bool extracti);
+	void videoInfo(QStringList args, QString ffprobe);
+	void extractRPU(QStringList args, QStringList doviArgs, QString doviTool, QString ffmpeg);
+	void action(bool sd);
+	void gpu();
+	void connector(QProcess *process, ProcessType type);
+	void disconnecter(QProcess *process, ProcessType type);
+	void finisher(QProcess *process, ProcessType type);
+	void outputData(QProcess *process, ProcessType type);
+	void outputDataVideo();
+	void outputDataExtract();
+	void outputDataInfo();
+	void outputDataVs();
+	void outputDataVk();
+	void outputDataRPU();
+	void extractFinished();
+	void videoFinished();
+	void encodeFinished();
+	void vkFinished();
+	void extractRPUFinished();
 
-	QElapsedTimer Timer;
-	QTime PauseTime;
+	QElapsedTimer *_timer;
+	QTime *_pauseTime;
 
 signals:
 	void setVideoInfo();
 	void setProgress();
-	void Completed();
-	void VkComplete();
-	void ExtractInfo();
-	void ExtractComplete();
-	void Logs(QString);
+	void completed();
+	void vkComplete();
+	void rpuFinished();
+	void extractInfo();
+	void extractComplete();
+	void logs(QString);
+	void errorLogs(QString);
 };
 
 #endif // !FFLOADER_H

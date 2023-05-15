@@ -7,30 +7,29 @@
 
 class AudioInfo {
 public:
-	static void SetCodec(QString);
-	static void SetLanguage(QString);
-	static void SetSampleRate(QString);
-	static void SetChannels(QString);
-	static void SetStream(QString);
+	static void setCodec(QString codec);
+	static void setLanguage(QString language);
+	static void setSampleRate(QString sampleRate);
+	static void setChannels(QString channels);
+	static void setStream(QString stream);
 
-	static QString GetCodec(int);
-	static QString GetLanguage(int);
-	static QString GetSampleRate(int);
-	static QString GetChannels(int);
-	static QString GetStream(int);
+	static QString getCodec(int index);
+	static QString getLanguage(int index);
+	static QString getSampleRate(int index);
+	static QString getChannels(int index);
+	static QString getStream(int index);
 
-	static int TotalStreams();
-	static void AddStream();
-
-	static void ClearAll();
+	static int totalStreams();
+	static void addStream();
+	static void clearAll();
 
 private:
-	static QStringList Codec;
-	static QStringList Language;
-	static QStringList SampleRate;
-	static QStringList Channels;
-	static QStringList Stream;
-	static int Streams;
+	static QStringList _codec;
+	static QStringList _language;
+	static QStringList _sampleRate;
+	static QStringList _channels;
+	static QStringList _stream;
+	static int _streams;
 };
 
 #endif // !AUDIOINFO_H
