@@ -222,7 +222,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     FOR_EACH(_arguments.count()) {
         _ui->JobQueue->insertRow(_ui->JobQueue->rowCount());
 
-        if (Checks::checkVsScript(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\%1.vpy").arg(_job->at(i)))) && Checks::checkInput(_inputList->at(i))) {
+        if (Checks::checkVsScript(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\%1.vpy").arg(_job->at(i)))) && Checks::checkInputExists(_inputList->at(i))) {
             _ui->JobQueue->setItem(_ui->JobQueue->rowCount() - 1, 0, new QTableWidgetItem(_job->at(i)));
             _ui->JobQueue->setItem(_ui->JobQueue->rowCount() - 1, 1, new QTableWidgetItem(_state->at(i)));
 
@@ -1230,7 +1230,7 @@ void EncodeGUI::checkGPU() {
             msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required VsScript (dummy.vpy) dependency is missing. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
     else
-        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency VSPipe.exe is missing. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency vspipe.exe is missing. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 }
 
 void EncodeGUI::newTask() {
@@ -1292,7 +1292,7 @@ void EncodeGUI::newTask() {
         }
     }
     else {
-        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"vspipe.exe\" is missing in EncodeGUI installation. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The source file for the current job is missing or does not exist."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         QApplication::quit();
     }
 }
