@@ -1,9 +1,8 @@
 # EncodeGUI
-![alt text][egui]
+<img src="https://github.com/DaGooseYT/EncodeGUI/blob/main/gui.png" width="410"/><img src="https://github.com/DaGooseYT/EncodeGUI/blob/main/egui_mos.png" width="410"/>
 
-[egui]: https://github.com/DaGooseYT/EncodeGUI/blob/main/gui.png
-
-EncodeGUI (encode-gooey) is a free and open source video transcoder GUI that utilizes AI tools for a fascinating encoding experience. Find out more at it's website, https://encodegui.com
+EncodeGUI (encode-gooey) is a free, cross platform, open source video transcoder GUI that utilizes AI tools for a fascinating encoding experience. Find out more at it's website, https://encodegui.com.
+EncodeGUI, along with FrameGUI are the first RIFE GUI app to run 100% natively on Apple Silicon.
 
 This repository only consists of the source code; no builds are hosted here. See https://encodegui.com/downloads for the latest builds.
 
