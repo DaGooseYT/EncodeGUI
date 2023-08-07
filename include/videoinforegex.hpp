@@ -17,6 +17,7 @@ public:
 	static void durationBitrateRegex(QString output);
 	static void vkRegex(QString output);
 	static void videoInfoerRegex(QString output);
+	static void batchInfoerRegex(QString output);
 
 	static QString _durationLine;
 

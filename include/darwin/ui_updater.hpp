@@ -1,5 +1,13 @@
-#ifndef UI_UPDATER_H
-#define UI_UPDATER_H
+/********************************************************************************
+** Form generated from reading UI file 'updateruFeOXN.ui'
+**
+** Created by: Qt User Interface Compiler version 6.2.4
+**
+** WARNING! All changes made in this file will be lost when recompiling UI file!
+********************************************************************************/
+
+#ifndef UPDATERUFEOXN_H
+#define UPDATERUFEOXN_H
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
@@ -25,33 +33,43 @@ public:
     {
         if (Updater->objectName().isEmpty())
             Updater->setObjectName(QString::fromUtf8("Updater"));
-        Updater->resize(551, 294);
-        Updater->setMinimumSize(QSize(551, 294));
-        Updater->setMaximumSize(QSize(551, 294));
+        Updater->resize(550, 294);
+        Updater->setMinimumSize(QSize(550, 294));
+        Updater->setMaximumSize(QSize(550, 294));
         TitleLabel = new QLabel(Updater);
         TitleLabel->setObjectName(QString::fromUtf8("TitleLabel"));
-        TitleLabel->setGeometry(QRect(175, 7, 200, 32));
+        TitleLabel->setGeometry(QRect(200, 7, 150, 32));
+        TitleLabel->setAlignment(Qt::AlignCenter);
         ToDoLabel = new QLabel(Updater);
         ToDoLabel->setObjectName(QString::fromUtf8("ToDoLabel"));
-        ToDoLabel->setGeometry(QRect(9, 266, 97, 16));
+        ToDoLabel->setGeometry(QRect(7, 264, 111, 16));
         UpdateBttn = new QPushButton(Updater);
         UpdateBttn->setObjectName(QString::fromUtf8("UpdateBttn"));
-        UpdateBttn->setGeometry(QRect(209, 263, 93, 24));
+        UpdateBttn->setGeometry(QRect(200, 259, 95, 32));
+        UpdateBttn->setMinimumSize(QSize(0, 32));
+        UpdateBttn->setSizeIncrement(QSize(0, 32));
         QFont font;
         font.setBold(true);
         UpdateBttn->setFont(font);
+        UpdateBttn->setFocusPolicy(Qt::NoFocus);
         RemindBttn = new QPushButton(Updater);
         RemindBttn->setObjectName(QString::fromUtf8("RemindBttn"));
-        RemindBttn->setGeometry(QRect(309, 263, 116, 24));
+        RemindBttn->setGeometry(QRect(300, 259, 120, 32));
+        RemindBttn->setMinimumSize(QSize(0, 32));
+        RemindBttn->setSizeIncrement(QSize(0, 32));
+        RemindBttn->setFocusPolicy(Qt::NoFocus);
         SkipBttn = new QPushButton(Updater);
         SkipBttn->setObjectName(QString::fromUtf8("SkipBttn"));
-        SkipBttn->setGeometry(QRect(432, 263, 112, 24));
+        SkipBttn->setGeometry(QRect(425, 259, 118, 32));
+        SkipBttn->setMinimumSize(QSize(0, 32));
+        SkipBttn->setSizeIncrement(QSize(0, 32));
+        SkipBttn->setFocusPolicy(Qt::NoFocus);
         textBrowser = new QTextBrowser(Updater);
         textBrowser->setObjectName(QString::fromUtf8("textBrowser"));
-        textBrowser->setGeometry(QRect(8, 63, 536, 192));
+        textBrowser->setGeometry(QRect(7, 63, 536, 192));
         DetailsLabel = new QLabel(Updater);
         DetailsLabel->setObjectName(QString::fromUtf8("DetailsLabel"));
-        DetailsLabel->setGeometry(QRect(106, 38, 341, 20));
+        DetailsLabel->setGeometry(QRect(95, 38, 360, 20));
         DetailsLabel->setAlignment(Qt::AlignCenter);
 
         retranslateUi(Updater);
@@ -61,13 +79,13 @@ public:
 
     void retranslateUi(QWidget *Updater)
     {
-        Updater->setWindowTitle(QCoreApplication::translate("Updater", "EncodeGUI - Updates", nullptr));
+        Updater->setWindowTitle(QCoreApplication::translate("Updater", "FrameGUI - Updates", nullptr));
         TitleLabel->setText(QCoreApplication::translate("Updater", "<html><head/><body><p><span style=\" font-size:16pt; font-weight:700;\">It's Time to Update!</span></p></body></html>", nullptr));
         ToDoLabel->setText(QCoreApplication::translate("Updater", "Choose an action:", nullptr));
         UpdateBttn->setText(QCoreApplication::translate("Updater", "Update Now", nullptr));
         RemindBttn->setText(QCoreApplication::translate("Updater", "Remind Me Later", nullptr));
         SkipBttn->setText(QCoreApplication::translate("Updater", "Skip This Update", nullptr));
-        DetailsLabel->setText(QCoreApplication::translate("Updater", "Below are the details for the next new update of EncodeGUI", nullptr));
+        DetailsLabel->setText(QCoreApplication::translate("Updater", "Below are the details for the next new update for EncodeGUI", nullptr));
     } // retranslateUi
 
 };
@@ -78,4 +96,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // UI_UPDATER_H
+#endif // UPDATERUFEOXN_H

@@ -5,7 +5,12 @@
 
 #include <QDialog>
 
+#ifdef Q_OS_WINDOWS
 #include "windows/ui_preview.hpp"
+#endif
+#ifdef Q_OS_DARWIN
+#include "darwin/ui_preview.hpp"
+#endif
 
 class Preview : public QDialog {
 public:

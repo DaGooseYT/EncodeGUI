@@ -28,8 +28,8 @@ class MediaConfig : protected Argument {
 public:
 	static QStringList getArguments();
 	static void append(QString string);
-	static void setAudioChannels(QString channels, QString stream);
-	static void setAudioRate(QString rate, QString stream);
+	static void setAudioChannels(QString channels, int stream);
+	static void setAudioRate(QString rate, int stream);
 	static void setVideoCodec(QString codec);
 	static void setAudioCodec(QString codec);
 	static void setSubtitleCodec(QString codec);
@@ -37,7 +37,8 @@ public:
 	static void setFastPass();
 	static void setVideoChapters();
 	static void setAppleTag();
-	static void setAudioCodecMulti(QString codec, QString stream);
+	static void setAudioCodecMulti(QString codec, int stream);
+	static void setSubtitleCodecMulti(QString codec, int stream);
 	static void setx265Params();
 	static void setThreads(int threads);
 	static void setColorsProRes(QString matrix, QString transfer, QString primaries);
@@ -52,9 +53,9 @@ public:
 	static void setHDRPlus(QString path);
 	static void setDBVisionProfile(QString profile);
 	static void setDBVisionRPU(QString path);
-	static void setMap(QString type, QString s1, int s2);
+	static void setMap(QString type, int s1, int s2);
 	static void setMapMux(QString type, int s1);
-	static void setMapAll(QString type, QString s1);
+	static void setMapAll(QString type, int s1);
 	static void setMapSingle(QString type);
 	static void setDownMix(double channels);
 	static void setBuffer(int bitrate);
@@ -65,15 +66,18 @@ public:
 	static void setVideoProfile(QString profile);
 	static void setVideoProfileLevel(QString level);
 	static void setVideoBitrate(int bitrate);
-	static void setAudioMetadata(QString stream);
+	static void setAudioMetadata(int stream);
 	static void setAudioTitle(QString title);
 	static void setAudioLang(QString lang);
-	static void setAudioBitrate(int bitrate, QString stream);
+	static void setSubtitleMetadata(int stream);
+	static void setSubtitleTitle(QString title);
+	static void setSubtitleLang(QString lang);
+	static void setAudioBitrate(int bitrate, int stream);
 	static void setConstantRateFactor(int crf);
 	static void setConstantQuantizer(int strength);
 	static void setQuantizer(int strength);
 	static void setConstantVideoQuality(int quality);
-	static void setConstantAudioQuality(int quality, QString stream);
+	static void setConstantAudioQuality(int quality, int stream);
 	static void setVideoResolution(int width, int height);
 	static void setVideoResizeAlgo(QString algo);
 	static void setTransposeVideo(int transpose);
@@ -86,8 +90,8 @@ public:
 	static void setOverride();
 	static void setInput(QString path);
 	static void setOutput(QString path);
-	static void setMetaData1();
-	static void setMetaData2(QString str);
+	static void setVideoMetadata();
+	static void setEncoder(QString str);
 	static void setDeinterlace();
 	static void setComma();
 	static void setStatsFile(QString path);

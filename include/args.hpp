@@ -7,13 +7,14 @@
 
 class Argument {
 protected:
-	static QString audioRate(QString rate, QString stream);
-	static QString audioChannels(QString channels, QString stream);
+	static QString audioRate(QString rate, int stream);
+	static QString audioChannels(QString channels, int stream);
 	static QString videoCodec(QString codec);
 	static QString audioCodec(QString codec);
 	static QString subtitleCodec(QString codec);
 	static QString mapChapters();
-	static QString audioCodecMulti(QString codec, QString stream);
+	static QString audioCodecMulti(QString codec, int stream);
+	static QString subtitleCodecMulti(QString codec, int stream);
 	static QString x265Params();
 	static QString setFastPass();
 	static QString appleTag();
@@ -32,9 +33,9 @@ protected:
 	static QString hdrPlus(QString path);
 	static QString dbVisionProfile(QString profile);
 	static QString dbVisionRPU(QString path);
-	static QString mapVideo(QString type, QString s1, int s2);
+	static QString mapVideo(QString type, int s1, int s2);
 	static QString mapMux(QString type, int s1);
-	static QString mapAll(QString type, QString s1);
+	static QString mapAll(QString type, int s1);
 	static QString mapSingle(QString type);
 	static QString downMix(double channels);
 	static QString pixelFormat(QString format);
@@ -42,16 +43,16 @@ protected:
 	static QString videoPreset(QString preset);
 	static QString videoProfile(QString profile);
 	static QString videoProfileLevel(QString level);
-	static QString metaData1();
-	static QString metaData2(QString str);
+	static QString videoMetadata();
+	static QString encoder(QString str);
 	static QString videoBitrate(int bitrate);
-	static QString audioBitrate(int bitrate, QString stream);
+	static QString audioBitrate(int bitrate, int stream);
 	static QString constantRateFactor(int crf);
 	static QString constantQuantizer(int strength);
 	static QString quantizer(int strength);
 	static QString buffer(int bitrate);
 	static QString constantVideoQuality(int quality);
-	static QString constantAudioQuality(int quality, QString stream);
+	static QString constantAudioQuality(int quality, int stream);
 	static QString videoResolution(int width, int height);
 	static QString videoResizeAlgo(QString algo);
 	static QString passLogFile();
@@ -59,9 +60,12 @@ protected:
 	static QString flipVideo(QString flip);
 	static QString noAutoRotate();
 	static QString vp9Quality(QString quality);
-	static QString audioMetadata(QString stream);
+	static QString audioMetadata(int stream);
 	static QString audioTitle(QString title);
 	static QString audioLang(QString lang);
+	static QString subtitleMetadata(int stream);
+	static QString subtitleTitle(QString title);
+	static QString subtitleLang(QString lang);
 	static QString tier(int tier);
 	static QString sharpenVideo(QString radius, QString strength);
 	static QString addTimecodes(int hour, int minute, int second, int millisecond);

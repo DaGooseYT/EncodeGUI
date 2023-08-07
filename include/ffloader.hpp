@@ -31,6 +31,13 @@
 #include "videoinforegex.hpp"
 #include "videoinfolist.hpp"
 
+#ifdef Q_OS_WINDOWS
+#include "windows.h"
+#endif
+#ifdef Q_OS_DARWIN
+#include "signal.h"
+#endif
+
 enum class ProcessType {
 	Encode,
 	VideoInfo,
@@ -43,7 +50,13 @@ enum class ProcessType {
 	VkFinish,
 	ExtractRPU,
 	ExtractRPUFinish,
-	Dovi
+	Dovi,
+	SubtitleInfo,
+	SubtitleFinish,
+	AudioInfo,
+	AudioFinish,
+	BatchInfo,
+	BatchFinish
 };
 
 class ProcessWorker : public QObject {
@@ -55,6 +68,7 @@ public:
 	void deconstruct(QProcess *process);
 
 	QProcess *_dovi, *_extract, *_video, *_encode, *_vs, *_vk;
+
 	int _currentJob;
 };
 
@@ -64,33 +78,57 @@ class FFLoader : public ProcessWorker {
 public:
 	void encode(QStringList args, QStringList vsArgs, QString ffmpeg, QString vsPipe, bool extracti);
 	void videoInfo(QStringList args, QString ffprobe);
+	void batchInfo(QStringList args, QString ffprobe);
+	void audioInfo(QStringList args, QString ffprobe);
+	void subtitleInfo(QStringList args, QString ffprobe);
 	void extractRPU(QStringList args, QStringList doviArgs, QString doviTool, QString ffmpeg);
 	void action(bool sd);
+
+	#ifdef Q_OS_WINDOWS
 	void gpu();
+	#endif
+
+	QElapsedTimer *_timer;
+	QTime *_pauseTime;
+
+private:
 	void connector(QProcess *process, ProcessType type);
 	void disconnecter(QProcess *process, ProcessType type);
 	void finisher(QProcess *process, ProcessType type);
 	void outputData(QProcess *process, ProcessType type);
 	void outputDataVideo();
+	void outputDataBatch();
+	void outputDataAudio();
+	void outputDataSubtitle();
 	void outputDataExtract();
 	void outputDataInfo();
 	void outputDataVs();
-	void outputDataVk();
 	void outputDataRPU();
+	void audioFinished();
+	void subtitleFinished();
 	void extractFinished();
 	void videoFinished();
+	void batchFinished();
 	void encodeFinished();
-	void vkFinished();
 	void extractRPUFinished();
 
-	QElapsedTimer *_timer;
-	QTime *_pauseTime;
+	#ifdef Q_OS_WINDOWS
+	void outputDataVk();
+	void vkFinished();
+	#endif
 
 signals:
 	void setVideoInfo();
+	void setBatchInfo();
+	void setAudioInfo();
+	void setSubtitleInfo();
 	void setProgress();
 	void completed();
+
+	#ifdef Q_OS_WINDOWS
 	void vkComplete();
+	#endif
+
 	void rpuFinished();
 	void extractInfo();
 	void extractComplete();
