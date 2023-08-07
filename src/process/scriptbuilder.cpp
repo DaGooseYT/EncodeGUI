@@ -2,9 +2,11 @@
 
 QString ScriptBuilder::_scriptList;
 
+#ifdef Q_OS_WINDOWS
 void ScriptBuilder::setRIFECuda(int id, double model, int num, int den, double scale, QString sc, QString trt) {
 	_scriptList.append(VapourSynth::rifeCuda(id, model, num, den, scale, sc, trt));
 }
+#endif
 
 void ScriptBuilder::setRIFENcnn(int model, int id, int thread, QString tta, QString uhd, QString sc) {
 	_scriptList.append(VapourSynth::rifeNcnn(model, id, thread, tta, uhd, sc));
@@ -14,6 +16,7 @@ void ScriptBuilder::setRIFENcnnNew(int model, int id, int thread, int num, int d
 	_scriptList.append(VapourSynth::rifeNcnnNew(model, id, thread, num, den, tta, uhd, sc));
 }
 
+#ifdef Q_OS_WINDOWS
 void ScriptBuilder::setSVPFlowNoob(QString useGPU, int id, int shader, int mask, int mode, int num, int den) {
 	_scriptList.append(VapourSynth::svpFlowNoob(useGPU, id, shader, mask, mode, num, den));
 }
@@ -21,6 +24,7 @@ void ScriptBuilder::setSVPFlowNoob(QString useGPU, int id, int shader, int mask,
 void ScriptBuilder::setSVPFlow(QString super, QString analyse, QString smooth, int num, int den) {
 	_scriptList.append(VapourSynth::svpFlow(super, analyse, smooth, num, den));
 }
+#endif
 
 void ScriptBuilder::setWaifu2x(int noise, int scale, int model, int id, int thread, int precision, bool dual, int gpu1, int gpu2) {
 	_scriptList.append(VapourSynth::waifu2x(noise, scale, model, id, thread, precision, dual, gpu1, gpu2));

@@ -28,13 +28,23 @@ QString Argument::subtitleCodec(QString codec) {
 }
 
 /// <summary>
-/// Verbatim to AudioCodec, but adds stream specifier.
+/// Verbatim to audioCodec(), but adds stream specifier.
 /// </summary>
 /// <param name="codec">The codec to use.</param>
 /// <param name="stream">The stream number to use.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::audioCodecMulti(QString codec, QString stream) {
+QString Argument::audioCodecMulti(QString codec, int stream) {
 	return(QString("-c:a:%1 %2").arg(stream).arg(codec));
+}
+
+/// <summary>
+/// Verbatim to subtitleCodec(), but adds stream specifier.
+/// </summary>
+/// <param name="codec">The codec to use.</param>
+/// <param name="stream">The stream number to use.</param>
+/// <returns>String representation of the argument.</returns>
+QString Argument::subtitleCodecMulti(QString codec, int stream) {
+	return(QString("-c:s:%1 %2").arg(stream).arg(codec));
 }
 
 /// <summary>

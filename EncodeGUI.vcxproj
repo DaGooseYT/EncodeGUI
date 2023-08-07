@@ -150,6 +150,7 @@
     <ClCompile Include="src\args\ratecontrol.cpp" />
     <ClCompile Include="src\args\resolution.cpp" />
     <ClCompile Include="src\args\sharpen.cpp" />
+    <ClCompile Include="src\args\subtitleargs.cpp" />
     <ClCompile Include="src\args\tier.cpp" />
     <ClCompile Include="src\args\timecode.cpp" />
     <ClCompile Include="src\args\transpose.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="src\ui\preview.cpp" />
     <ClCompile Include="src\ui\script.cpp" />
     <ClCompile Include="src\ui\settings.cpp" />
+    <ClCompile Include="src\ui\subtitles.cpp" />
     <ClCompile Include="src\ui\theora.cpp" />
     <ClCompile Include="src\ui\updater.cpp" />
     <ClCompile Include="src\ui\vpx.cpp" />

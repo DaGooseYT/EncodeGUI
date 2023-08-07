@@ -4,12 +4,12 @@ QStringList MediaConfig::_argumentList;
 QString MediaConfig::_filterList;
 QString MediaConfig::_paramsList;
 
-void MediaConfig::setAudioChannels(QString channels, QString stream) {
+void MediaConfig::setAudioChannels(QString channels, int stream) {
 	foreach(QString argument, splitSpace(Argument::audioChannels(channels, stream)))
 		_argumentList.append(argument);
 }
 
-void MediaConfig::setAudioRate(QString rate, QString stream) {
+void MediaConfig::setAudioRate(QString rate, int stream) {
 	foreach(QString argument, splitSpace(Argument::audioRate(rate, stream)))
 		_argumentList.append(argument);
 }
@@ -34,8 +34,13 @@ void MediaConfig::setVideoChapters() {
 		_argumentList.append(argument);
 }
 
-void MediaConfig::setAudioCodecMulti(QString codec, QString stream) {
+void MediaConfig::setAudioCodecMulti(QString codec, int stream) {
 	foreach(QString argument, splitSpace(Argument::audioCodecMulti(codec, stream)))
+		_argumentList.append(argument);
+}
+
+void MediaConfig::setSubtitleCodecMulti(QString codec, int stream) {
+	foreach(QString argument, splitSpace(Argument::subtitleCodecMulti(codec, stream)))
 		_argumentList.append(argument);
 }
 
@@ -69,7 +74,7 @@ void MediaConfig::setRefFrames(int refFrames) {
 		_argumentList.append(argument);
 }
 
-void MediaConfig::setMap(QString type, QString s1, int s2) {
+void MediaConfig::setMap(QString type, int s1, int s2) {
 	foreach(QString argument, splitSpace(Argument::mapVideo(type, s1, s2)))
 		_argumentList.append(argument);
 }
@@ -79,7 +84,7 @@ void MediaConfig::setMapMux(QString type, int s1) {
 		_argumentList.append(argument);
 }
 
-void MediaConfig::setMapAll(QString type, QString s1) {
+void MediaConfig::setMapAll(QString type, int s1) {
 	foreach(QString argument, splitSpace(Argument::mapAll(type, s1)))
 		_argumentList.append(argument);
 }
@@ -129,7 +134,7 @@ void MediaConfig::setVideoBitrate(int bitrate) {
 		_argumentList.append(argument);
 }
 
-void MediaConfig::setAudioBitrate(int bitrate, QString stream) {
+void MediaConfig::setAudioBitrate(int bitrate, int stream) {
 	foreach(QString argument, splitSpace(Argument::audioBitrate(bitrate, stream)))
 		_argumentList.append(argument);
 }
@@ -154,7 +159,7 @@ void MediaConfig::setConstantVideoQuality(int quality) {
 		_argumentList.append(argument);
 }
 
-void MediaConfig::setConstantAudioQuality(int quality, QString stream) {
+void MediaConfig::setConstantAudioQuality(int quality, int stream) {
 	foreach(QString argument, splitSpace(Argument::constantAudioQuality(quality, stream)))
 		_argumentList.append(argument);
 }
@@ -199,7 +204,7 @@ void MediaConfig::setPassLogFile(QString path) {
 	_argumentList.append(path);
 }
 
-void MediaConfig::setAudioMetadata(QString stream) {
+void MediaConfig::setAudioMetadata(int stream) {
 	_argumentList.append(Argument::audioMetadata(stream));
 }
 
@@ -211,12 +216,24 @@ void MediaConfig::setAudioLang(QString lang) {
 	_argumentList.append(Argument::audioLang(lang));
 }
 
-void MediaConfig::setMetaData1() {
-	_argumentList.append(Argument::metaData1());
+void MediaConfig::setSubtitleMetadata(int stream) {
+	_argumentList.append(Argument::subtitleMetadata(stream));
 }
 
-void MediaConfig::setMetaData2(QString str) {
-	_argumentList.append(Argument::metaData2(str));
+void MediaConfig::setSubtitleTitle(QString title) {
+	_argumentList.append(Argument::subtitleTitle(title));
+}
+
+void MediaConfig::setSubtitleLang(QString lang) {
+	_argumentList.append(Argument::subtitleLang(lang));
+}
+
+void MediaConfig::setVideoMetadata() {
+	_argumentList.append(Argument::videoMetadata());
+}
+
+void MediaConfig::setEncoder(QString str) {
+	_argumentList.append(Argument::encoder(str));
 }
 
 void MediaConfig::setNoAutoRotate() {

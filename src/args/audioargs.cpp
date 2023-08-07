@@ -5,7 +5,7 @@
 /// </summary>
 /// <param name="rate">The sample rate of the audio.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::audioRate(QString rate, QString stream) {
+QString Argument::audioRate(QString rate, int stream) {
 	return(QString("-ar:%1 %2").arg(stream).arg(rate));
 }
 
@@ -14,7 +14,7 @@ QString Argument::audioRate(QString rate, QString stream) {
 /// </summary>
 /// <param name="stream">Stream number</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::audioMetadata(QString stream) {
+QString Argument::audioMetadata(int stream) {
 	return(QString("-metadata:s:a:%1").arg(stream));
 }
 
@@ -25,7 +25,7 @@ QString Argument::audioMetadata(QString stream) {
 /// <param name="title">The contents to be added to the title.</param>
 /// <returns>String representation of the argument.</returns>
 QString Argument::audioTitle(QString title) {
-	return(QString("title=\"%2\"").arg(title));
+	return(QString("title=%2").arg(title));
 }
 
 /// <summary>
@@ -43,7 +43,7 @@ QString Argument::audioLang(QString lang) {
 /// </summary>
 /// <param name="channels">The number of audio channels</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::audioChannels(QString channels, QString stream) {
+QString Argument::audioChannels(QString channels, int stream) {
 	return(QString("-ac:%1 %2").arg(stream).arg(channels));
 }
 

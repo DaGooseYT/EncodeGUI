@@ -1,12 +1,5 @@
 #include "ffloader.hpp"
 
-#ifdef Q_OS_LINUX
-#include "signal.h"
-#endif
-#ifdef Q_OS_WINDOWS
-#include "windows.h"
-#endif
-
 void ProcessWorker::newProcess(QProcess *process, QStringList arguments, QString program) {
 	if (!arguments.isEmpty())
 		process->start(program, arguments);
@@ -19,7 +12,7 @@ void ProcessWorker::pauseProcess(QProcess *process, bool pause) {
 		#ifdef Q_OS_WINDOWS
 		DebugActiveProcess(process->processId());
 		#endif
-		#ifdef Q_OS_LINUX
+		#ifdef Q_OS_DARWIN
 		kill(process->processId(), SIGSTOP);
 		#endif
 	}
@@ -27,7 +20,7 @@ void ProcessWorker::pauseProcess(QProcess *process, bool pause) {
 		#ifdef Q_OS_WINDOWS
 		DebugActiveProcessStop(process->processId());
 		#endif
-		#ifdef Q_OS_LINUX
+		#ifdef Q_OS_DARWIN
 		kill(process->processId(), SIGCONT);
 		#endif
 	}

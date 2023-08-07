@@ -14,7 +14,7 @@ QString Argument::constantVideoQuality(int quality) {
 /// </summary>
 /// <param name="quality">The quality level of the audio.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::constantAudioQuality(int quality, QString stream) {
+QString Argument::constantAudioQuality(int quality, int stream) {
 	return(QString("-q:a:%1 %2").arg(stream).arg(quality));
 }
 

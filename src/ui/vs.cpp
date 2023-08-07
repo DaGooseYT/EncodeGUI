@@ -16,18 +16,27 @@ void EncodeGUI::hideInterpGpu() {
 void EncodeGUI::modelVK() {
     if (_ui->RIFEModelVKDD->currentIndex() < 4) {
         SET_VISIBLE(_ui->Times2Label);
+        
+        #ifdef Q_OS_WINDOWS
         SET_VISIBLE(_ui->EqualsLabel);
+        #endif
+
         SET_DISABLED(_ui->OutputFPSNUD);
 
         _ui->OutputFPSNUD->setValue(static_cast<double>(VideoInfo::getFrameRate().toDouble()) * 2.0);
     }
     else {
         SET_INVISIBLE(_ui->Times2Label);
+
+        #ifdef Q_OS_WINDOWS
         SET_INVISIBLE(_ui->EqualsLabel);
+        #endif
+
         SET_ENABLED(_ui->OutputFPSNUD);
     }
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::hideInterpGpuCB() {
     switch (_ui->BackendDD->currentIndex()) {
     case 0:
@@ -69,6 +78,7 @@ void EncodeGUI::hideInterpGpuCB() {
         }
 
         SET_ENABLED(_ui->GPUThreadDD);
+
         _ui->BackendDD->removeItem(2);
 
         break;
@@ -79,30 +89,29 @@ void EncodeGUI::toolInterp() {
     switch (_ui->ToolInterpDD->currentIndex()) {
     case 0:
         SET_ENABLED(_ui->BackendDD);
+        SET_VISIBLE(_ui->SceneChangeLabel);
+        SET_VISIBLE(_ui->SceneChangeCB);
+        SET_VISIBLE(_ui->ModelInterpLabel);
+        SET_VISIBLE(_ui->SCThresholdLabel);
+        SET_VISIBLE(_ui->SCThresholdNUD);
+        SET_INVISIBLE(_ui->RIFEModelVKDD);
+        SET_VISIBLE(_ui->GPUThreadInterpLabel);
+        SET_VISIBLE(_ui->GPUThreadDD);
+        SET_ENABLED(_ui->OutputFPSNUD);
+        SET_INVISIBLE(_ui->EqualsLabel);
+        SET_INVISIBLE(_ui->ParamsCB);
+        SET_INVISIBLE(_ui->InterpModeLabel);
+        SET_INVISIBLE(_ui->RIFEModelCADD);
         SET_INVISIBLE(_ui->ShaderLabel);
         SET_INVISIBLE(_ui->ShaderDD);
         SET_INVISIBLE(_ui->InterpModeDD);
         SET_INVISIBLE(_ui->ArtefactMaskLabel);
         SET_INVISIBLE(_ui->ArtefactMaskDD);
-        SET_VISIBLE(_ui->SceneChangeLabel);
-        SET_VISIBLE(_ui->SceneChangeCB);
-        SET_VISIBLE(_ui->ModelInterpLabel);
         SET_VISIBLE(_ui->ModelInterpDD);
-        SET_INVISIBLE(_ui->RIFEModelCADD);
-        SET_VISIBLE(_ui->SCThresholdLabel);
-        SET_VISIBLE(_ui->SCThresholdNUD);
-        SET_INVISIBLE(_ui->InterpModeLabel);
-        SET_INVISIBLE(_ui->RIFEModelVKDD);
-        SET_VISIBLE(_ui->GPUThreadInterpLabel);
-        SET_VISIBLE(_ui->GPUThreadDD);
-        SET_INVISIBLE(_ui->ParamsCB);
-        SET_ENABLED(_ui->OutputFPSNUD);
-        SET_INVISIBLE(_ui->EqualsLabel);
         SET_INVISIBLE(_ui->Times2Label);
-        SET_INVISIBLE(_ui->EqualsLabel);
         SET_ENABLED(_ui->OutputFPSNUD);
 
-        if (!VideoInfo::getFrameRate().contains(QString("?")))
+        if (!CHECKED(_ui->BatchCB) && !VideoInfo::getFrameRate().contains(QString("?")))
             _ui->OutputFPSNUD->setMinimum(VideoInfo::getFrameRate().toDouble() * static_cast<double>(1.25));
 
         if (_ui->BackendDD->currentIndex() == 0 || _ui->BackendDD->currentIndex() == 2) {
@@ -120,21 +129,21 @@ void EncodeGUI::toolInterp() {
         break;
     case 1:
         SET_ENABLED(_ui->BackendDD);
+        SET_VISIBLE(_ui->SceneChangeLabel);
+        SET_VISIBLE(_ui->SceneChangeCB);
+        SET_VISIBLE(_ui->ModelInterpLabel);
+        SET_VISIBLE(_ui->SCThresholdLabel);
+        SET_VISIBLE(_ui->SCThresholdNUD);
+        SET_VISIBLE(_ui->GPUThreadInterpLabel);
+        SET_VISIBLE(_ui->GPUThreadDD);
         SET_INVISIBLE(_ui->ShaderLabel);
         SET_INVISIBLE(_ui->ShaderDD);
         SET_INVISIBLE(_ui->InterpModeLabel);
         SET_INVISIBLE(_ui->InterpModeDD);
         SET_INVISIBLE(_ui->ArtefactMaskLabel);
         SET_INVISIBLE(_ui->ArtefactMaskDD);
-        SET_VISIBLE(_ui->SceneChangeLabel);
-        SET_VISIBLE(_ui->SceneChangeCB);
-        SET_VISIBLE(_ui->ModelInterpLabel);
-        SET_VISIBLE(_ui->SCThresholdLabel);
-        SET_VISIBLE(_ui->SCThresholdNUD);
-        SET_INVISIBLE(_ui->ModelInterpDD);
-        SET_VISIBLE(_ui->GPUThreadInterpLabel);
-        SET_VISIBLE(_ui->GPUThreadDD);
         SET_INVISIBLE(_ui->ParamsCB);
+        SET_INVISIBLE(_ui->ModelInterpDD);
 
         if (_ui->BackendDD->currentIndex() == 1)
             modelVK();
@@ -146,26 +155,26 @@ void EncodeGUI::toolInterp() {
         break;
     case 2:
         SET_DISABLED(_ui->BackendDD);
-        SET_VISIBLE(_ui->ShaderLabel);
-        SET_VISIBLE(_ui->ShaderDD);
-        SET_VISIBLE(_ui->InterpModeLabel);
-        SET_VISIBLE(_ui->InterpModeDD);
-        SET_VISIBLE(_ui->ArtefactMaskLabel);
-        SET_VISIBLE(_ui->ArtefactMaskDD);
         SET_INVISIBLE(_ui->SceneChangeLabel);
         SET_INVISIBLE(_ui->SceneChangeCB);
         SET_INVISIBLE(_ui->SCThresholdLabel);
         SET_INVISIBLE(_ui->SCThresholdNUD);
         SET_INVISIBLE(_ui->ModelInterpLabel);
-        SET_INVISIBLE(_ui->ModelInterpDD);
-        SET_INVISIBLE(_ui->RIFEModelCADD);
         SET_INVISIBLE(_ui->RIFEModelVKDD);
         SET_INVISIBLE(_ui->GPUThreadInterpLabel);
         SET_INVISIBLE(_ui->GPUThreadDD);
-        SET_VISIBLE(_ui->ParamsCB);
         SET_ENABLED(_ui->OutputFPSNUD);
-        SET_INVISIBLE(_ui->EqualsLabel);
         SET_INVISIBLE(_ui->Times2Label);
+        SET_VISIBLE(_ui->ShaderLabel);
+        SET_VISIBLE(_ui->ShaderDD);
+        SET_VISIBLE(_ui->ParamsCB);
+        SET_VISIBLE(_ui->InterpModeLabel);
+        SET_VISIBLE(_ui->InterpModeDD);
+        SET_INVISIBLE(_ui->EqualsLabel);
+        SET_VISIBLE(_ui->ArtefactMaskLabel);
+        SET_VISIBLE(_ui->ArtefactMaskDD);
+        SET_INVISIBLE(_ui->RIFEModelCADD);
+        SET_INVISIBLE(_ui->ModelInterpDD);
 
         _ui->BackendDD->addItem(QString("OpenCL"));
         _ui->BackendDD->setCurrentIndex(2);
@@ -182,6 +191,7 @@ void EncodeGUI::toolInterp() {
         break;
     }
 }
+#endif
 
 void EncodeGUI::autoAjustU() {
     if (CHECKED(_ui->AutoAdjCB)) {
@@ -209,9 +219,13 @@ void EncodeGUI::autoAdjWidth2x() {
     }
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::hideParams() {
     if (CHECKED(_ui->ParamsCB) && _ui->ToolInterpDD->currentIndex() == 2) {
         SET_DISABLED(_ui->UseGPUCB);
+        SET_DISABLED(_ui->UseGPUCB);
+        SET_INVISIBLE(_ui->OutputFPSNUD);
+        SET_INVISIBLE(_ui->OutFPSLabel);
         SET_VISIBLE(_ui->SmoothLabel);
         SET_VISIBLE(_ui->SmoothTxtBox);
         SET_VISIBLE(_ui->AnalyseLabel);
@@ -224,9 +238,6 @@ void EncodeGUI::hideParams() {
         SET_INVISIBLE(_ui->ShaderDD);
         SET_INVISIBLE(_ui->ArtefactMaskLabel);
         SET_INVISIBLE(_ui->ArtefactMaskDD);
-        SET_DISABLED(_ui->UseGPUCB);
-        SET_INVISIBLE(_ui->OutputFPSNUD);
-        SET_INVISIBLE(_ui->OutFPSLabel);
     }
     else {
         SET_INVISIBLE(_ui->SmoothLabel);
@@ -250,6 +261,7 @@ void EncodeGUI::hideParams() {
         SET_VISIBLE(_ui->OutFPSLabel);
     }
 }
+#endif
 
 void EncodeGUI::autoAdjustUD() {
     if (CHECKED(_ui->AutoAdjCB))

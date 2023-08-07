@@ -1,5 +1,6 @@
 #include "vapoursynth.hpp"
 
+#ifdef Q_OS_WINDOWS
 /// <summary>
 /// Configures SVPFlow for if you don't know how to write the parameters.
 /// </summary>
@@ -58,3 +59,4 @@ QString VapourSynth::svpFlow(QString super, QString analyse, QString smooth, int
 
 	return(complete);
 }
+#endif

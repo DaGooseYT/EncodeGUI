@@ -47,6 +47,83 @@ void VideoInfoRegex::vkRegex(QString output) {
 	}
 }
 
+void VideoInfoRegex::batchInfoerRegex(QString output) {
+	if (output.contains(QString("attached pic")) || output.contains(QString("mjpeg")) || output.contains(QString("png")) || output.contains(QString("gif")) || output.contains(QString("tiff")) || output.contains(QString("bmp")) ||
+		output.contains(QString("heic")) || output.contains(QString("tga")) || output.contains(QString("webp")) || output.contains(QString("avif")))
+		return;
+
+	QRegularExpressionMatch matchVideoInfo(_indexer.at(GetInfo::VideoInfo).match(output));
+
+	QString videoCodec, matrix, transfer, primaries, frameRate;
+	int width, height;
+	QTime duration;
+
+	if (!matchVideoInfo.hasMatch())
+		return;
+	else {
+		QString remove(_indexer.at(GetInfo::VideoInfoPart).match(output).captured(1));
+		videoCodec = _indexer.at(GetInfo::Codec).match(matchVideoInfo.captured(1)).captured(1);
+
+		if (!_durationLine.isEmpty()) {
+			duration = QTime(_indexer.at(GetInfo::Duration).match(_durationLine).captured(1).toInt(), _indexer.at(GetInfo::Duration).match(_durationLine).captured(2).toInt(),
+				_indexer.at(GetInfo::Duration).match(_durationLine).captured(3).toInt(), _indexer.at(GetInfo::Duration).match(_durationLine).captured(4).toInt());
+		}
+
+		width = _indexer.at(GetInfo::Resolution).match(output.remove(remove)).captured(1).toInt();
+		height = _indexer.at(GetInfo::Resolution).match(output.remove(remove)).captured(2).toInt();
+
+		if (_indexer.at(GetInfo::Colors).match(matchVideoInfo.captured(2)).captured(2).isEmpty())
+			matrix = _indexer.at(GetInfo::Colors).match(matchVideoInfo.captured(2)).captured(1);
+		else
+			matrix = _indexer.at(GetInfo::Colors).match(matchVideoInfo.captured(2)).captured(2);
+
+		transfer = _indexer.at(GetInfo::Colors).match(matchVideoInfo.captured(2)).captured(4);
+		primaries = _indexer.at(GetInfo::Colors).match(matchVideoInfo.captured(2)).captured(3);
+
+		if (!_indexer.at(GetInfo::Fps).match(output).hasMatch())
+			frameRate = _indexer.at(GetInfo::Tbr).match(output).captured(1);
+		else
+			frameRate = _indexer.at(GetInfo::Fps).match(output).captured(1);
+
+		if (matrix.contains(QString("progressive")) || matrix.contains(QString("interlaced")) || matrix.contains(QString("tv")) ||
+			matrix.contains(QString("top first")) || matrix.contains(QString("full")) || matrix.isEmpty()) {
+
+			matrix = QString("?");
+		}
+		if (transfer.isEmpty())
+			transfer = QString("?");
+		if (primaries.isEmpty())
+			primaries = QString("?");
+		if (videoCodec.isEmpty())
+			videoCodec = QString("?");
+
+		if (videoCodec.isEmpty())
+			videoCodec = QString("?");
+		if (frameRate.isEmpty())
+			frameRate = QString("?");
+
+		videoCodec.remove(QString(","));
+
+		if (frameRate.contains(QString("23.98")))
+			frameRate = QString("23.976"); //assume
+		if (frameRate.contains(QString("47.96")))
+			frameRate = QString("47.952"); //assume
+		if (frameRate.contains(QString("95.91")))
+			frameRate = QString("95.904"); //assume
+
+		#ifdef VIDEOINFOLIST_H
+		VideoInfoList::setCodec(videoCodec);
+		VideoInfoList::setMatrix(matrix);
+		VideoInfoList::setPrimaries(primaries);
+		VideoInfoList::setTransfer(transfer);
+		VideoInfoList::setWidth(width);
+		VideoInfoList::setHeight(height);
+		VideoInfoList::setDuration(duration);
+		VideoInfoList::setFrameRate(frameRate);
+		#endif
+	}
+}
+
 void VideoInfoRegex::videoInfoerRegex(QString output) {
 	if (output.contains(QString("attached pic")) || output.contains(QString("mjpeg")) || output.contains(QString("png")) || output.contains(QString("gif")) || output.contains(QString("tiff")) || output.contains(QString("bmp")) ||
 		output.contains(QString("heic")) || output.contains(QString("tga")) || output.contains(QString("webp")) || output.contains(QString("avif")))

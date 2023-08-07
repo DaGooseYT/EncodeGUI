@@ -7,7 +7,7 @@
 /// <param name="s1">Stream 1 selection.</param>
 /// <param name="s2">Stream 2 selection.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::mapVideo(QString type, QString s1, int s2) {
+QString Argument::mapVideo(QString type, int s1, int s2) {
 	return(QString("-map %1:%2:%3").arg(s1).arg(type).arg(s2));
 }
 
@@ -36,6 +36,6 @@ QString Argument::mapSingle(QString type) {
 /// <param name="type">The stream type to target.</param>
 /// <param name="s1">Stream one identifier.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::mapAll(QString type, QString s1) {
-	return(QString("-map %1:%2").arg(s1).arg(type));
+QString Argument::mapAll(QString type, int s1) {
+	return(QString("-map %1:%2?").arg(s1).arg(type));
 }

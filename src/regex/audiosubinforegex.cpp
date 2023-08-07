@@ -13,7 +13,7 @@ QString AudioSubInfoRegex::_subStreams;
 
 void AudioSubInfoRegex::setupPattern() {
 	_indexer << QRegularExpression(QString("Stream\\s?#0:([0-9]?[0-9]?)\\[?[^\\]]*?\\]?\\(?(\\w*)\\)?:?\\[?[^\\]]*\\]?:\\s?Audio:\\s?(\\w*)[^,]*,?\\s?([^\\s]*)\\sHz,\\s?([^,]*),?"));
-	_indexer << QRegularExpression(QString("Stream\\s?#0:([0-9]?[0-9]?)\\[?[^\\]]*?\\]?\\(?(\\w*)\\)?:?\\[?[^\\]]*\\]?:\\s?Subtitle:\\s?([^\\s]*)"));
+	_indexer << QRegularExpression(QString("Stream\\s?#0:([0-9]?[0-9]?)\\[?[^\\]]*?\\]?\\(?(\\w*)\\)?:?\\[?[^\\]]*\\]?:\\s?Subtitle:\\s?(\\w*)"));
 	_indexer << QRegularExpression(QString("\\s*Chapters:"));
 }
 
@@ -100,6 +100,14 @@ void AudioSubInfoRegex::subInfoRegex(QString output) {
 		_subLanguage = matchSubtitleInfo.captured(2).toUpper();
 		_subStreams = matchSubtitleInfo.captured(1);
 		_subCodec = matchSubtitleInfo.captured(3);
+
+		if (_subLanguage.isEmpty())
+			_subLanguage = QString("?");
+		if (_subCodec.isEmpty())
+			_subCodec = QString("?");
+
+		_subLanguage.toUpper();
+		_subCodec.replace(QString("subrip"), QString("SRT")).replace(QString("webvtt"), QString("WebVTT")).replace(QString("ass"), QString("ASS")).replace(QString("mov_text"), QString("TXTT"));
 		
 		#ifdef SUBTITLEINFO_H
 		SubtitleInfo::addStreams();

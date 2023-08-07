@@ -49,6 +49,7 @@ void EncodeGUI::profile264() {
     }
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::hdwr264() {
     if (CHECKED(_ui->Hardware264CB)) {
         SET_ENABLED(_ui->Hardware264DD);
@@ -90,6 +91,7 @@ void EncodeGUI::hdwr264d() {
         }
     }
 }
+#endif
 
 void EncodeGUI::mode264() {
     if (_ui->EncodeMode264DD->isEnabled()) {
@@ -121,6 +123,7 @@ void EncodeGUI::mode264() {
             break;
         }
     }
+    #ifdef Q_OS_WINDOWS
     else {
         if (_ui->EncodeMode264HWDD->currentIndex() == 0) {
             SET_INVISIBLE(_ui->Bitrate264NUD);
@@ -139,4 +142,5 @@ void EncodeGUI::mode264() {
             SET_INVISIBLE(_ui->CRFValue264NUD);
         }
     }
+    #endif
 }

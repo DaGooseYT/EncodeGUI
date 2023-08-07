@@ -61,6 +61,7 @@ void EncodeGUI::profile265() {
     }
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::hdwr265() {
     if (CHECKED(_ui->Hardware265CB)) {
         SET_ENABLED(_ui->Hardware265DD);
@@ -107,13 +108,17 @@ void EncodeGUI::hdwr265d() {
         }
     }
 }
+#endif
 
 void EncodeGUI::mode265() {
     if (_ui->EncodeMode265DD->isEnabled()) {
         switch (_ui->EncodeMode265DD->currentIndex()) {
         case 0:
+            #ifdef Q_OS_WINDOWS
             SET_INVISIBLE(_ui->FastPass265CB);
             SET_INVISIBLE(_ui->FastPass265Label);
+            #endif
+            
             SET_INVISIBLE(_ui->Bitrate265NUD);
             SET_INVISIBLE(_ui->Bitrate265Label);
             SET_INVISIBLE(_ui->Quantizer265Label);
@@ -122,8 +127,11 @@ void EncodeGUI::mode265() {
             SET_VISIBLE(_ui->CRFValue265NUD);
             break;
         case 1:
+            #ifdef Q_OS_WINDOWS
             SET_INVISIBLE(_ui->FastPass265CB);
             SET_INVISIBLE(_ui->FastPass265Label);
+            #endif
+
             SET_VISIBLE(_ui->Bitrate265NUD);
             SET_VISIBLE(_ui->Bitrate265Label);
             SET_INVISIBLE(_ui->Quantizer265Label);
@@ -132,8 +140,11 @@ void EncodeGUI::mode265() {
             SET_INVISIBLE(_ui->CRFValue265NUD);
             break;
         case 2:
+            #ifdef Q_OS_WINDOWS
             SET_VISIBLE(_ui->FastPass265CB);
             SET_VISIBLE(_ui->FastPass265Label);
+            #endif
+
             SET_VISIBLE(_ui->Bitrate265NUD);
             SET_VISIBLE(_ui->Bitrate265Label);
             SET_INVISIBLE(_ui->Quantizer265Label);
@@ -142,8 +153,11 @@ void EncodeGUI::mode265() {
             SET_INVISIBLE(_ui->CRFValue265NUD);
             break;
         case 3:
+            #ifdef Q_OS_WINDOWS
             SET_INVISIBLE(_ui->FastPass265CB);
             SET_INVISIBLE(_ui->FastPass265Label);
+            #endif
+
             SET_INVISIBLE(_ui->Bitrate265NUD);
             SET_INVISIBLE(_ui->Bitrate265Label);
             SET_VISIBLE(_ui->Quantizer265Label);
@@ -153,6 +167,7 @@ void EncodeGUI::mode265() {
             break;
         }
     }
+    #ifdef Q_OS_WINDOWS
     else {
         SET_INVISIBLE(_ui->FastPass265CB);
         SET_INVISIBLE(_ui->FastPass265Label);
@@ -174,4 +189,5 @@ void EncodeGUI::mode265() {
             SET_INVISIBLE(_ui->CRFValue265NUD);
         }
     }
+    #endif
 }

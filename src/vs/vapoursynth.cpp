@@ -11,7 +11,12 @@ QString VapourSynth::plugin(QString path) {
 /// Includes required python nodes.
 /// </summary>
 QString VapourSynth::include() {
+	#ifdef Q_OS_WINDOWS
 	return(QString("# This file was generated using EncodeGUI\n\nfrom vsrife import RIFE\nimport tempfile\nimport muvsfunc as mf\nimport vapoursynth as vs\nfrom vapoursynth import core\n\n"));
+	#endif
+	#ifdef Q_OS_DARWIN
+	return(QString("# This file was generated using EncodeGUI\n\nimport os\nimport muvsfunc as mf\nimport vapoursynth as vs\nfrom vapoursynth import core\n\n"));
+	#endif
 }
 
 /// <summary>
@@ -20,7 +25,12 @@ QString VapourSynth::include() {
 /// <param name="path">The source video file path.</param>
 /// <returns>String representation of the script.</returns>
 QString VapourSynth::input(QString path, QString id) {
+	#ifdef Q_OS_WINDOWS
 	return(QString("\nclip = core.lsmas.LWLibavSource(source=\"%1\", cachefile=tempfile.gettempdir() + \"\\%2.lwi\")\n\n").arg(path).replace(QString("\\"), QString("\\\\")).arg(id));
+	#endif
+	#ifdef Q_OS_DARWIN
+	return(QString("\nclip = core.ffms2.Source(source=\"%1\", cachefile=os.getenv(\"HOME\") + \"/Library/Caches/TemporaryItems/%2.ffindex\")\n\n").arg(path).arg(id));
+	#endif
 }
 
 /// <summary>

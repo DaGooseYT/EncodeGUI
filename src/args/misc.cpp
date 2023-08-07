@@ -42,7 +42,7 @@ QString Argument::passLogFile() {
 }
 
 /// <summary>
-/// 
+/// Sets VP9 encoder to use all CPU threads.
 /// </summary>
 /// <returns>String representation of the argument.</returns>
 QString Argument::allThreads() {
@@ -79,7 +79,12 @@ QString Argument::deinterlace() {
 /// <param name="path">Tempfile path.</param>
 /// <returns>String representation of the argument.</returns>
 QString Argument::statsFile(QString path) {
+	#ifdef Q_OS_WINDOWS
 	return(QString("pass=1:stats='%2\\x265.log'").arg(path));
+	#endif
+	#ifdef Q_OS_DARWIN
+	return(QString("pass=1:stats='%2/x265.log'").arg(path));
+	#endif
 }
 
 /// <summary>
@@ -118,7 +123,7 @@ QString Argument::nullPath() {
 /// Writes string metadata to the video file.
 /// </summary>
 /// <returns>String representation of the argument.</returns>
-QString Argument::metaData1() {
+QString Argument::videoMetadata() {
 	return(QString("-metadata:g"));
 }
 
@@ -127,6 +132,6 @@ QString Argument::metaData1() {
 /// </summary>
 /// <param name="str">The string to write.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::metaData2(QString str) {
+QString Argument::encoder(QString str) {
 	return(QString("encoding_tool=%1").arg(str));
 }

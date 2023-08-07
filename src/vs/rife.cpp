@@ -1,5 +1,6 @@
 #include "vapoursynth.hpp"
 
+#ifdef Q_OS_WINDOWS
 /// <summary>
 /// Configures RIFE in it's CUDA implementation.
 /// </summary>
@@ -15,6 +16,7 @@ QString VapourSynth::rifeCuda(int id, double model, int num, int den, double sca
 	else
 		return(QString("clip = RIFE(clip, device_index=%1, cuda_graphs=True, model=%2, fps_num=%3, fps_den=%4, scale=%5, ensemble=True, sc=%6)\n\n").arg(id).arg(model).arg(num).arg(den).arg(scale).arg(sc));
 }
+#endif
 
 /// <summary>
 /// Configures RIFE in it's NCNN implementation.

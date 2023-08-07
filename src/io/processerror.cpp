@@ -272,14 +272,6 @@ bool ProcessError::getVkQueueError() {
 }
 
 /// <summary>
-/// Receives the out of VRAM error.
-/// </summary>
-/// <returns>True or false.</returns>
-bool ProcessError::getVramError() {
-	return(_vram);
-}
-
-/// <summary>
 /// Receives the probe size warning.
 /// </summary>
 /// <returns>True or false.</returns>
@@ -341,6 +333,14 @@ bool ProcessError::getIndexDeviceError() {
 /// <returns>True or false.</returns>
 bool ProcessError::getInvalidGpuError() {
 	return(_invalidGpu);
+}
+
+/// <summary>
+/// Receives the out of VRAM error.
+/// </summary>
+/// <returns>True or false.</returns>
+bool ProcessError::getVramError() {
+	return(_vram);
 }
 
 /// <summary>

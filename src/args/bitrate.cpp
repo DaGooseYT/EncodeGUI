@@ -14,7 +14,7 @@ QString Argument::videoBitrate(int bitrate) {
 /// </summary>
 /// <param name="bitrate">The bitrate value.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::audioBitrate(int bitrate, QString stream) {
+QString Argument::audioBitrate(int bitrate, int stream) {
 	return(QString("-b:a:%1 %2k").arg(stream).arg(bitrate));
 }
 

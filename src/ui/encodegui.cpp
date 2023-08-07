@@ -27,14 +27,11 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     connect(_ui->UseGPUCB, SIGNAL(stateChanged(int)), this, SLOT(hideInterpGpu()));
     connect(_ui->BackendDD, SIGNAL(currentIndexChanged(int)), this, SLOT(hideInterpGpuCB()));
     connect(_ui->ToolInterpDD, SIGNAL(currentIndexChanged(int)), this, SLOT(toolInterp()));
-    connect(_ui->ParamsCB, SIGNAL(stateChanged(int)), this, SLOT(hideParams()));
     connect(_ui->ToolUpscaleDD, SIGNAL(currentIndexChanged(int)), this, SLOT(hideUpscale()));
     connect(_ui->AudioCB, SIGNAL(stateChanged(int)), this, SLOT(hideAud()));
-    connect(_ui->SubtitlesCB, SIGNAL(stateChanged(int)), this, SLOT(hideSub()));
+    connect(_ui->SubtitlesCB, SIGNAL(stateChanged(int)), this, SLOT(hideSubtitle()));
     connect(_ui->AudioDD, SIGNAL(currentIndexChanged(int)), this, SLOT(hideAudTab()));
-    connect(_ui->Hardware264CB, SIGNAL(stateChanged(int)), this, SLOT(hdwr264()));
     connect(_ui->EncodeMode264DD, SIGNAL(currentIndexChanged(int)), this, SLOT(mode264()));
-    connect(_ui->EncodeMode264HWDD, SIGNAL(currentIndexChanged(int)), this, SLOT(mode264()));
     connect(_ui->Preset264CB, SIGNAL(stateChanged(int)), this, SLOT(hidePre264()));
     connect(_ui->Tune264CB, SIGNAL(stateChanged(int)), this, SLOT(hideTun264()));
     connect(_ui->Profile264DD, SIGNAL(currentIndexChanged(int)), this, SLOT(profile264()));
@@ -42,10 +39,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     connect(_ui->Reference264Sldr, SIGNAL(valueChanged(int)), this, SLOT(refsldr264()));
     connect(_ui->BFrame264Sldr, SIGNAL(valueChanged(int)), this, SLOT(bsldr264()));
     connect(_ui->SceneChangeCB, SIGNAL(stateChanged(int)), this, SLOT(thresholdNUD()));
-    connect(_ui->LimitThreadsCB, SIGNAL(stateChanged(int)), this, SLOT(cpuThread()));
-    connect(_ui->Hardware265CB, SIGNAL(stateChanged(int)), this, SLOT(hdwr265()));
     connect(_ui->EncodeMode265DD, SIGNAL(currentIndexChanged(int)), this, SLOT(mode265()));
-    connect(_ui->EncodeMode265HWDD, SIGNAL(currentIndexChanged(int)), this, SLOT(mode265()));
     connect(_ui->Preset265CB, SIGNAL(stateChanged(int)), this, SLOT(hidePre265()));
     connect(_ui->Tune265CB, SIGNAL(stateChanged(int)), this, SLOT(hideTun265()));
     connect(_ui->Profile265DD, SIGNAL(currentIndexChanged(int)), this, SLOT(profile265()));
@@ -66,7 +60,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     connect(_ui->PauseBttn, SIGNAL(clicked(bool)), this, SLOT(pauseClick()));
     connect(_ui->CancelQueueBttn, SIGNAL(clicked(bool)), this, SLOT(cancelAllClick()));
     connect(_ui->ClearJobsBttn, SIGNAL(clicked(bool)), this, SLOT(clearFinished()));
-    connect(_ui->AddAudioJob, SIGNAL(clicked(bool)), this, SLOT(addAudioJob()));
+    connect(_ui->AddAudioJobBttn, SIGNAL(clicked(bool)), this, SLOT(addAudioJob()));
     connect(_ui->RIFEModelVKDD, SIGNAL(currentIndexChanged(int)), this, SLOT(modelVK()));
     connect(_ui->LogsDirBttn, SIGNAL(clicked(bool)), this, SLOT(openLogs()));
     connect(_ui->PreviewBttn, SIGNAL(clicked(bool)), this, SLOT(openPreview()));
@@ -100,40 +94,45 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     connect(_ui->GetVidInfoCB, SIGNAL(stateChanged(int)), this, SLOT(mediaInfo()));
     connect(_ui->AudioTitleCB, SIGNAL(stateChanged(int)), this, SLOT(audioTitle()));
     connect(_ui->GenerateOutCB, SIGNAL(stateChanged(int)), this, SLOT(genOutput()));
-    connect(_ui->TestGPUBttn, SIGNAL(clicked(bool)), this, SLOT(checkGPU()));
     connect(_ui->EncodeModeAV1DD, SIGNAL(currentIndexChanged(int)), this, SLOT(modeAv1()));
     connect(_ui->LangAudioCB, SIGNAL(stateChanged(int)), this, SLOT(audioLang()));
+    connect(_ui->SubtitleTitleCB, SIGNAL(stateChanged(int)), this, SLOT(subtitleTitle()));
+    connect(_ui->SubtitleLangCB, SIGNAL(stateChanged(int)), this, SLOT(subtitleLang()));
+    connect(_ui->SubtitlesDD, SIGNAL(currentIndexChanged(int)), this, SLOT(hideSubtitleTab()));
+    connect(_ui->AddSubtitleJobBttn, SIGNAL(clicked(bool)), this, SLOT(addSubtitleJob()));
+    connect(_ui->BatchCB, SIGNAL(stateChanged(int)), this, SLOT(batch()));
+    connect(_ui->NotificationCB, SIGNAL(stateChanged(int)), this, SLOT(nextJob()));
+    connect(_ui->SelectBttn, SIGNAL(clicked(bool)), this, SLOT(audioSelectClick()));
+    connect(_ui->SubSelectBttn, SIGNAL(clicked(bool)), this, SLOT(subtitleSelectClick()));
+    connect(_ui->SubtitleInfoBttn, SIGNAL(clicked(bool)), this, SLOT(subtitleClick()));
+    connect(_ui->ClearBttn, SIGNAL(clicked(bool)), this, SLOT(clearBttn()));
+    connect(_ui->LicensesBttn, SIGNAL(clicked(bool)), this, SLOT(licenseBttn()));
+
+    #ifdef Q_OS_WINDOWS
     connect(_ui->MultiGPUGB, SIGNAL(toggled(bool)), this, SLOT(dualGPU()));
-    connect(_ui->NextJobCB, SIGNAL(stateChanged(int)), this, SLOT(nextJob()));
+    connect(_ui->TestGPUBttn, SIGNAL(clicked(bool)), this, SLOT(checkGPU()));
+    connect(_ui->EncodeMode265HWDD, SIGNAL(currentIndexChanged(int)), this, SLOT(mode265()));
+    connect(_ui->Hardware265CB, SIGNAL(stateChanged(int)), this, SLOT(hdwr265()));
+    connect(_ui->LimitThreadsCB, SIGNAL(stateChanged(int)), this, SLOT(cpuThread()));
+    connect(_ui->EncodeMode264HWDD, SIGNAL(currentIndexChanged(int)), this, SLOT(mode264()));
+    connect(_ui->Hardware264CB, SIGNAL(stateChanged(int)), this, SLOT(hdwr264()));
+    connect(_ui->ParamsCB, SIGNAL(stateChanged(int)), this, SLOT(hideParams()));
     connect(_ui->GPU1IDNUD, SIGNAL(valueChanged(int)), this, SLOT(gpu1()));
     connect(_ui->GPU2IDNUD, SIGNAL(valueChanged(int)), this, SLOT(gpu2()));
+    #endif
 
-    _ffloader = new FFLoader();
-    _inputBttn = new QList<QPushButton*>();
-    _outputBttn = new QList<QPushButton*>();
-    _logsBttn = new QList<QPushButton*>();
-    _job = new QStringList();
-    _gpuNames = new QStringList();
-    _inputList = new QStringList();
-    _outputList = new QStringList();
-    _tempList = new QStringList();
-    _state = new QStringList();
-    _channels = new QStringList();
-    _quality = new QList<int>();
-    _bitrate = new QList<int>();
-    _stream = new QList<int>();
-    _isEncoding = new QList<bool>();
-    _isTitle = new QList<bool>();
-    _isLang = new QList<bool>();
-    _title = new QStringList();
-    _logFile = new QFile();
-    _logsStream = new QTextStream(_logFile);
-    _audioCodec = new QStringList();
-    _audioLangs = new QStringList();
+    #ifdef VERIFY
+    connect(_ui->RegistrationBttn, SIGNAL(clicked(bool)), this, SLOT(verifyClick()));
+    #endif
+
+    mAlloc();
 
     connect(_ffloader, SIGNAL(extractInfo()), this, SLOT(extracterInfo()));
     connect(_ffloader, SIGNAL(extractComplete()), this, SLOT(extracterComplete()));
+    connect(_ffloader, SIGNAL(setAudioInfo()), this, SLOT(audioFinished()));
+    connect(_ffloader, SIGNAL(setSubtitleInfo()), this, SLOT(subtitleFinished()));
     connect(_ffloader, SIGNAL(setVideoInfo()), this, SLOT(regexFinished()));
+    connect(_ffloader, SIGNAL(setBatchInfo()), this, SLOT(batchFinished()));
     connect(_ffloader, SIGNAL(setProgress()), this, SLOT(updateProgress()));
     connect(_ffloader, SIGNAL(completed()), this, SLOT(encodeFinished()));
     connect(_ffloader, SIGNAL(vkComplete()), this, SLOT(vkFinished()));
@@ -143,23 +142,23 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     
     hideEnc();
     hideAud();
-    hideSub();
-    hdwr264();
-    hdwr264d();
+    hideSubtitle();
+    
     mode264();
     hidePre264();
     hideTun264();
     audioDD();
     profile264();
+    hideInterpGpu();
     profileVpx();
     refsldr264();
     bsldr264();
+    subtitleTitle();
     profileGB264();
-    hdwr265();
+    batch();
     sampleVid();
     audioLang();
     mode265();
-    hdwr265d();
     modeVpx();
     modeAv1();
     downmixCB();
@@ -170,10 +169,9 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     profileGB265();
     refsldr265();
     bsldr265();
-    hideInterpGpuCB();
+    hideSubtitleTab();
+    subtitleLang();
     thresholdNUD();
-    toolInterp();
-    hideParams();
     hideUpscale();
     autoAjustU();
     autoAdjustUD();
@@ -182,6 +180,16 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     flipDD();
     audioTitle();
     algoDD();
+
+    #ifdef Q_OS_WINDOWS
+    toolInterp();
+    hideParams();
+    hideInterpGpuCB();
+    hdwr265d();
+    hdwr264();
+    hdwr264d();
+    hdwr265();
+    #endif
 
     //fix disabled bug
     _ui->InterpolationCB->setChecked(true);
@@ -195,34 +203,65 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     _ui->ResizeGB->setChecked(true);
     _ui->ResizeGB->setChecked(false);
 
+    #ifdef Q_OS_WINDOWS
     if (!QDir(QDir::toNativeSeparators(LOGPATH_WIN)).exists())
         QDir().mkpath(QDir::toNativeSeparators(LOGPATH_WIN));
+    #endif
+    #ifdef Q_OS_DARWIN
+    if (!QDir(QDir::toNativeSeparators(LOGPATH_DAR)).exists())
+        QDir().mkpath(QDir::toNativeSeparators(LOGPATH_DAR));
+    #endif
 
     writeLog(QString("Welcome to EncodeGUI! You are using the v%1 (free, stable) build.").arg(VERSION), false, false, false);
+
+    #ifdef Q_OS_WINDOWS
     writeLog(QString("This is a user information log and will not be accepted in an issue/bug report."), true, false, false);
+    #endif
+    #ifdef Q_OS_DARWIN
+    writeLog(QString("This is a user information log and will not be accepted in an issue/bug report."), false, false, false);
+    #endif
+
     writeLog(QString("Visit https://encodegui.com/support for directions on how to submit a proper issue/bug report."), false, false, false);
 
     gpuFinished();
+
+    #ifdef Q_OS_DARWIN
+    _ui->UseGPUCB->setChecked(true);
+    SET_DISABLED(_ui->UseGPUCB);
+    #endif
+
+    #ifdef Q_OS_WINDOWS
+    _ui->BackendDD->removeItem(2);
     checkEncoders();
     getProcessor();
-
-    _ui->BackendDD->removeItem(2);
+    #endif
 
     connect(_ui->AutoDelSourceCB, SIGNAL(stateChanged(int)), this, SLOT(delSource()));
 
     connect(new QShortcut(QKeySequence(Qt::Key_F1), this), &QShortcut::activated, []() { QDesktopServices::openUrl(QUrl(QString("https://encodegui.com/support"))); });
 
-    loadSysSetting();
-
+    #ifdef VERIFY
+    verifyStart();
+    #endif
+    
     if (CHECKED(_ui->UpdateOptCB))
         updater();
     else
         writeLog(QString("The user had selected to opt-out of automatically checking for updates in preferences. Skipping update search..."), false, false, false);
 
+    loadSysSetting();
+
     FOR_EACH(_arguments.count()) {
         _ui->JobQueue->insertRow(_ui->JobQueue->rowCount());
 
-        if (Checks::checkVsScript(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\%1.vpy").arg(_job->at(i)))) && Checks::checkInputExists(_inputList->at(i))) {
+        #ifdef Q_OS_WINDOWS
+        bool checkVsScript = Checks::checkVsScript(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\%1.vpy")).arg(_job->at(i))) && Checks::checkInputExists(_inputList->at(i));
+        #endif
+        #ifdef Q_OS_DARWIN
+        bool checkVsScript = Checks::checkVsScript(QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1/%1.vpy")).arg(_job->at(i))) && Checks::checkInputExists(_inputList->at(i));
+        #endif
+
+        if (checkVsScript) {
             _ui->JobQueue->setItem(_ui->JobQueue->rowCount() - 1, 0, new QTableWidgetItem(_job->at(i)));
             _ui->JobQueue->setItem(_ui->JobQueue->rowCount() - 1, 1, new QTableWidgetItem(_state->at(i)));
 
@@ -244,19 +283,28 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
             _ui->JobQueue->removeRow(i);
 
             _arguments.removeAt(i);
+
+            #ifdef Q_OS_WINDOWS
             _vapourScript.removeAt(i);
+            #endif
+
             _tempList->removeAt(i);
             _audioArgs.removeAt(i);
             _outputList->removeAt(i);
             _inputList->removeAt(i);
             _state->removeAt(i);
 
-            QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1")).arg(_job->at(i)))).removeRecursively();
+            #ifdef Q_OS_WINDOWS
+            QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1"))).arg(_job->at(i))).removeRecursively();
+            #endif
+            #ifdef Q_OS_DARWIN
+            QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1"))).arg(_job->at(i))).removeRecursively();
+            #endif
 
             _job->removeAt(i);
 
-            VideoInfoList::removeDuration(i);
-            VideoInfoList::removeFrameRate(i);
+            VideoInfoList::removeJobDuration(i);
+            VideoInfoList::removeJobFrameRate(i);
             
             i--;
         }
@@ -270,20 +318,26 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
 void EncodeGUI::showEvent(QShowEvent *event) {
     QWidget::showEvent(event);
 
-    if (CHECKED(_ui->UpdateOptCB)) {
-        if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\libssl-1_1-x64.dll"))).exists()) {
-            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"libssl-1_1-x64.dll\" is missing in the EncodeGUI installation folder. A clean install should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-            std::exit(0);
-        }
-        if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\libcrypto-1_1-x64.dll"))).exists()) {
-            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"libcrypto-1_1-x64.dll\" is missing in the EncodeGUI installation folder. A clean install should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-            std::exit(0);
-        }
-        if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\tls\\qopensslbackend.dll"))).exists()) {
-            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"qopensslbackend.dll\" is missing in the EncodeGUI installation folder. A clean install should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-            std::exit(0);
-        }
+    #ifdef Q_OS_WINDOWS
+    if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\libssl-1_1-x64.dll"))).exists()) {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"libssl-1_1-x64.dll\" is missing in the EncodeGUI installation folder. A clean install should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        std::exit(0);
     }
+    if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\libcrypto-1_1-x64.dll"))).exists()) {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"libcrypto-1_1-x64.dll\" is missing in the EncodeGUI installation folder. A clean install should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        std::exit(0);
+    }
+    if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\tls\\qopensslbackend.dll"))).exists()) {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"qopensslbackend.dll\" is missing in the EncodeGUI installation folder. A clean install should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        std::exit(0);
+    }
+    #endif
+    #ifdef Q_OS_DARWIN
+    if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("/../PlugIns/tls/libqsecuretransportbackend.dylib"))).exists()) {
+        msgBoxHelper(MessageType::Error, QString("FrameGUI error"), QString("Required dependency \"libqsecuretransportbackend.dylib\" is missing in the FrameGUI installation folder. A clean install (uninstall + reinstall) should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        std::exit(0);
+    }
+    #endif
 }
 
 void EncodeGUI::jobBttn() {
@@ -309,6 +363,69 @@ void EncodeGUI::jobBttn2() {
         QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(_outputList->at(row))));
 }
 
+void EncodeGUI::licenseBttn() {
+    #ifdef Q_OS_WINDOWS
+    QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\licenses"))));
+    #endif
+    #ifdef Q_OS_DARWIN
+    QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("/licenses"))));
+    #endif
+}
+
+void EncodeGUI::clearBttn() {
+    QMessageBox::StandardButton msg(msgBoxHelper(MessageType::Warning, QString("Warning"), QString("Clearing the saved data will remove ALL of your unactive jobs in the queue and will remove your saved email address for Patreon verification (if applicable). Continue?"), QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton));
+
+    if (msg == QMessageBox::No)
+        return;
+    else if (msg == QMessageBox::Yes) {
+        FOR_EACH(_arguments.count())
+            if (!_ui->JobQueue->item(i, 1)->text().contains(QString("Active")) && !_ui->JobQueue->item(i, 1)->text().contains(QString("Paused"))) {
+                _ui->JobQueue->removeRow(i);
+                _arguments.removeAt(i);
+
+                #ifdef Q_OS_WINDOWS
+                _vapourScript.removeAt(i);
+                #endif
+
+                _tempList->removeAt(i);
+                _audioArgs.removeAt(i);
+                _outputList->removeAt(i);
+                _inputList->removeAt(i);
+                _state->removeAt(i);
+
+                delete(_inputBttn->at(i));
+                delete(_outputBttn->at(i));
+                delete(_logsBttn->at(i));
+                _inputBttn->removeAt(i);
+                _outputBttn->removeAt(i);
+                _logsBttn->removeAt(i);
+
+                #ifdef Q_OS_WINDOWS
+                QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1"))).arg(_job->at(i))).removeRecursively();
+                #endif
+                #ifdef Q_OS_DARWIN
+                QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1"))).arg(_job->at(i))).removeRecursively();
+                #endif
+
+                _job->removeAt(i);
+
+                VideoInfoList::removeJobDuration(i);
+                VideoInfoList::removeJobFrameRate(i);
+
+                i--;
+            }
+
+        QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("key"), QVariantList());
+
+        reIndexBttns();
+        saveSettings();
+        setJobSetting();
+
+        msgBoxHelper(MessageType::Info, QString("Saved data deleted"), QString("Save data was cleared successfully."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
+}
+
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::checkEncoders() {
     _ui->Hardware264DD->clear();
     _ui->Hardware265DD->clear();
@@ -345,6 +462,7 @@ void EncodeGUI::checkEncoders() {
         connect(_ui->Hardware264DD, SIGNAL(currentIndexChanged(int)), this, SLOT(hdwr264d()));
     }
 }
+#endif
 
 void EncodeGUI::mediaInfo() {
     if (!CHECKED(_ui->GetVidInfoCB)) {
@@ -375,7 +493,7 @@ void EncodeGUI::updater() {
     req.setHeader(QNetworkRequest::UserAgentHeader, QString("EncodeGUI Updater"));
 
     QNetworkAccessManager *nam(new QNetworkAccessManager());
-    QNetworkReply *reply = nam->get(req);
+    QNetworkReply *reply(nam->get(req));
 
     connect(reply, SIGNAL(finished()), this, SLOT(updaterFinished()));
 }
@@ -423,6 +541,7 @@ void EncodeGUI::updaterFinished() {
     else
         writeLog(QString("Error: Unable to check for updates due to a network error: %1").arg(qobject_cast<QNetworkReply*>(sender())->errorString()), false, true, false);
 
+    disconnect(sender(), SIGNAL(finished()), this, SLOT(updaterFinished()));
     delete(sender());
 }
 
@@ -441,7 +560,13 @@ void EncodeGUI::dropEvent(QDropEvent *d) {
     if (CHECKED(_ui->SampleVidCB))
         msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("EncodeGUI is currently not accepting drag and drop input as the sample video input option is enabled."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     else {
-        QString ffprobe(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\lib\\ffprobe.exe")));
+        #ifdef Q_OS_WINDOWS
+        QString ffprobe(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\lib\\ffprobe.exe")));
+        #endif
+        #ifdef Q_OS_DARWIN
+        QString ffprobe(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("/lib/ffprobe")));
+        #endif
+
         QString input(QDir::toNativeSeparators(urlList.at(0).toLocalFile()));
 
         getVideoInfo(input, ffprobe);
@@ -522,19 +647,179 @@ void EncodeGUI::setVideoInfo() {
         _ui->FPSValueLabel->setText(VideoInfo::getFrameRate());
 }
 
+void EncodeGUI::batch() {
+    _ui->SelectInTxtBox->setText(QString());
+    _ui->SaveOutTxtBox->setText(QString());
+
+    if (CHECKED(_ui->BatchCB)) {
+        SET_DISABLED(_ui->AudioDD);
+        SET_DISABLED(_ui->SubtitlesDD);
+        _ui->AudioDD->setCurrentIndex(0);
+        _ui->SubtitlesDD->setCurrentIndex(0);
+        _ui->SelectInBttn->setText(QString("Select folder"));
+        _ui->SampleVidCB->setChecked(false);
+        SET_DISABLED(_ui->SampleVidCB);
+        _ui->GenerateOutCB->setChecked(false);
+        SET_DISABLED(_ui->GenerateOutCB);
+    }
+    else {
+        SET_ENABLED(_ui->SampleVidCB);
+        SET_ENABLED(_ui->GenerateOutCB);
+
+        if (CHECKED(_ui->AudioCB))
+            SET_ENABLED(_ui->AudioDD);
+        
+        if (CHECKED(_ui->SubtitlesCB))
+            SET_ENABLED(_ui->SubtitlesDD);
+
+        _ui->SelectInBttn->setText(QString("Select input"));
+    }
+}
+
 void EncodeGUI::inputBttn() {
     QString input;
+    
+    #ifdef Q_OS_WINDOWS
+    QString ffprobe(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\lib\\ffprobe.exe")));
+    #endif
+    #ifdef Q_OS_DARWIN
+    QString ffprobe(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("/lib/ffprobe")));
+    #endif
+
+    if (!CHECKED(_ui->BatchCB)) {
+        if (!CHECKED(_ui->SampleVidCB))
+            input = QFileDialog::getOpenFileName(this, QString("Select input"), _ui->SelectInTxtBox->text(), QString("All files (*.*)"));
+        else
+            input = _ui->SelectInTxtBox->text();
+
+        if (input.isEmpty() && !_ui->SelectInTxtBox->text().isEmpty())
+            input = _ui->SelectInTxtBox->text();
+
+        getVideoInfo(QDir::toNativeSeparators(input), ffprobe);
+    }
+    else {
+        input = QFileDialog::getExistingDirectory(this, QString("Select input"), _ui->SelectInTxtBox->text(), QFileDialog::ShowDirsOnly);
+
+        if (input.isEmpty() && !_ui->SelectInTxtBox->text().isEmpty())
+            input = _ui->SelectInTxtBox->text();
+
+        getBatchInfo(QDir::toNativeSeparators(input), ffprobe);
+    }
+}
+
+void EncodeGUI::getBatchInfo(QString input, QString ffprobe) {
+    if (Checks::checkFFProbe(ffprobe)) {
+        _ui->SelectInTxtBox->setText(input);
+
+        if (!_ui->SelectInTxtBox->text().isEmpty()) {
+            disconnect(_ui->AudioTrackDD, SIGNAL(currentIndexChanged(int)), this, SLOT(audioTrack()));
+
+            VideoInfoList::clearAll();
+            VideoInfo::clearAll();
+            AudioInfo::clearAll();
+            SubtitleInfo::clearAll();
+
+            VideoInfoRegex::_durationLine.clear();
+
+            _batchFiles->clear();
+            _batchIndex = 0;
+
+            _ui->AudioTrackDD->clear();
+            _ui->SelectedAudioDD->clear();
+            _ui->RpuTxtBox->clear();
+            _ui->AudioQueue->setRowCount(0);
+            _ui->SubtitleQueue->setRowCount(0);
+            removeAudio();
+            removeSubtitle();
+
+            SET_DISABLED(_ui->AudioTrackDD);
+
+            QDirIterator dir(input, QDir::Files);
+
+            while (dir.hasNext())
+                _batchFiles->append(QDir::toNativeSeparators(dir.next()));
+
+            if (_batchFiles->isEmpty()) {
+                msgBoxHelper(MessageType::Error, QString("Input directory error"), QString("The selected source directory does not contain any files."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                _ui->SelectInTxtBox->setText(QString());
+                return;
+            }
+            if (_batchFiles->count() < 2) {
+                msgBoxHelper(MessageType::Error, QString("Input directory error"), QString("The selected source directory must have more than 1 video file."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                _ui->SelectInTxtBox->setText(QString());
+                return;
+            }
+
+            _ffloader->batchInfo(QStringList() << QString("-hide_banner") << QString("-i") << _batchFiles->at(0), ffprobe);
+        }
+    }
+    else {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"ffprobe.exe\" is missing in EncodeGUI installation. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        QApplication::quit();
+    }
+}
+
+void EncodeGUI::audioSelectClick() {
     QString ffprobe(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\lib\\ffprobe.exe")));
+    QString input(QFileDialog::getOpenFileName(this, QString("Select audio input"), _ui->AudioSourceTxtBox->text(), QString("All files (*.*)")));
 
-    if (!CHECKED(_ui->SampleVidCB))
-        input = QFileDialog::getOpenFileName(this, QString("Select Input"), _ui->SelectInTxtBox->text(), QString("All files (*.*)"));
-    else
-        input = _ui->SelectInTxtBox->text();
+    if (input.isEmpty() && !_ui->AudioSourceTxtBox->text().isEmpty())
+        input = _ui->AudioSourceTxtBox->text();
+    else if (!input.isEmpty())
+        getAudioInfo(QDir::toNativeSeparators(input), ffprobe);
+}
 
-    if (input.isEmpty() && !_ui->SelectInTxtBox->text().isEmpty())
-        input = _ui->SelectInTxtBox->text();
+void EncodeGUI::subtitleSelectClick() {
+    QString input(QFileDialog::getOpenFileName(this, QString("Select subtitle input"), _ui->SubSourceTxtBox->text(), QString("All files (*.*)")));
+    
+    #ifdef Q_OS_WINDOWS
+    QString ffprobe(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\ffmpeg\\ffprobe.exe")));
+    #endif
+    #ifdef Q_OS_DARWIN
+    QString ffprobe(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("/lib/ffprobe")));
+    #endif
 
-    getVideoInfo(QDir::toNativeSeparators(input), ffprobe);
+    if (input.isEmpty() && !_ui->SubSourceTxtBox->text().isEmpty())
+        input = _ui->SubSourceTxtBox->text();
+    else if (!input.isEmpty())
+        getSubtitleInfo(QDir::toNativeSeparators(input), ffprobe);
+}
+
+void EncodeGUI::getAudioInfo(QString input, QString ffprobe) {
+    if (Checks::checkFFProbe(ffprobe)) {
+        _ui->AudioSourceTxtBox->setText(input);
+
+        if (!_ui->AudioSourceTxtBox->text().isEmpty()) {
+            disconnect(_ui->AudioTrackDD, SIGNAL(currentIndexChanged(int)), this, SLOT(audioTrack()));
+
+            AudioInfo::clearAll();
+            _ui->AudioTrackDD->clear();
+            _ui->SelectedAudioDD->clear();
+
+            _ffloader->audioInfo(QStringList() << QString("-hide_banner") << QString("-i") << input, ffprobe);
+        }
+    }
+    else {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"ffprobe.exe\" is missing in EncodeGUI installation. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        QApplication::quit();
+    }
+}
+
+void EncodeGUI::getSubtitleInfo(QString input, QString ffprobe) {
+    if (Checks::checkFFProbe(ffprobe)) {
+        _ui->SubSourceTxtBox->setText(input);
+
+        if (!_ui->SubSourceTxtBox->text().isEmpty()) {
+            SubtitleInfo::clearAll();
+            _ui->SelectedSubtitleDD->clear();
+
+            _ffloader->subtitleInfo(QStringList() << QString("-hide_banner") << QString("-i") << input, ffprobe);
+        }
+    }
+    else {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"ffprobe.exe\" is missing in EncodeGUI installation. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        QApplication::quit();
+    }
 }
 
 void EncodeGUI::getVideoInfo(QString input, QString ffprobe) {
@@ -553,7 +838,12 @@ void EncodeGUI::getVideoInfo(QString input, QString ffprobe) {
             _ui->AudioTrackDD->clear();
             _ui->SelectedAudioDD->clear();
             _ui->RpuTxtBox->clear();
+            _ui->AudioQueue->setRowCount(0);
+            _ui->SubtitleQueue->setRowCount(0);
+
+            _streamInputs->clear();
             removeAudio();
+            removeSubtitle();
 
             _ffloader->videoInfo(QStringList() << QString("-hide_banner") << QString("-i") << input, ffprobe);
 
@@ -584,18 +874,32 @@ void EncodeGUI::hdrMeta() {
 }
 
 void EncodeGUI::rpu() {
+    #ifdef Q_OS_WINDOWS
     if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\lib\\dovi_tool.exe"))).exists()) {
         msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"dovi_tool.exe\" is missing in EncodeGUI installation. A clean reinstall should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         return;
     }
+    #endif
+    #ifdef Q_OS_DARWIN
+    if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("/lib/dovi_tool"))).exists()) {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"dovi_tool\" is missing in EncodeGUI installation. A clean reinstall should fix this."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+    #endif
 
     ProcessError::clearRPU();
 
     QFile source(_ui->SelectInTxtBox->text());
     QFileInfo info(source.fileName());
 
-    if (!_ui->SelectInTxtBox->text().isEmpty())
+    if (!_ui->SelectInTxtBox->text().isEmpty()) {
+        #ifdef Q_OS_WINDOWS
         _ffloader->extractRPU(QStringList() << QString("-hide_banner") << QString("-i") << _ui->SelectInTxtBox->text() << QString("-bsf:v") << QString("hevc_mp4toannexb") << QString("-c:v") << QString("copy") << QString("-f") << QString("hevc") << QString("-"), QStringList() << QString("extract-rpu") << QString("-") << QString("-o") << QString("%1\\rpu_%2.bin").arg(TEMPPATH_WIN).arg(info.fileName()), QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\lib\\dovi_tool.exe")), FFMPEGPATH_WIN);
+        #endif
+        #ifdef Q_OS_DARWIN
+        _ffloader->extractRPU(QStringList() << QString("-hide_banner") << QString("-i") << _ui->SelectInTxtBox->text() << QString("-bsf:v") << QString("hevc_mp4toannexb") << QString("-c:v") << QString("copy") << QString("-f") << QString("hevc") << QString("-"), QStringList() << QString("extract-rpu") << QString("-") << QString("-o") << QString("%1/rpu_%2.bin").arg(TEMPPATH_DAR).arg(info.fileName()), QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/lib/dovi_tool")), FFMPEGPATH_DAR);
+        #endif
+    }
     else {
         msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("A source file must be specified to use this feature."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         return;
@@ -612,15 +916,27 @@ void EncodeGUI::extractRPUFinished() {
 
     if (!ProcessError::getDolbyError()) {
         msgBoxHelper(MessageType::Info, QString("Extract complete"), QString("RPU file extracted successfully."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        #ifdef Q_OS_WINDOWS
         _ui->RpuTxtBox->setText(QString("%1\\rpu_%2.bin").arg(TEMPPATH_WIN).arg(info.fileName()));
+        #endif
+        #ifdef Q_OS_DARWIN
+        _ui->RpuTxtBox->setText(QString("%1/rpu_%2.bin").arg(TEMPPATH_DAR).arg(info.fileName()));
+        #endif
     }
     else
         msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The source video does not have supported Dolby Vision metadata."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
+    #ifdef Q_OS_WINDOWS
     if (!ProcessError::getDolbyError() && !QFile(QString("%1\\rpu_%2.bin").arg(TEMPPATH_WIN).arg(info.fileName())).exists())
         msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Unknown error occured while extracting RPU file."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    #endif
+    #ifdef Q_OS_DARWIN
+    if (!ProcessError::getDolbyError() && !QFile(QString("%1/rpu_%2.bin").arg(TEMPPATH_DAR).arg(info.fileName())).exists())
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Unknown error occured while extracting RPU file."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    #endif
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::gpu1() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("gpu1"), _ui->GPU1IDNUD->value());
 }
@@ -628,6 +944,7 @@ void EncodeGUI::gpu1() {
 void EncodeGUI::gpu2() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("gpu2"), _ui->GPU2IDNUD->value());
 }
+#endif
 
 void EncodeGUI::errorMsg() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("errormsg"), CHECKED(_ui->ErrorMessageCB));
@@ -643,16 +960,18 @@ void EncodeGUI::enablePreview() {
 }
 
 void EncodeGUI::nextJob() {
-    QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("nextjob"), CHECKED(_ui->NextJobCB));
+    QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("nextjob"), CHECKED(_ui->NotificationCB));
 }
 
 void EncodeGUI::updateOpt() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("updateopt"), CHECKED(_ui->UpdateOptCB));
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::dualGPU() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("dgpu"), CHECKED(_ui->MultiGPUGB));
 }
+#endif
 
 void EncodeGUI::delSource() {
     if (CHECKED(_ui->AutoDelSourceCB)) {
@@ -721,12 +1040,22 @@ void EncodeGUI::genOutput() {
 void EncodeGUI::extracterInfo() {
     QString progress;
 
-    if (VideoInfoList::getDuration(_ffloader->_currentJob).isValid())
+    if (VideoInfoList::getJobDuration(_ffloader->_currentJob).isValid()) {
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress) {
+            if (!_ui->JobQueue->item(_ffloader->_currentJob, 1)->text().contains(QString("Paused")))
+                _tbProgress->SetProgressState((HWND)this->winId(), TBPF_NORMAL);
+
+            _tbProgress->SetProgressValue((HWND)this->winId(), (ULONGLONG)ProgressInfo::getPercentage(), 100ULL);
+        }
+        #endif
+
         _ui->progressBar->setValue((int)ProgressInfo::getPercentage());
+    }
 
     progress.append(QString("Extracting"));
     
-    if (CHECKED(_ui->PercentageCB) && VideoInfoList::getDuration(_ffloader->_currentJob).isValid())
+    if (CHECKED(_ui->PercentageCB) && VideoInfoList::getJobDuration(_ffloader->_currentJob).isValid())
         progress.append(QString(" - %1%").arg(ProgressInfo::getPercentage()));
 
     _ui->JobQueue->item(_ffloader->_currentJob, 2)->setText(QString("%1%").arg(ProgressInfo::getPercentage()));
@@ -744,22 +1073,9 @@ void EncodeGUI::regexFinished() {
         msgBoxHelper(MessageType::Warning, QString("Input Error"), QString("EncodeGUI was unable to find the duration of the selected file. As a result, encoding progress info for this source will be limited."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
 
+    #ifdef Q_OS_WINDOWS
     toolInterp();
-
-    if (CHECKED(_ui->ColorSpaceCB)) {
-        if (VideoInfo::getMatrix().contains(QString("?")) || VideoInfo::getMatrix().contains(QString("unknown"))) {
-            VideoInfo::setMatrix(QString("bt709"));
-            writeLog(QString("Color matrix for the selected source is unknown, assuming BT709."), false, false, false);
-        }
-        if (VideoInfo::getTransfer().contains(QString("?")) || VideoInfo::getTransfer().contains(QString("unknown"))) {
-            VideoInfo::setTransfer(QString("bt709"));
-            writeLog(QString("Color transfer for the selected source is unknown, assuming BT709."), false, false, false);
-        }
-        if (VideoInfo::getPrimaries().contains(QString("?")) || VideoInfo::getPrimaries().contains(QString("unknown"))) {
-            VideoInfo::setPrimaries(QString("bt709"));
-            writeLog(QString("Color primaries for the selected source is unknown, assuming BT709."), false, false, false);
-        }
-    }
+    #endif
 
     if (!CHECKED(_ui->InterpolationCB)) {
         _ui->InterpolationCB->setChecked(true);
@@ -767,21 +1083,12 @@ void EncodeGUI::regexFinished() {
     }
 
     if (AudioInfo::totalStreams() != 0) {
-        if (CHECKED(_ui->GetVidInfoCB))
-            SET_ENABLED(_ui->AudioTrackDD);
-
         SET_ENABLED(_ui->AudioCB);
         _ui->AudioCB->setChecked(true);
     }
     if (SubtitleInfo::totalStreams() != 0) {
-        SET_ENABLED(_ui->SubtitlesDD);
         SET_ENABLED(_ui->SubtitlesCB);
         _ui->SubtitlesCB->setChecked(true);
-    }
-    else {
-        SET_DISABLED(_ui->SubtitlesDD);
-        SET_DISABLED(_ui->SubtitlesCB);
-        _ui->SubtitlesCB->setChecked(false);
     }
     if (!SubtitleInfo::getChapter()) {
         SET_DISABLED(_ui->ChaptersCB);
@@ -829,11 +1136,167 @@ void EncodeGUI::regexFinished() {
     }
 
     setAudioInfo();
+    setSubtitleInfo();
+
+    if (AudioInfo::totalStreams() > 0)
+        _ui->AudioSourceTxtBox->setText(_ui->SelectInTxtBox->text());
+    if (SubtitleInfo::totalStreams() > 0)
+        _ui->SubSourceTxtBox->setText(_ui->SelectInTxtBox->text());
 
     if (CHECKED(_ui->GetVidInfoCB)) {
         setVideoInfo();
-
         connect(_ui->AudioTrackDD, SIGNAL(currentIndexChanged(int)), this, SLOT(audioTrack()));
+    }
+}
+
+void EncodeGUI::batchFinished() {
+    if (VideoInfoList::totalCodec() != _batchIndex + 1) {
+        msgBoxHelper(MessageType::Error, QString("Import file error"), QString("The input file (%1) is not a video. Skipping...\n").arg(_batchFiles->at(_batchIndex)), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        _batchFiles->removeAt(_batchIndex);
+
+        if (_batchIndex < _batchFiles->count()) {
+            VideoInfoRegex::_durationLine.clear();
+
+            #ifdef Q_OS_WINDOWS
+            _ffloader->batchInfo(QStringList() << QString("-hide_banner") << QString("-i") << _batchFiles->at(_batchIndex), QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\lib\\ffprobe.exe")));
+            #endif
+            #ifdef Q_OS_DARWIN
+            _ffloader->batchInfo(QStringList() << QString("-hide_banner") << QString("-i") << _batchFiles->at(_batchIndex), QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/lib/ffprobe")));
+            #endif
+        }
+
+        return;
+    }
+
+    if (VideoInfoList::getCodec(_batchIndex).contains(QString("?"))) {
+        msgBoxHelper(MessageType::Error, QString("Import file error"), QString("The input file (%1) is not a video. Skipping...\n").arg(_batchFiles->at(_batchIndex)), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+        _batchFiles->removeAt(_batchIndex);
+        VideoInfoList::removeCodec(_batchIndex);
+        VideoInfoList::removeMatrix(_batchIndex);
+        VideoInfoList::removeTransfer(_batchIndex);
+        VideoInfoList::removePrimaries(_batchIndex);
+        VideoInfoList::removeDuration(_batchIndex);
+        VideoInfoList::removeFrameRate(_batchIndex);
+        VideoInfoList::removeHeight(_batchIndex);
+        VideoInfoList::removeWidth(_batchIndex);
+
+        _ui->SelectInTxtBox->setText(QString());
+        return;
+    }
+    else if (VideoInfoList::getDuration(_batchIndex).toString().contains(QString("?")) && !VideoInfoList::getCodec(_batchIndex).contains(QString("?"))) {
+        writeLog(QString("Warning: the source file (%1) duration could not be found. Some encoding progress info will be unavailable for the associated job.").arg(_batchFiles->at(_batchIndex)), false, false, true);
+        msgBoxHelper(MessageType::Warning, QString("Input error"), QString("EncodeGUI was unable to find the duration for the input (%1). As a result, some encoding progress info will be unavailable for the associated job.").arg(_batchFiles->at(_batchIndex)), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
+
+    #ifdef Q_OS_WINDOWS
+    toolInterp();
+    #endif
+
+    if (!CHECKED(_ui->InterpolationCB)) {
+        _ui->InterpolationCB->setChecked(true);
+        _ui->InterpolationCB->setChecked(false);
+    }
+
+    _ui->ChaptersCB->setChecked(true);
+
+    if (_batchIndex > 0) {
+        disconnect(_ui->Height2xNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjWidth2x()));
+        disconnect(_ui->Width2xNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjHeight2x()));
+        disconnect(_ui->WidthNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjWidth()));
+        disconnect(_ui->HeightNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjHeight()));
+
+        modelUpscale();
+
+        if (VideoInfoList::getWidth(_batchIndex) > VideoInfoList::getHeight(_batchIndex)) {
+            if (VideoInfoList::getWidth(_batchIndex) > VideoInfoList::getWidth(_batchIndex - 1)) {
+                _ui->Width2xNUD->setMinimum(VideoInfoList::getWidth(_batchIndex - 1));
+                _ui->Height2xNUD->setMinimum(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->WidthNUD->setValue(VideoInfoList::getWidth(_batchIndex - 1));
+                _ui->HeightNUD->setValue(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->EksNUD->setMaximum(VideoInfoList::getWidth(_batchIndex - 1));
+                _ui->WhyNUD->setMaximum(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->OutHeightNUD->setMaximum(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->OutWidthNUD->setMaximum(VideoInfoList::getWidth(_batchIndex - 1));
+            }
+        }
+        else if (VideoInfoList::getWidth(_batchIndex) < VideoInfoList::getHeight(_batchIndex)) {
+            if (VideoInfoList::getHeight(_batchIndex) > VideoInfoList::getHeight(_batchIndex - 1)) {
+                _ui->Width2xNUD->setMinimum(VideoInfoList::getWidth(_batchIndex - 1));
+                _ui->Height2xNUD->setMinimum(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->WidthNUD->setValue(VideoInfoList::getWidth(_batchIndex - 1));
+                _ui->HeightNUD->setValue(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->EksNUD->setMaximum(VideoInfoList::getWidth(_batchIndex - 1));
+                _ui->WhyNUD->setMaximum(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->OutHeightNUD->setMaximum(VideoInfoList::getHeight(_batchIndex - 1));
+                _ui->OutWidthNUD->setMaximum(VideoInfoList::getWidth(_batchIndex - 1));
+            }
+        }
+
+        connect(_ui->Height2xNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjWidth2x()));
+        connect(_ui->Width2xNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjHeight2x()));
+        connect(_ui->WidthNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjWidth()));
+        connect(_ui->HeightNUD, SIGNAL(valueChanged(int)), this, SLOT(autoAdjHeight()));
+    }
+
+    _batchIndex++;
+
+    if (_batchIndex < _batchFiles->count()) {
+        VideoInfoRegex::_durationLine.clear();
+
+        #ifdef Q_OS_WINDOWS
+        _ffloader->batchInfo(QStringList() << QString("-hide_banner") << QString("-i") << _batchFiles->at(_batchIndex), QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\lib\\ffprobe.exe")));
+        #endif
+        #ifdef Q_OS_DARWIN
+        _ffloader->batchInfo(QStringList() << QString("-hide_banner") << QString("-i") << _batchFiles->at(_batchIndex), QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/lib/ffprobe")));
+        #endif
+    }
+
+    if (_batchIndex == _batchFiles->count() && _batchFiles->count() < 2) {
+        msgBoxHelper(MessageType::Error, QString("Input error"), QString("The selected source directory must have more than 1 video file."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        _ui->SelectInTxtBox->setText(QString());
+        return;
+    }
+
+    if (CHECKED(_ui->GetVidInfoCB) && _batchIndex == _batchFiles->count()) {
+        paletter(_ui->VidformatValueLabel);
+        _ui->VidformatValueLabel->setText("<batch>");
+
+        paletter(_ui->DurationValueLabel);
+        _ui->DurationValueLabel->setText("<batch>");
+
+        paletter(_ui->ResolutionValueLabel);
+        _ui->ResolutionValueLabel->setText("<batch>");
+
+        paletter(_ui->BitrateValueLabel);
+        _ui->BitrateValueLabel->setText("<batch>");
+
+        paletter(_ui->ColorsValueLabel);
+        _ui->ColorsValueLabel->setText("<batch>");
+
+        paletter(_ui->MatrixValueLabel);
+        _ui->MatrixValueLabel->setText("<batch>");
+
+        paletter(_ui->TransferValueLabel);
+        _ui->TransferValueLabel->setText("<batch>");
+
+        paletter(_ui->PrimariesValueLabel);
+        _ui->PrimariesValueLabel->setText("<batch>");
+
+        paletter(_ui->FPSValueLabel);
+        _ui->FPSValueLabel->setText("<batch>");
+
+        paletter(_ui->FormatValueLabel);
+        _ui->FormatValueLabel->setText("<batch>");
+
+        paletter(_ui->AudioLanguageValueLabel);
+        _ui->AudioLanguageValueLabel->setText("<batch>");
+
+        paletter(_ui->SampleRateValueLabel);
+        _ui->SampleRateValueLabel->setText("<batch>");
+
+        paletter(_ui->ChannelsValueLabel);
+        _ui->ChannelsValueLabel->setText("<batch>");
     }
 }
 
@@ -865,6 +1328,7 @@ void EncodeGUI::modelUpscale() {
     }
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::getProcessor() {
     SYSTEM_INFO sysInfo;
     GetSystemInfo(&sysInfo);
@@ -872,6 +1336,7 @@ void EncodeGUI::getProcessor() {
     _ui->LimitThreadsNUD->setMaximum(sysInfo.dwNumberOfProcessors);
     _ui->LimitThreadsNUD->setValue(sysInfo.dwNumberOfProcessors);
 }
+#endif
 
 void EncodeGUI::cancelAllClick() {
     if (_ui->JobQueue->rowCount() == 0)
@@ -912,14 +1377,15 @@ void EncodeGUI::cancelAllClick() {
     }
 }
 
-void EncodeGUI::closeEvent(QCloseEvent* event) {
+void EncodeGUI::closeEvent(QCloseEvent *event) {
     if (_ffloader->_encode && _ffloader->_encode->state() == QProcess::Running) {
         msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Please cancel the current running process before closing EncodeGUI"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         event->ignore();
     }
-    else if (_ffloader->_encode)
+    else if (_ffloader->_encode) {
         if (_ffloader->_encode->state() == QProcess::NotRunning)
             event->accept();
+    }
     else
         event->accept();
 }
@@ -933,8 +1399,14 @@ void EncodeGUI::resetJob() {
 
         if (newArgs.join(QString(" ")).contains(QString("pass 2")))
             newArgs.replace(newArgs.indexOf(QString("-pass")) + 1, QString("1"));
-        if (newArgs.join(QString(" ")).contains(QString("pass=2")))
+        if (newArgs.join(QString(" ")).contains(QString("pass=2"))) {
+            #ifdef Q_OS_WINDOWS
             newArgs.replace(newArgs.indexOf(QString("pass=2:stats='%1\\x265.log'").arg(TEMPPATH_WIN)), QString("pass=1:stats='%1\\x265.log'").arg(TEMPPATH_WIN));
+            #endif
+            #ifdef Q_OS_DARWIN
+            newArgs.replace(newArgs.indexOf(QString("pass=2:stats='%1\\x265.log'").arg(TEMPPATH_DAR)), QString("pass=1:stats='%1\\x265.log'").arg(TEMPPATH_DAR));
+            #endif
+        }
 
         newArgs.removeLast();
         newArgs << QString("-f") << QString("NULL") << QString("nul");
@@ -958,7 +1430,11 @@ void EncodeGUI::removeJob() {
     }
 
     _arguments.removeAt(_selectedJob);
+
+    #ifdef Q_OS_WINDOWS
     _vapourScript.removeAt(_selectedJob);
+    #endif
+
     _tempList->removeAt(_selectedJob);
     _audioArgs.removeAt(_selectedJob);
     _outputList->removeAt(_selectedJob);
@@ -972,8 +1448,8 @@ void EncodeGUI::removeJob() {
     _outputBttn->removeAt(_selectedJob);
     _logsBttn->removeAt(_selectedJob);
 
-    VideoInfoList::removeDuration(_selectedJob);
-    VideoInfoList::removeFrameRate(_selectedJob);
+    VideoInfoList::removeJobDuration(_selectedJob);
+    VideoInfoList::removeJobFrameRate(_selectedJob);
 
     _ui->JobQueue->removeRow(_selectedJob);
 
@@ -982,7 +1458,12 @@ void EncodeGUI::removeJob() {
             if (_ui->JobQueue->item(i, 1)->text().contains(QString("Active")) || _ui->JobQueue->item(i, 1)->text().contains(QString("Paused")))
                 _ffloader->_currentJob = i;
 
-    QDir(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_selectedJob)))).removeRecursively();
+    #ifdef Q_OS_WINDOWS
+    QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1"))).arg(_job->at(_selectedJob))).removeRecursively();
+    #endif
+    #ifdef Q_OS_DARWIN
+    QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1"))).arg(_job->at(_selectedJob))).removeRecursively();
+    #endif
 
     _job->removeAt(_selectedJob);
 
@@ -1000,7 +1481,11 @@ void EncodeGUI::clearFinished() {
             _ui->JobQueue->removeRow(i);
 
             _arguments.removeAt(i);
+
+            #ifdef Q_OS_WINDOWS
             _vapourScript.removeAt(i);
+            #endif
+
             _tempList->removeAt(i);
             _audioArgs.removeAt(i);
             _outputList->removeAt(i);
@@ -1014,12 +1499,17 @@ void EncodeGUI::clearFinished() {
             _outputBttn->removeAt(i);
             _logsBttn->removeAt(i);
 
-            QDir(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1")).arg(_job->at(i))).removeRecursively();
+            #ifdef Q_OS_WINDOWS
+            QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1"))).arg(_job->at(i))).removeRecursively();
+            #endif
+            #ifdef Q_OS_DARWIN
+            QDir(QDir::toNativeSeparators(QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1"))).arg(_job->at(i))).removeRecursively();
+            #endif
 
             _job->removeAt(i);
 
-            VideoInfoList::removeDuration(i);
-            VideoInfoList::removeFrameRate(i);
+            VideoInfoList::removeJobDuration(i);
+            VideoInfoList::removeJobFrameRate(i);
 
             i--;
         }
@@ -1085,7 +1575,7 @@ void EncodeGUI::cancelClick() {
             setState();
         }
         else
-            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("A job must be running to cancel it"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("A job must be running to cancel it."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
 }
 
@@ -1095,6 +1585,11 @@ void EncodeGUI::pauseClick() {
         _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Paused"));
         _ui->JobStatusValueLabel->setText(QString("Paused"));
 
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress)
+            _tbProgress->SetProgressState((HWND)this->winId(), TBPF_PAUSED);
+        #endif  
+
         _ffloader->pauseProcess(_ffloader->_encode, true);
         *_ffloader->_pauseTime = ProgressInfo::getTimeElapsed();
     }
@@ -1102,6 +1597,11 @@ void EncodeGUI::pauseClick() {
         _ui->PauseBttn->setText(QString("Pause"));
         _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Active"));
         _ui->JobStatusValueLabel->setText(QString("Active"));
+
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress)
+            _tbProgress->SetProgressState((HWND)this->winId(), TBPF_NORMAL);
+        #endif
 
         _ffloader->pauseProcess(_ffloader->_encode, false);
         _ffloader->_timer->restart();
@@ -1113,11 +1613,22 @@ void EncodeGUI::newExtract() {
         if (_ui->JobQueue->item(i, 1)->text().contains(QString("Waiting"))) {
             _ffloader->_currentJob = i;
 
+            #ifdef Q_OS_WINDOWS
+            if (S_OK == CoCreateInstance(CLSID_TaskbarList, 0, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, (void**)&_tbProgress)) {
+                _tbProgress->HrInit();
+                _tbProgress->SetProgressState((HWND)this->winId(), TBPF_NORMAL);
+            }
+
             QDir().mkpath(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\Preview")));
+            _ffloader->encode(QStringList() << QString("-i") << _inputList->at(i) << QString("-vf") << QString("fps=1") << QString("-q:v") << QString("27") << LOGPATH_WIN + QString("\\Preview\\%d.jpg"), QStringList(), FFMPEGPATH_WIN, QString(), true);
+            #endif
 
             _ui->JobQueue->item(i, 1)->setText(QString("Active"));
 
-            _ffloader->encode(QStringList() << QString("-i") << _inputList->at(i) << QString("-vf") << QString("fps=1") << QString("-q:v") << QString("27") << LOGPATH_WIN + QString("\\Preview\\%d.jpg"), QStringList(), FFMPEGPATH_WIN, QString(), true);
+            #ifdef Q_OS_DARWIN
+            QDir().mkpath(QDir::toNativeSeparators(LOGPATH_DAR + QString("/Preview")));
+            _ffloader->encode(QStringList() << QString("-i") << _inputList->at(i) << QString("-vf") << QString("fps=1") << QString("-q:v") << QString("27") << LOGPATH_DAR + QString("/Preview/%d.jpg"), QStringList(), FFMPEGPATH_DAR, QString(), true);
+            #endif
 
             if (CHECKED(_ui->AutoDelSourceCB))
                 writeLog(QString("WARNING: Auto delete source is enabled in preferences. Disable it before the encoding process ends if you do not want the source video to be deleted."), false, false, true);
@@ -1191,16 +1702,22 @@ void EncodeGUI::start() {
     }
 
     if (count == 0 || jobs == 0)
-        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("There are no waiting jobs in the queue"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("There are no waiting jobs in the queue."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::vkFinished() {
     QString list;
 
     _ui->TestGPUBttn->setText(QString("Identify GPU Device IDs"));
     SET_ENABLED(_ui->TestGPUBttn);
 
+    #ifdef Q_OS_WINDOWS
     QFile(QString("%1\\dummy.lwi").arg(TEMPPATH_WIN)).remove();
+    #endif
+    #ifdef Q_OS_DARWIN
+    QFile(QString("%1/dummy.lwi").arg(TEMPPATH_DAR)).remove();
+    #endif
 
     if (VideoInfoList::totalVk() == 0) {
         msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Unable to check GPU device IDs. Ensure that at least one GPU on your system supports Vulkan graphics API."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
@@ -1212,7 +1729,9 @@ void EncodeGUI::vkFinished() {
 
     msgBoxHelper(MessageType::Info, QString("GPU device list"), list, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 }
+#endif
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::checkGPU() {
     _ui->TestGPUBttn->setText(QString("(Checking...)"));
     SET_DISABLED(_ui->TestGPUBttn);
@@ -1230,10 +1749,18 @@ void EncodeGUI::checkGPU() {
             msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required VsScript (dummy.vpy) dependency is missing. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
     else
-        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency vspipe.exe is missing. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency VSPipe.exe is missing. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 }
+#endif
 
 void EncodeGUI::newTask() {
+    #ifdef Q_OS_WINDOWS
+    QString fileName(LOGPATH_WIN);
+    #endif
+    #ifdef Q_OS_DARWIN
+    QString fileName(LOGPATH_DAR);
+    #endif
+
     if (Checks::checkInputExists(_inputList->at(_ffloader->_currentJob))) {
         if (!checkEnviornment().isEmpty()) {
             QMessageBox::StandardButton msg(msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"%1\" is missing in the EncodeGUI installation folder. A clean reinstall should fix this.").arg(checkEnviornment()), QMessageBox::Ok, QMessageBox::Help, QMessageBox::NoButton));
@@ -1244,12 +1771,27 @@ void EncodeGUI::newTask() {
             return;
         }
 
+        #ifdef Q_OS_WINDOWS
+        if (S_OK == CoCreateInstance(CLSID_TaskbarList, 0, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, (void**)&_tbProgress))
+            _tbProgress->HrInit();
+
+        _tbProgress->SetProgressState((HWND)this->winId(), TBPF_INDETERMINATE);
+        #endif
+
         writeLog(QString("Starting video encoding/muxing for job: %1").arg(_job->at(_ffloader->_currentJob)), false, false, false);
 
-        if (QFile(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob)))).exists())
-            QFile(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob)))).remove();
+        #ifdef Q_OS_WINDOWS
+        if (QFile(QDir::toNativeSeparators(fileName + QString("\\job-%1\\ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob)))).exists())
+            QFile(QDir::toNativeSeparators(fileName + QString("\\job-%1\\ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob)))).remove();
 
-        _logFile->setFileName(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob))));
+        _logFile->setFileName(QDir::toNativeSeparators(fileName + QString("\\job-%1\\ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob))));
+        #endif
+        #ifdef Q_OS_DARWIN
+        if (QFile(QDir::toNativeSeparators(fileName + QString("/job-%1/ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob)))).exists())
+            QFile(QDir::toNativeSeparators(fileName + QString("/job-%1/ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob)))).remove();
+
+        _logFile->setFileName(QDir::toNativeSeparators(fileName + QString("/job-%1/ProcessLogs-%1.txt").arg(_job->at(_ffloader->_currentJob))));
+        #endif
                         
         ProcessError::clearAll();
         ProcessErrorRegex::clearBools();
@@ -1257,28 +1799,61 @@ void EncodeGUI::newTask() {
         if (QFile(_outputList->at(_ffloader->_currentJob)).exists())
             QFile(_outputList->at(_ffloader->_currentJob)).remove();
 
-        if (QDir(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\Preview"))).exists())
+        #ifdef Q_OS_WINDOWS
+        if (QDir(QDir::toNativeSeparators(fileName + QString("\\Preview"))).exists())
             openPreview();
 
-        if (!QDir(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob)))).exists())
-            QDir().mkpath(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob))));
+        if (!QDir(QDir::toNativeSeparators(fileName + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob)))).exists())
+            QDir().mkpath(QDir::toNativeSeparators(fileName + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob))));
+        #endif
+        #ifdef Q_OS_DARWIN
+        if (QDir(QDir::toNativeSeparators(fileName + QString("/Preview"))).exists())
+            openPreview();
+
+        if (!QDir(QDir::toNativeSeparators(fileName + QString("/job-%1").arg(_job->at(_ffloader->_currentJob)))).exists())
+            QDir().mkpath(QDir::toNativeSeparators(fileName + QString("/job-%1").arg(_job->at(_ffloader->_currentJob))));
+        #endif
 
         writeLogFile(QString("#================================================#"));
         writeLogFile(QString("EncodeGUI process logs for job %1").arg(_job->at(_ffloader->_currentJob)));
 
         if (!_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" ")).contains(QString("-c:v copy"))) {
+            #ifdef Q_OS_WINDOWS
             writeLogFile(QString("Video encoding arguments: %1 %2 | %3 %4").arg(VSPIPEPATH).arg(_vapourScript.at(_ffloader->_currentJob).toStringList().join(QString(" "))).arg(FFMPEGPATH_WIN).arg(_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
             writeLogFile(QString("Audio encoding arguments: %1 %2").arg(FFMPEGPATH_WIN).arg(_audioArgs.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
+            #endif
+            #ifdef Q_OS_DARWIN
+            writeLogFile(QString("Video encoding arguments: %1 %2").arg(FFMPEGPATH_DAR).arg(_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
+            writeLogFile(QString("Audio encoding arguments: %1 %2").arg(FFMPEGPATH_DAR).arg(_audioArgs.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
+            #endif
         }
-        else
+        else {
+            #ifdef Q_OS_WINDOWS
             writeLogFile(QString("Video encoding arguments: %1 %2").arg(FFMPEGPATH_WIN).arg(_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
+            #endif
+            #ifdef Q_OS_DARWIN
+            writeLogFile(QString("Video encoding arguments: %1 %2").arg(FFMPEGPATH_DAR).arg(_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
+            #endif
+        }
 
         writeLogFile(QString("#================================================#\n"));
 
+        #ifdef Q_OS_WINDOWS
         if (Checks::checkVsScript(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1\\%1.vpy").arg(_job->at(_ffloader->_currentJob)))))
             _ffloader->encode(_arguments.at(_ffloader->_currentJob).toStringList(), _vapourScript.at(_ffloader->_currentJob).toStringList(), FFMPEGPATH_WIN, VSPIPEPATH, false);
-        else if (_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" ")).contains(QString("-c:v copy")))
+        #endif
+        #ifdef Q_OS_DARWIN
+        if (Checks::checkVsScript(QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1/%1.vpy").arg(_job->at(_ffloader->_currentJob)))))
+            _ffloader->encode(_arguments.at(_ffloader->_currentJob).toStringList(), QStringList(), FFMPEGPATH_DAR, QString(), false);
+        #endif
+        else if (_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" ")).contains(QString("-c:v copy"))) {
+            #ifdef Q_OS_WINDOWS
             _ffloader->encode(_arguments.at(_ffloader->_currentJob).toStringList(), QStringList(), FFMPEGPATH_WIN, QString(), false);
+            #endif
+            #ifdef Q_OS_DARWIN
+            _ffloader->encode(_arguments.at(_ffloader->_currentJob).toStringList(), QStringList(), FFMPEGPATH_DAR, QString(), false);
+            #endif  
+        }
         else {
             msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Could not find VapourSynth script for job id: %1\nExiting job.").arg(_job->at(_ffloader->_currentJob)), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
             _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Failed"));
@@ -1292,17 +1867,27 @@ void EncodeGUI::newTask() {
         }
     }
     else {
-        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The source file for the current job is missing or does not exist."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Required dependency \"vspipe.exe\" is missing in EncodeGUI installation. Please reinstall EncodeGUI."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         QApplication::quit();
     }
 }
 
 void EncodeGUI::openLogs() {
+    #ifdef Q_OS_WINDOWS
     QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN)));
+    #endif
+    #ifdef Q_OS_DARWIN
+    QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_DAR)));
+    #endif
 }
 
 void EncodeGUI::encodeFinished() {
+    #ifdef Q_OS_WINDOWS
     QFile(QDir::toNativeSeparators(TEMPPATH_WIN + QString("\\%1.lwi").arg(_job->at(_ffloader->_currentJob)))).remove();
+    #endif
+    #ifdef Q_OS_DARWIN
+    QFile(QDir::toNativeSeparators(TEMPPATH_DAR + QString("/%1.lwi").arg(_job->at(_ffloader->_currentJob)))).remove();
+    #endif
     
     if (_preview) {
         _preview->setPicture(QString(":/EncodeGUI/Preview.png"));
@@ -1318,6 +1903,16 @@ void EncodeGUI::encodeFinished() {
     if (ProcessError::error()) {
         _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Failed"));
         _state->replace(_ffloader->_currentJob, QString("Failed"));
+
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress) {
+            _tbProgress->SetProgressState((HWND)this->winId(), TBPF_ERROR);
+            _tbProgress->SetProgressValue((HWND)this->winId(), 100ULL, 100ULL);
+        }
+        #endif
+        
+        if (CHECKED(_ui->NotificationCB))
+            pushNotification(QString("Job %1 failed").arg(_job->at(_ffloader->_currentJob)), QString("See the process logs for this job for full details."));
         
         if (ProcessError::getCudaError()) {
             writeLog(QString("Error: Job %1 failed due to the CUDA runtime failing to load. Try updating the selected GPU drivers. Else, the selected GPU is not supported. See the associated process logs for more details.").arg(_job->at(_ffloader->_currentJob)), false, true, false);
@@ -1383,7 +1978,7 @@ void EncodeGUI::encodeFinished() {
             writeLog(QString("Error: Job %1 failed. Failed to allocate memory for CUDA process.").arg(_job->at(_ffloader->_currentJob)), false, true, false);
 
             if (CHECKED(_ui->ErrorMessageCB))
-                msg = msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Failed to allocate memory for CUDA process. Try reinstalling your GPU drivers."), QMessageBox::Ok, QMessageBox::Help, QMessageBox::NoButton);
+                msg = msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Failed to allocate memory for CUDA process. The selected Nvidia GPU does not have enough free VRAM to perform the operation."), QMessageBox::Ok, QMessageBox::Help, QMessageBox::NoButton);
         }
         if (ProcessError::getGpuInstance()) {
             writeLog(QString("Error: Job %1 failed. Failed to create GPU instance in the NCNN process.").arg(_job->at(_ffloader->_currentJob)), false, true, false);
@@ -1416,33 +2011,71 @@ void EncodeGUI::encodeFinished() {
                 msg = msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Failed to allocate memory for CUDA process. The selected Nvidia GPU does not have enough free VRAM to perform the operation."), QMessageBox::Ok, QMessageBox::Help, QMessageBox::NoButton);
         }
 
-        if (msg == QMessageBox::Open)
+        if (msg == QMessageBox::Open) {
+            #ifdef Q_OS_WINDOWS
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+            #ifdef Q_OS_DARWIN
+            QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+        }
         if (msg == QMessageBox::Help)
             QDesktopServices::openUrl(QUrl(QString("https://encodegui.com/support")));
 
         setState();
     }
     else if (ProcessError::getPipeError()) {
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress) {
+            _tbProgress->SetProgressState((HWND)this->winId(), TBPF_ERROR);
+            _tbProgress->SetProgressValue((HWND)this->winId(), 100ULL, 100ULL);
+        }
+        #endif
+
+        if (CHECKED(_ui->NotificationCB))
+            pushNotification(QString("Job %1 failed").arg(_job->at(_ffloader->_currentJob)), QString("See the process logs for this job for full details."));
+
         _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Failed"));
         _state->replace(_ffloader->_currentJob, QString("Failed"));
 
         if (CHECKED(_ui->ErrorMessageCB))
             msg = msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The process failed due to FFmpeg receiving invalid data from VSPipe. The most common reason for this error is that your GPU's drivers are out of date or your GPU is not supported for a particular filter.\nClick \"Open\" below to see the associate process logs for more details."), QMessageBox::Ok, QMessageBox::Help, QMessageBox::Open);
 
-        if (msg == QMessageBox::Open)
+        if (msg == QMessageBox::Open) {
+            #ifdef Q_OS_WINDOWS
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+            #ifdef Q_OS_DARWIN
+            QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+        }
         if (msg == QMessageBox::Help)
             QDesktopServices::openUrl(QUrl(QString("https://encodegui.com/support")));
 
         setState();
     }
     else if (_ui->JobQueue->item(_ffloader->_currentJob, 1)->text().contains(QString("Failed"))) {
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress) {
+            _tbProgress->SetProgressState((HWND)this->winId(), TBPF_ERROR);
+            _tbProgress->SetProgressValue((HWND)this->winId(), 100ULL, 100ULL);
+        }
+        #endif 
+
+        if (CHECKED(_ui->NotificationCB))
+            pushNotification(QString("Job %1 failed").arg(_job->at(_ffloader->_currentJob)), QString("See the process logs for this job for full details."));
+
         writeLog(QString("Error: Job %1 failed due to an unknown process error. See the associated process logs for more details.").arg(_job->at(_ffloader->_currentJob)), false, true, false);
         QMessageBox::StandardButton msg(msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("An unknown error occured with the current process. Click \"Open\" below to open the current job's logs."), QMessageBox::Ok, QMessageBox::Open, QMessageBox::Help));
 
-        if (msg == QMessageBox::Open)
+        if (msg == QMessageBox::Open) {
+            #ifdef Q_OS_WINDOWS
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+            #ifdef Q_OS_DARWIN
+            QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+        }
         if (msg == QMessageBox::Help)
             QDesktopServices::openUrl(QUrl(QString("https://encodegui.com/support")));
 
@@ -1450,6 +2083,14 @@ void EncodeGUI::encodeFinished() {
         setState();
     }
     else if (_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" ")).contains(QString("-f NULL"))) {
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress)
+            _tbProgress->SetProgressState((HWND)this->winId(), TBPF_INDETERMINATE);
+        #endif
+
+        if (CHECKED(_ui->NotificationCB))
+            pushNotification(QString("Job manager"), QString("Encoding pass 2 started for job %1.").arg(_job->at(_ffloader->_currentJob)));
+
         writeLogFile(QString("\n#================================================#"));
         writeLogFile(QString("Begin pass 2 video encoding..."));
 
@@ -1460,17 +2101,28 @@ void EncodeGUI::encodeFinished() {
        
         if (newArgs.join(QString(" ")).contains(QString("pass 1")))
             newArgs.replace(newArgs.indexOf(QString("-pass")) + 1, QString("2"));
-        if (newArgs.join(QString(" ")).contains(QString("pass=1")))
+        if (newArgs.join(QString(" ")).contains(QString("pass=1"))) {
+            #ifdef Q_OS_WINDOWS
             newArgs.replace(newArgs.indexOf(QString("pass=1:stats='%1\\x265.log'").arg(TEMPPATH_WIN)), QString("pass=2:stats='%1\\x265.log'").arg(TEMPPATH_WIN));
+            #endif
+            #ifdef Q_OS_DARWIN
+            newArgs.replace(newArgs.indexOf(QString("pass=1:stats='%1/x265.log'").arg(TEMPPATH_DAR)), QString("pass=2:stats='%1\\x265.log'").arg(TEMPPATH_DAR));
+            #endif
+        }
 
         newArgs.append(_tempList->at(_ffloader->_currentJob));
 
         _arguments.removeAt(_ffloader->_currentJob);
         _arguments.insert(_ffloader->_currentJob, newArgs);
-
-        _ffloader->encode(_arguments.at(_ffloader->_currentJob).toStringList(), _vapourScript.at(_ffloader->_currentJob).toStringList(), FFMPEGPATH_WIN, VSPIPEPATH, false);
         
+        #ifdef Q_OS_WINDOWS
+        _ffloader->encode(_arguments.at(_ffloader->_currentJob).toStringList(), _vapourScript.at(_ffloader->_currentJob).toStringList(), FFMPEGPATH_WIN, VSPIPEPATH, false);
         writeLogFile(QString("Pass 2 video encoding arguments: %1 %2 | %3 %4").arg(VSPIPEPATH).arg(_vapourScript.at(_ffloader->_currentJob).toStringList().join(QString(" "))).arg(FFMPEGPATH_WIN).arg(_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
+        #endif
+        #ifdef Q_OS_DARWIN
+        _ffloader->encode(_arguments.at(_ffloader->_currentJob).toStringList(), QStringList(), FFMPEGPATH_DAR, QString(), false);
+        writeLogFile(QString("Pass 2 video encoding arguments: %1 %2").arg(FFMPEGPATH_DAR).arg(_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" "))));
+        #endif
         writeLogFile(QString("#================================================#\n"));
 
         _ui->progressBar->setMaximum(0);
@@ -1478,13 +2130,29 @@ void EncodeGUI::encodeFinished() {
         return;
     }
     else if (!_audioArgs.at(_ffloader->_currentJob).toList().contains(QString("-an")) && !_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" ")).contains(QString("-c:v copy")) && (!QFile(_tempList->at(_ffloader->_currentJob)).exists() || QFile(_tempList->at(_ffloader->_currentJob)).size() < 100000) && !_ui->JobQueue->item(_ffloader->_currentJob, 1)->text().contains(QString("Canceled"))) {
+        #ifdef Q_OS_WINDOWS
+        if (_tbProgress) {
+            _tbProgress->SetProgressState((HWND)this->winId(), TBPF_ERROR);
+            _tbProgress->SetProgressValue((HWND)this->winId(), 100ULL, 100ULL);
+        }
+        #endif  
+        
+        if (CHECKED(_ui->NotificationCB))
+            pushNotification(QString("Job %1 failed").arg(_job->at(_ffloader->_currentJob)), QString("See the process logs for this job for full details."));
+        
         _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Failed"));
         
         writeLog(QString("Error: Job %1 failed due to an unknown process error. See the associated process logs for more details.").arg(_job->at(_ffloader->_currentJob)), false, true, false);
         QMessageBox::StandardButton msg(msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("An unknown error occured with the current process. Click \"Open\" below to open the current job's logs."), QMessageBox::Ok, QMessageBox::Open, QMessageBox::Help));
             
-        if (msg == QMessageBox::Open)
+        if (msg == QMessageBox::Open) {
+            #ifdef Q_OS_WINDOWS
             QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+            #ifdef Q_OS_DARWIN
+            QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1").arg(_job->at(_ffloader->_currentJob)))));
+            #endif
+        }
         if (msg == QMessageBox::Help)
             QDesktopServices::openUrl(QUrl(QString("https://encodegui.com/support")));
 
@@ -1498,22 +2166,37 @@ void EncodeGUI::encodeFinished() {
                 writeLogFile(QString("Begin audio encoding"));
                 writeLogFile(QString("#================================================#\n"));
 
-                writeLog(QString("Begun logging audio/subtitle encoding for job %1").arg(_job->at(_ffloader->_currentJob)), false, false, false);
                 writeLog(QString("Starting audio/subtitle encoding for job: %1").arg(_job->at(_ffloader->_currentJob)), false, false, false);
+
+                #ifdef Q_OS_WINDOWS
                 _ffloader->encode(_audioArgs.at(_ffloader->_currentJob).toStringList(), QStringList(), FFMPEGPATH_WIN, QString(), false);
+                #endif
+                #ifdef Q_OS_DARWIN
+                _ffloader->encode(_audioArgs.at(_ffloader->_currentJob).toStringList(), QStringList(), FFMPEGPATH_DAR, QString(), false);
+                #endif               
+
                 _encodingAudio = true;
 
                 return;
             }
             else if (_encodingAudio && !QFile(_outputList->at(_ffloader->_currentJob)).exists() || QFile(_outputList->at(_ffloader->_currentJob)).size() < 10000) {
+                if (CHECKED(_ui->NotificationCB))
+                    pushNotification(QString("Job %1 failed").arg(_job->at(_ffloader->_currentJob)), QString("See the process logs for this job for full details."));
+
                 _ui->JobQueue->item(_ffloader->_currentJob, 2)->setText(QString("0%"));
                 _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Failed"));
 
                 QMessageBox::StandardButton sb(msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("Audio/subtitle encoding/muxing failed. Click \"Open\" below to see the associated process logs."),
                     QMessageBox::Ok, QMessageBox::Open, QMessageBox::Help));
 
-                if (sb == QMessageBox::Open)
+                if (sb == QMessageBox::Open) {
+                    #ifdef Q_OS_WINDOWS
                     QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_ffloader->_currentJob)))));
+                    #endif
+                    #ifdef Q_OS_DARWIN
+                    QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1").arg(_job->at(_ffloader->_currentJob)))));
+                    #endif
+                }
                 if (sb == QMessageBox::Help)
                     QDesktopServices::openUrl(QUrl(QString("https://encodegui.com/support")));
 
@@ -1521,11 +2204,19 @@ void EncodeGUI::encodeFinished() {
                 setState();
             }
             else {
+                if (CHECKED(_ui->NotificationCB))
+                    pushNotification(QString("Job finished"), QString("Encoding job %1 finished successfully without error(s).").arg(_job->at(_ffloader->_currentJob)));
+
                 _ui->JobQueue->item(_ffloader->_currentJob, 2)->setText(QString("100%"));
                 _ui->JobQueue->item(_ffloader->_currentJob, 1)->setText(QString("Finished"));
 
                 if (CHECKED(_ui->AutoDelSourceCB)) {
-                    if (!_inputList->at(_ffloader->_currentJob).contains(QString("%1\\demo\\Big_Buck_Bunny_Trailer_1080p.ogv").arg(QDir::toNativeSeparators(QApplication::applicationDirPath())))) {
+                    #ifdef Q_OS_WINDOWS
+                    if (!_inputList->at(_ffloader->_currentJob).contains(QDir::toNativeSeparators(("%1\\demo\\Big_Buck_Bunny_Trailer_1080p.ogv")).arg(QDir::toNativeSeparators(QApplication::applicationDirPath())))) {
+                    #endif
+                    #ifdef Q_OS_DARWIN
+                    if (!_inputList->at(_ffloader->_currentJob).contains(QDir::toNativeSeparators(("%1/demo/Big_Buck_Bunny_Trailer_1080p.ogv")).arg(QDir::toNativeSeparators(QApplication::applicationDirPath())))) {
+                    #endif
                         QFile(_inputList->at(_ffloader->_currentJob)).remove();
                         writeLog(QString("Deleting source file for job %1").arg(_job->at(_ffloader->_currentJob)), false, false, false);
                     }
@@ -1552,6 +2243,15 @@ void EncodeGUI::encodeFinished() {
     newJob();
 }
 
+void EncodeGUI::pushNotification(QString title, QString message) {
+    QSystemTrayIcon sti(this);
+    sti.setIcon(QIcon(":/EncodeGUI/egui.png"));
+    sti.setVisible(false);
+    sti.show();
+    sti.showMessage(title, message, QSystemTrayIcon::NoIcon);
+    sti.hide();
+}
+
 void EncodeGUI::writeLogFile(QString content) {
     _logFile->open(QIODevice::ReadWrite);
 
@@ -1572,81 +2272,100 @@ void EncodeGUI::newJob() {
     paletter(_ui->JobIDValueLabel);
     _ui->JobIDValueLabel->setText(QString("?"));
 
+    #ifdef Q_OS_WINDOWS
     QFile(QDir::toNativeSeparators(TEMPPATH_WIN + QString("\\%1.mkv").arg(_job->at(_ffloader->_currentJob)))).remove();
+    #endif
+    #ifdef Q_OS_DARWIN
+    QFile(QDir::toNativeSeparators(TEMPPATH_DAR + QString("/%1.mkv").arg(_job->at(_ffloader->_currentJob)))).remove();
+    #endif
+
     writeLog(QString("Deleting temp video file for job %1...").arg(_job->at(_ffloader->_currentJob)), false, false, false);
 
-    if (QDir(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\Preview"))).removeRecursively()) {
-        writeLog(QString("Deleting extracted preview files for job %1...").arg(_job->at(_ffloader->_currentJob)), false, false, false);
-        int isDone = 0;
+    #ifdef Q_OS_WINDOWS
+    if (_tbProgress) {
+        _tbProgress->SetProgressState((HWND)this->winId(), TBPF_NOPROGRESS);
+        _tbProgress->Release();
+    }
+    #endif  
 
+    #ifdef Q_OS_WINDOWS
+    QDir(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\Preview"))).removeRecursively();
+    #endif
+    #ifdef Q_OS_DARWIN
+    QDir(QDir::toNativeSeparators(LOGPATH_DAR + QString("/Preview"))).removeRecursively();
+    #endif
+
+    writeLog(QString("Deleting extracted preview files for job %1...").arg(_job->at(_ffloader->_currentJob)), false, false, false);
+    int isDone = 0;
+
+    FOR_EACH(_ui->JobQueue->rowCount())
+        if (_ui->JobQueue->item(i, 1)->text().contains(QString("Waiting")) && !_ui->JobQueue->item(i, 1)->text().contains(QString("Failed")))
+            isDone++;
+
+    if (isDone > 0) {
         FOR_EACH(_ui->JobQueue->rowCount())
-            if (_ui->JobQueue->item(i, 1)->text().contains(QString("Waiting")) && !_ui->JobQueue->item(i, 1)->text().contains(QString("Failed")))
-                isDone++;
-
-        if (CHECKED(_ui->NextJobCB)) {
-            if (isDone > 0) {
-                FOR_EACH(_ui->JobQueue->rowCount())
-                    if (_ui->JobQueue->item(i, 1)->text().contains(QString("Waiting"))) {
-                        if (CHECKED(_ui->EnablePreviewCB) && !_arguments.at(i).toStringList().join(QString(" ")).contains(QString("-c:v copy"))) {
-                            newExtract();
-                            writeLog(QString("Extracting frames for job %1").arg(_job->at(i)), false, false, false);
-                            break;
-                        }
-                        else if (_arguments.at(i).toStringList().join(QString(" ")).contains(QString("-c:v copy")) || !CHECKED(_ui->EnablePreviewCB)) {
-                            _ffloader->_currentJob = i;
-
-                            _ui->JobQueue->item(i, 1)->setText(QString("Active"));
-
-                            if (CHECKED(_ui->AutoDelSourceCB))
-                                writeLog(QString("WARNING: Auto delete source is enabled in preferences. Disable it before the encoding process ends if you do not want the source video to be deleted"), false, false, true);
-
-                            paletter(_ui->JobStartValueLabel);
-                            _ui->JobStartValueLabel->setText(QDateTime::currentDateTime().toString());
-
-                            paletter(_ui->JobStatusValueLabel);
-                            _ui->JobStatusValueLabel->setText(QString("Active"));
-
-                            paletter(_ui->JobIDValueLabel);
-                            _ui->JobIDValueLabel->setText(_ui->JobQueue->item(i, 0)->text());
-
-                            extracterComplete();
-                            break;
-                        }
-                    }
-            }
-            else {
-                SET_DISABLED(_ui->PauseBttn);
-                SET_DISABLED(_ui->CancelBttn);
-                SET_ENABLED(_ui->StartBttn);
-
-                switch (_ui->WhenEncCompleteDD->currentIndex()) {
-                case 0:
-                    if (_ui->JobQueue->rowCount() > 0) {
-                        writeLog(QString("All jobs in the queue are completed."), false, false, false);
-                        msgBoxHelper(MessageType::Info, QString("Done processing jobs"), QString("No more jobs to process."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-                    }
-                    break;
-                case 1:
-                    QApplication::quit();
-                    break;
-                case 2:
-                    QApplication::quit();
-                    _ffloader->action(false);
-                    break;
-                case 3:
-                    QApplication::quit();
-                    _ffloader->action(true);
+            if (_ui->JobQueue->item(i, 1)->text().contains(QString("Waiting"))) {
+                if (CHECKED(_ui->EnablePreviewCB) && !_arguments.at(i).toStringList().join(QString(" ")).contains(QString("-c:v copy"))) {
+                    newExtract();
+                    writeLog(QString("Extracting frames for job %1").arg(_job->at(i)), false, false, false);
                     break;
                 }
+                else if (_arguments.at(i).toStringList().join(QString(" ")).contains(QString("-c:v copy")) || !CHECKED(_ui->EnablePreviewCB)) {
+                    _ffloader->_currentJob = i;
+
+                    _ui->JobQueue->item(i, 1)->setText(QString("Active"));
+
+                    if (CHECKED(_ui->AutoDelSourceCB))
+                        writeLog(QString("WARNING: Auto delete source is enabled in preferences. Disable it before the encoding process ends if you do not want the source video to be deleted"), false, false, true);
+
+                    paletter(_ui->JobStartValueLabel);
+                    _ui->JobStartValueLabel->setText(QDateTime::currentDateTime().toString());
+
+                    paletter(_ui->JobStatusValueLabel);
+                    _ui->JobStatusValueLabel->setText(QString("Active"));
+
+                    paletter(_ui->JobIDValueLabel);
+                    _ui->JobIDValueLabel->setText(_ui->JobQueue->item(i, 0)->text());
+
+                   extracterComplete();
+                   break;
+                }
             }
+    }
+    else {
+        SET_DISABLED(_ui->PauseBttn);
+        SET_DISABLED(_ui->CancelBttn);
+        SET_ENABLED(_ui->StartBttn);
+
+        switch (_ui->WhenEncCompleteDD->currentIndex()) {
+        case 0:
+            if (_ui->JobQueue->rowCount() > 0) {
+                writeLog(QString("All jobs in the queue are completed."), false, false, false);
+                msgBoxHelper(MessageType::Info, QString("Done processing jobs"), QString("No more jobs to process."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+            }
+            break;
+        case 1:
+            QApplication::quit();
+            break;
+        case 2:
+            QApplication::quit();
+            _ffloader->action(false);
+            break;
+        case 3:
+            QApplication::quit();
+            _ffloader->action(true);
+            break;
         }
-        else
-            msgBoxHelper(MessageType::Info, QString("Done processing job %1").arg(_job->at(_ffloader->_currentJob)), QString("No more jobs to process."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
 }
 
 void EncodeGUI::openJobLogs() {
+    #ifdef Q_OS_WINDOWS
     QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(_selectedJob)))));
+    #endif
+    #ifdef Q_OS_DARWIN
+    QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1").arg(_job->at(_selectedJob)))));
+    #endif
 }
 
 void EncodeGUI::openOutput() {
@@ -1677,7 +2396,7 @@ void EncodeGUI::updateProgress() {
                 if (CHECKED(_ui->FPSCB))
                     progress.append(QString(", "));
 
-                progress.append(QString("Bitrate: %1kb/s").arg(ProgressInfo::getBitrate()));
+                progress.append(QString("Bitrate: %1kbits/s").arg(ProgressInfo::getBitrate()));
             }
             if (CHECKED(_ui->TimeLeftCB)) {
                 if (CHECKED(_ui->BitrateCB) || CHECKED(_ui->FPSCB))
@@ -1688,7 +2407,7 @@ void EncodeGUI::updateProgress() {
                 else
                     progress.append(QString("Time left: > day"));
             }
-            if (VideoInfoList::getDuration(_ffloader->_currentJob).isValid()) {
+            if (VideoInfoList::getJobDuration(_ffloader->_currentJob).isValid()) {
                 if (CHECKED(_ui->TimeElapsedCB)) {
                     if (CHECKED(_ui->TimeLeftCB) || CHECKED(_ui->BitrateCB) || CHECKED(_ui->FPSCB))
                         progress.append(QString(", "));
@@ -1705,12 +2424,22 @@ void EncodeGUI::updateProgress() {
                     progress.append(QString("%1%").arg(ProgressInfo::getPercentage()));
                 }
             }
+            #ifdef Q_OS_WINDOWS
             if (QDir(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\Preview"))).exists()) {
                 if (_preview) {
-                    _preview->setPicture(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\Preview\\%1.jpg")).arg((int)(QTime(0, 0, 0, 0).secsTo(ProgressInfo::getTime()))));
+                    _preview->setPicture(QDir::toNativeSeparators(LOGPATH_WIN + QString("\\Preview\\%1.jpg").arg((int)(QTime(0, 0, 0, 0).secsTo(ProgressInfo::getTime())))));
                     _preview->setScaled(false);
                 }
             }
+            #endif
+            #ifdef Q_OS_DARWIN
+            if (QDir(QDir::toNativeSeparators(LOGPATH_DAR + QString("/Preview"))).exists()) {
+                if (_preview) {
+                    _preview->setPicture(QDir::toNativeSeparators(LOGPATH_DAR + QString("/Preview/%1.jpg").arg((int)(QTime(0, 0, 0, 0).secsTo(ProgressInfo::getTime())))));
+                    _preview->setScaled(false);
+                }
+            }
+            #endif
         }
         else {
             if (CHECKED(_ui->JobsCB))
@@ -1722,9 +2451,19 @@ void EncodeGUI::updateProgress() {
                 progress.append(QString(" - %1%").arg(ProgressInfo::getPercentage()));
         }
 
-        if (VideoInfoList::getDuration(_ffloader->_currentJob).isValid()) {
+        if (VideoInfoList::getJobDuration(_ffloader->_currentJob).isValid()) {
+            #ifdef Q_OS_WINDOWS
+            if (_tbProgress) {
+                if (!_ui->JobQueue->item(_ffloader->_currentJob, 1)->text().contains(QString("Paused")))
+                    _tbProgress->SetProgressState((HWND)this->winId(), TBPF_NORMAL);
+
+                _tbProgress->SetProgressValue((HWND)this->winId(), (ULONGLONG)ProgressInfo::getPercentage(), 100ULL);
+            }
+            #endif
+
             _ui->JobQueue->item(_ffloader->_currentJob, 2)->setText(QString("%1%").arg(ProgressInfo::getPercentage()));
             _ui->progressBar->setValue((int)ProgressInfo::getPercentage());
+            _ui->progressBar->repaint();
         }
 
         _ui->ProgressBarLabel->setText(progress);
@@ -1770,12 +2509,24 @@ void EncodeGUI::gpuFinished() {
         QApplication::quit();
     }
 
+    if (adapter)
+        adapter->Release();
+
     writeLog(QString("Found %1 GPU device(s): %2").arg(_gpuNames->count()).arg(_gpuNames->join(QString(", "))), false, false, false);
 
     this->setWindowTitle(QString("EncodeGUI v%1 (free, stable) - [GPU 0: %2]").arg(VERSION).arg(_gpuNames->at(0)));
     #endif
-    #ifdef Q_OS_LINUX
-    glGetString();
+    #ifdef Q_OS_DARWIN
+    char buf[100];
+    size_t buflen = 100;
+    sysctlbyname("machdep.cpu.brand_string", &buf, &buflen, NULL, 0);
+
+    _gpuNames->append(QString(buf));
+    _ui->GPUInterpDD->addItem(QString(buf));
+    _ui->GPUUpscaleDD->addItem(QString(buf));
+    
+    writeLog(QString("Found 1 GPU device: %1").arg(_gpuNames->join(QString(", "))), false, false, false);
+    this->setWindowTitle(QString("EncodeGUI v%1 (free, stable) - [GPU: %2]").arg(VERSION).arg(_gpuNames->at(0)));
     #endif
 }
 
@@ -1788,6 +2539,24 @@ void EncodeGUI::reIndexBttns() {
         QPushButton *jobButtn(new QPushButton(QString("See path"), _ui->JobQueue));
         QPushButton *jobButtn2(new QPushButton(QString("See path"), _ui->JobQueue));
         QPushButton *logButtn(new QPushButton(QString("Open"), _ui->JobQueue));
+
+        #ifdef Q_OS_DARWIN
+        jobButtn->setGeometry(QRect(0, 0, 108, 30));
+        jobButtn->setMinimumWidth(50);
+        jobButtn->setMinimumHeight(32);
+        jobButtn->setMaximumHeight(32);
+        jobButtn->setFocusPolicy(Qt::NoFocus);
+        jobButtn2->setGeometry(QRect(0, 0, 108, 30));
+        jobButtn2->setMinimumWidth(50);
+        jobButtn2->setMinimumHeight(32);
+        jobButtn2->setMaximumHeight(32);
+        jobButtn2->setFocusPolicy(Qt::NoFocus);
+        logButtn->setGeometry(QRect(0, 0, 108, 30));
+        logButtn->setMinimumWidth(50);
+        logButtn->setMinimumHeight(32);
+        logButtn->setMaximumHeight(32);
+        logButtn->setFocusPolicy(Qt::NoFocus);
+        #endif
 
         _ui->JobQueue->removeCellWidget(i, 3);
         jobButtn->setProperty("row", i);
@@ -1815,6 +2584,24 @@ void EncodeGUI::bttns() {
     QPushButton *jobButtn2(new QPushButton(QString("See path"), _ui->JobQueue));
     QPushButton *logButtn(new QPushButton(QString("Open"), _ui->JobQueue));
 
+    #ifdef Q_OS_DARWIN
+    jobButtn->setGeometry(QRect(0, 0, 108, 30));
+    jobButtn->setMinimumWidth(50);
+    jobButtn->setMinimumHeight(32);
+    jobButtn->setMaximumHeight(32);
+    jobButtn->setFocusPolicy(Qt::NoFocus);
+    jobButtn2->setGeometry(QRect(0, 0, 108, 30));
+    jobButtn2->setMinimumWidth(50);
+    jobButtn2->setMinimumHeight(32);
+    jobButtn2->setMaximumHeight(32);
+    jobButtn2->setFocusPolicy(Qt::NoFocus);
+    logButtn->setGeometry(QRect(0, 0, 108, 30));
+    logButtn->setMinimumWidth(50);
+    logButtn->setMinimumHeight(32);
+    logButtn->setMaximumHeight(32);
+    logButtn->setFocusPolicy(Qt::NoFocus);
+    #endif
+
     jobButtn->setProperty("row", _ui->JobQueue->rowCount() - 1);
     connect(jobButtn, SIGNAL(clicked(bool)), this, SLOT(jobBttn()));
     _ui->JobQueue->setCellWidget(_ui->JobQueue->rowCount() - 1, 3, jobButtn);
@@ -1840,7 +2627,12 @@ void EncodeGUI::inputClick() {
 void EncodeGUI::logsClick() {
     int row = sender()->property("row").toInt();
 
+    #ifdef Q_OS_WINDOWS
     QDesktopServices::openUrl(QUrl(QString("file:///") + QDir::toNativeSeparators(LOGPATH_WIN + QString("\\job-%1").arg(_job->at(row)))));
+    #endif
+    #ifdef Q_OS_DARWIN
+    QDesktopServices::openUrl(QUrl(QString("file://") + QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1").arg(_job->at(row)))));
+    #endif
 }
 
 void EncodeGUI::outputClick() {
@@ -1849,8 +2641,12 @@ void EncodeGUI::outputClick() {
 }
 
 void EncodeGUI::outBttn() {
-    QString output(QFileDialog::getSaveFileName(this, QString("Save Output File"), _ui->SelectInTxtBox->text().left(_ui->SelectInTxtBox->text().lastIndexOf(QString("."))), QString("Supported extensions")));
-    output = QDir::toNativeSeparators(output);
+    QString output;
+
+    if (CHECKED(_ui->BatchCB))
+        output = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(this, QString("Save output"), _ui->SelectInTxtBox->text(), QFileDialog::ShowDirsOnly));
+    else
+        output = QDir::toNativeSeparators(QFileDialog::getSaveFileName(this, QString("Save output file"), _ui->SelectInTxtBox->text().left(_ui->SelectInTxtBox->text().lastIndexOf(QString("."))), QString("Supported extensions")));
 
     if (output.isEmpty() && !_ui->SaveOutTxtBox->text().isEmpty())
         output = _ui->SaveOutTxtBox->text();
@@ -1875,6 +2671,7 @@ void EncodeGUI::writeLog(QString log, bool bold, bool red, bool yellow) {
         _ui->LogsOutRTxtBox->setFontWeight(QFont::Normal);
 }
 
+#ifdef Q_OS_WINDOWS
 void EncodeGUI::cpuThread() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("threads"), CHECKED(_ui->LimitThreadsCB));
 
@@ -1883,6 +2680,7 @@ void EncodeGUI::cpuThread() {
     else
         SET_DISABLED(_ui->LimitThreadsNUD);
 }
+#endif
 
 void EncodeGUI::jobsCB() {
     QSettings(QSettings::NativeFormat, QSettings::UserScope, QString("DaGoose"), QString("EncodeGUI")).setValue(QString("jobs"), CHECKED(_ui->JobsCB));
@@ -1917,20 +2715,34 @@ void EncodeGUI::sampleVid() {
         return;
     }
 
-    if (CHECKED(_ui->SampleVidCB))
+    if (CHECKED(_ui->SampleVidCB)) {
+        #ifdef Q_OS_WINDOWS
         if (QFile(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\demo\\Big_Buck_Bunny_Trailer_1080p.ogv"))).exists()) {
             _ui->SelectInTxtBox->setText(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\demo\\Big_Buck_Bunny_Trailer_1080p.ogv")));
-            
+        #endif
+        #ifdef Q_OS_DARWIN
+        if (QFile(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/demo/Big_Buck_Bunny_Trailer_1080p.ogv"))).exists()) {
+            _ui->SelectInTxtBox->setText(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/demo/Big_Buck_Bunny_Trailer_1080p.ogv")));
+        #endif
+
             SET_DISABLED(_ui->SelectInBttn);
             inputBttn();
         }
         else {
             writeLog(QString("Error: unable to load sample video."), false, true, false);
-            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The sample video file is either missing or does not exist in \"%1\\demo\\Big_Buck_Bunny_Trailer_1080p.ogv\"").arg(QDir::toNativeSeparators(QApplication::applicationDirPath())),
+
+            #ifdef Q_OS_WINDOWS
+            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The sample video file is either missing or does not exist in \"%1\"").arg(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\demo\\Big_Buck_Bunny_Trailer_1080p.ogv"))),
                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+            #endif
+            #ifdef Q_OS_DARWIN
+            msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The sample video file is either missing or does not exist in \"%1\"").arg(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/demo/Big_Buck_Bunny_Trailer_1080p.ogv"))),
+                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+            #endif
 
             _ui->SampleVidCB->setChecked(false);
         }
+    }
     else {
         SET_ENABLED(_ui->SelectInBttn);
         _ui->SelectInTxtBox->setText(QString());
@@ -1951,13 +2763,6 @@ void EncodeGUI::flipDD() {
         SET_ENABLED(_ui->FlipDD);
     else
         SET_DISABLED(_ui->FlipDD);
-}
-
-void EncodeGUI::hideSub() {
-    if (CHECKED(_ui->SubtitlesCB))
-        SET_ENABLED(_ui->SubtitlesDD);
-    else
-        SET_DISABLED(_ui->SubtitlesDD);
 }
 
 void EncodeGUI::thresholdNUD() {
@@ -2141,9 +2946,52 @@ void EncodeGUI::removeTabs(QWidget *tab) {
 
     if (tab != _ui->x265Tab)
         _ui->VideoTabs->removeTab(_ui->VideoTabs->indexOf(_ui->HDRTab));
-    else if (tab == _ui->x265Tab)
+    else if (tab == _ui->x265Tab) {
+        #ifdef Q_OS_WINDOWS
         if (!CHECKED(_ui->Hardware265CB) && !_ui->VideoTabs->isTabVisible(_ui->VideoTabs->indexOf(_ui->HDRTab)))
             _ui->VideoTabs->insertTab(_ui->VideoTabs->indexOf(tab) + 1, _ui->HDRTab, QString("Signals"));
+        #endif
+        #ifdef Q_OS_DARWIN
+        if (!_ui->VideoTabs->isTabVisible(_ui->VideoTabs->indexOf(_ui->HDRTab)))
+            _ui->VideoTabs->insertTab(_ui->VideoTabs->indexOf(tab) + 1, _ui->HDRTab, QString("Signals"));
+        #endif
+    }
+}
+
+void EncodeGUI::mAlloc() {
+    _ffloader = new FFLoader();
+    _inputBttn = new QList<QPushButton*>();
+    _outputBttn = new QList<QPushButton*>();
+    _logsBttn = new QList<QPushButton*>();
+    _job = new QStringList();
+    _gpuNames = new QStringList();
+    _inputList = new QStringList();
+    _outputList = new QStringList();
+    _tempList = new QStringList();
+    _state = new QStringList();
+    _channels = new QStringList();
+    _quality = new QList<int>();
+    _bitrate = new QList<int>();
+    _isEncoding = new QList<bool>();
+    _isTitle = new QList<bool>();
+    _isLang = new QList<bool>();
+    _title = new QStringList();
+    _logFile = new QFile();
+    _logsStream = new QTextStream(_logFile);
+    _audioCodec = new QStringList();
+    _audioLangs = new QStringList();
+    _isEncodingSub = new QList<bool>();
+    _isTitleSub = new QList<bool>();
+    _isLangSub = new QList<bool>();
+    _titleSub = new QStringList();
+    _subtitleCodec = new QStringList();
+    _subtitleLangs = new QStringList();
+    _streamInputs = new QStringList();
+    _audioInputs = new QStringList();
+    _subtitleInputs = new QStringList();
+    _audioStream = new QStringList();
+    _subtitleStream = new QStringList();
+    _batchFiles = new QStringList();
 }
 
 EncodeGUI::~EncodeGUI() {
@@ -2161,7 +3009,6 @@ EncodeGUI::~EncodeGUI() {
     delete(_channels);
     delete(_quality);
     delete(_bitrate);
-    delete(_stream);
     delete(_isEncoding);
     delete(_isTitle);
     delete(_isLang);
@@ -2170,5 +3017,17 @@ EncodeGUI::~EncodeGUI() {
     delete(_logFile);
     delete(_audioCodec);
     delete(_audioLangs);
+    delete(_isEncodingSub);
+    delete(_isTitleSub);
+    delete(_isLangSub);
+    delete(_titleSub);
+    delete(_subtitleCodec);
+    delete(_subtitleLangs);
+    delete(_streamInputs);
+    delete(_audioInputs);
+    delete(_subtitleInputs);
+    delete(_audioStream);
+    delete(_subtitleStream);
+    delete(_batchFiles);
     delete(_ui);
 }

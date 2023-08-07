@@ -1,6 +1,6 @@
 #include "encodegui.hpp"
 
-QString EncodeGUI::buildScript(int width, int height, QString jobID) {
+QString EncodeGUI::buildScript(QString input, QString matrix, QString transfer, QString primaries, QString frameRate, int width, int height, QString jobID) {
 	ScriptBuilder::clearScript();
 
 	QString matrix_in, transfer_in, primaries_in, matrix_out, transfer_out, primaries_out, format;
@@ -68,59 +68,59 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 	}
 
 	if (!_ui->ColorPropsGB->isChecked()) {
-		if (VideoInfo::getMatrix().contains(QString("bt709")))
+		if (matrix.contains(QString("bt709")))
 			matrix_in = QString("709");
-		else if (VideoInfo::getMatrix().contains(QString("fcc")))
+		else if (matrix.contains(QString("fcc")))
 			matrix_in = QString("fcc");
-		else if (VideoInfo::getMatrix().contains(QString("bt470bg")))
+		else if (matrix.contains(QString("bt470bg")))
 			matrix_in = QString("470bg");
-		else if (VideoInfo::getMatrix().contains(QString("smpte170m")))
+		else if (matrix.contains(QString("smpte170m")))
 			matrix_in = QString("170m");
-		else if (VideoInfo::getMatrix().contains(QString("smpte240m")))
+		else if (matrix.contains(QString("smpte240m")))
 			matrix_in = QString("240m");
-		else if (VideoInfo::getMatrix().contains(QString("ycgco")))
+		else if (matrix.contains(QString("ycgco")))
 			matrix_in = QString("ycgco");
-		else if (VideoInfo::getMatrix().contains(QString("bt2020nc")))
+		else if (matrix.contains(QString("bt2020nc")))
 			matrix_in = QString("2020ncl");
-		else if (VideoInfo::getMatrix().contains(QString("bt2020c")))
+		else if (matrix.contains(QString("bt2020c")))
 			matrix_in = QString("2020cl");
 		else {
 			matrix_in = QString("709");
 			writeLog(QString("Warning: Color matrix for source of job %1 is not specified in media info. Assuming BT709.").arg(jobID), false, false, true);
 		}
 
-		if (VideoInfo::getTransfer().contains(QString("bt709")))
+		if (transfer.contains(QString("bt709")))
 			transfer_in = QString("709");
-		else if (VideoInfo::getTransfer().contains(QString("bt470m")))
+		else if (transfer.contains(QString("bt470m")))
 			transfer_in = QString("470m");
-		else if (VideoInfo::getTransfer().contains(QString("bt470bg")))
+		else if (transfer.contains(QString("bt470bg")))
 			transfer_in = QString("470bg");
-		else if (VideoInfo::getTransfer().contains(QString("log100")))
+		else if (transfer.contains(QString("log100")))
 			transfer_in = QString("log100");
-		else if (VideoInfo::getTransfer().contains(QString("log316")))
+		else if (transfer.contains(QString("log316")))
 			transfer_in = QString("log316");
-		else if (VideoInfo::getTransfer().contains(QString("smpte170m")))
+		else if (transfer.contains(QString("smpte170m")))
 			transfer_in = QString("170m");
-		else if (VideoInfo::getTransfer().contains(QString("smpte240m")))
+		else if (transfer.contains(QString("smpte240m")))
 			transfer_in = QString("240m");
-		else if (VideoInfo::getTransfer().contains(QString("smpte2084")))
+		else if (transfer.contains(QString("smpte2084")))
 			transfer_in = QString("st2084");
 		else {
 			transfer_in = QString("709");
 			writeLog(QString("Warning: Color transfer for source of job %1 is not specified in media info. Assuming BT709.").arg(jobID), false, false, true);
 		}
 
-		if (VideoInfo::getPrimaries().contains(QString("bt709")))
+		if (primaries.contains(QString("bt709")))
 			primaries_in = QString("709");
-		else if (VideoInfo::getPrimaries().contains(QString("bt470m")))
+		else if (primaries.contains(QString("bt470m")))
 			primaries_in = QString("470m");
-		else if (VideoInfo::getPrimaries().contains(QString("bt470bg")))
+		else if (primaries.contains(QString("bt470bg")))
 			primaries_in = QString("470bg");
-		else if (VideoInfo::getPrimaries().contains(QString("smpte170m")))
+		else if (primaries.contains(QString("smpte170m")))
 			primaries_in = QString("170m");
-		else if (VideoInfo::getPrimaries().contains(QString("smpte240m")))
+		else if (primaries.contains(QString("smpte240m")))
 			primaries_in = QString("240m");
-		else if (VideoInfo::getPrimaries().contains(QString("bt2020")))
+		else if (primaries.contains(QString("bt2020")))
 			primaries_in = QString("2020");
 		else {
 			primaries_in = QString("709");
@@ -134,6 +134,8 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 	}
 
 	ScriptBuilder::setInclude();
+
+	#ifdef Q_OS_WINDOWS
 	ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\vs\\plugins\\liblsmashsource.dll")));
 
 	if (CHECKED(_ui->UseAACB))
@@ -150,8 +152,23 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\vs\\plugins\\libsvpflow.1.dll")));
 		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\vs\\plugins\\libsvpflow.2.dll")));
 	}
+	#endif
+	#ifdef Q_OS_DARWIN
+	ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/plugins/libffms2.dylib")));
+	ScriptBuilder::setPlugin(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("/plugins/libscdetect.dylib")));
 
-	ScriptBuilder::setInput(_ui->SelectInTxtBox->text(), jobID);
+	if (CHECKED(_ui->UseAACB))
+		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/plugins/libeedi2.dylib")));
+
+	if (CHECKED(_ui->UpscalingGB)) {
+		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/plugins/libvsw2xnvk.dylib")));
+		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/plugins/libsrmdnv.dylib")));
+	}
+	if (CHECKED(_ui->InterpolationCB))
+		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("/plugins/librife.dylib")));
+	#endif
+
+	ScriptBuilder::setInput(input, jobID);
 
 	if (CHECKED(_ui->UseAACB))
 		ScriptBuilder::setAntiA();
@@ -161,7 +178,7 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 		int model, thread, num, den, multI, multi2, model2;
 		int id = _ui->GPUInterpDD->currentIndex();
 		double model3;
-		double inFPS = VideoInfo::getFrameRate().toDouble();
+		double inFPS = frameRate.toDouble();
 		double outFPS = _ui->OutputFPSNUD->value();
 		double scale = 1.0;
 
@@ -180,12 +197,16 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 		tta = QString("False");
 
 		model = _ui->RIFEModelVKDD->currentIndex();
+
+		#ifdef Q_OS_WINDOWS
 		model2 = _ui->ModelInterpDD->currentIndex();
 		model3 = _ui->RIFEModelCADD->currentText().remove(QString("v")).toDouble();
+		#endif
+
 		thread = _ui->GPUThreadDD->currentIndex() + 1;
 		multI = multi(inFPS, outFPS);
 
-		QString fpsString = QString("%1").arg(outFPS);
+		QString fpsString(QString("%1").arg(outFPS));
 
 		if (fpsString.contains(QString("."))) {
 			switch (decimalCounter(fpsString)) {
@@ -216,6 +237,7 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 				upscaleMD(width, height);
 
 			switch (_ui->BackendDD->currentIndex()) {
+			#ifdef Q_OS_WINDOWS
 			case 0:
 				if (_ui->ToolInterpDD->currentIndex() == 1) {
 					if (model3 == 4.0)
@@ -227,10 +249,19 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 					if (model2 == 0)
 						ScriptBuilder::setRIFECuda(id, 4.6, QString("%1").arg(multI * inFPS).remove(QString(".")).toInt(), den, scale, sc, QString("False"));
 					else if (model2 == 1)
-						ScriptBuilder::setRIFECuda(id, 4.0, QString("%1").arg(multI* inFPS).remove(QString(".")).toInt(), den, scale, sc, QString("True"));
+						ScriptBuilder::setRIFECuda(id, 4.0, QString("%1").arg(multI * inFPS).remove(QString(".")).toInt(), den, scale, sc, QString("True"));
 				break;
 			case 1:
+			#endif
+			#ifdef Q_OS_DARWIN
+			case 0:
+			#endif
+				#ifdef Q_OS_WINDOWS
 				if (_ui->ToolInterpDD->currentIndex() == 1) {
+				#endif
+				#ifdef Q_OS_DARWIN
+				if (_ui->ToolInterpDD->currentIndex() == 0) {
+				#endif
 					if (_ui->RIFEModelVKDD->currentIndex() < 4)
 						ScriptBuilder::setRIFENcnn(model, id, thread, tta, uhd, sc);
 					else
@@ -246,6 +277,7 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 				break;
 			}
 
+			#ifdef Q_OS_WINDOWS
 			if (_ui->ToolInterpDD->currentIndex() == 0 && inFPS * multI != outFPS) {
 				ScriptBuilder::setColorsOut(QString("YUV420P8"), QString("709"), QString("709"), QString("709"));
 
@@ -254,7 +286,9 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 				else
 					ScriptBuilder::setSVPFlowNoob(QString("True"), id, 13, 0, 0, num, den);
 			}
+			#endif
 		}
+		#ifdef Q_OS_WINDOWS
 		else {
 			QString useGPU;
 			int shader = 0, mask = 0, mode = 0;
@@ -307,6 +341,7 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 			else
 				ScriptBuilder::setSVPFlowNoob(useGPU, id, shader, mask, mode, num, den);
 		}
+		#endif
 	}
 
 	if (CHECKED(_ui->UpscalingGB) && !CHECKED(_ui->InterpolationCB)) {
@@ -328,10 +363,11 @@ QString EncodeGUI::buildScript(int width, int height, QString jobID) {
 		else
 			ScriptBuilder::setColorsInOut(format, matrix_in, transfer_in, primaries_in, matrix_out, transfer_out, primaries_out);
 	}
-	else if (CHECKED(_ui->InterpolationCB) || CHECKED(_ui->UpscalingGB))
+	else if (CHECKED(_ui->InterpolationCB) || CHECKED(_ui->UpscalingGB)) {
 		if (CHECKED(_ui->InterpolationCB) && _ui->ToolInterpDD->currentIndex() == 2) {}
 		else
 			ScriptBuilder::setColorsOut(format, matrix_in, transfer_in, primaries_in);
+	}
 
 	ScriptBuilder::setConcludeClip();
 
@@ -363,22 +399,28 @@ void EncodeGUI::upscaleMD(int width, int height) {
 
 	if (_ui->ToolUpscaleDD->currentIndex() == 0)
 		if (_ui->ModelUpscaleDD->currentIndex() != 3) {
+			#ifdef Q_OS_WINDOWS
 			if (CHECKED(_ui->MultiGPUGB))
 				ScriptBuilder::setWaifu2x(noise, 2, _ui->ModelUpscaleDD->currentIndex(), id, thread, fp, true, _ui->GPU1IDNUD->value(), _ui->GPU2IDNUD->value());
 			else
+			#endif
 				ScriptBuilder::setWaifu2x(noise, 2, _ui->ModelUpscaleDD->currentIndex(), id, thread, fp, false, 0, 0);
 		}
 		else {
+			#ifdef Q_OS_WINDOWS
 			if (CHECKED(_ui->MultiGPUGB))
 				ScriptBuilder::setWaifu2x(noise, 1, 2, id, thread, fp, true, _ui->GPU1IDNUD->value(), _ui->GPU2IDNUD->value());
 			else
+			#endif
 				ScriptBuilder::setWaifu2x(noise, 1, 2, id, thread, fp, false, 0, 0);
 		}
+	#ifdef Q_OS_WINDOWS
 	else
 		if (CHECKED(_ui->MultiGPUGB))
 			ScriptBuilder::setSRMD(scale, _ui->NoiseLabelSDDD->currentIndex(), id, thread, tta, true, _ui->GPU1IDNUD->value(), _ui->GPU2IDNUD->value());
 		else
 			ScriptBuilder::setSRMD(scale, _ui->NoiseLabelSDDD->currentIndex(), id, thread, tta, false, 0, 0);
+	#endif
 }
 
 int EncodeGUI::decimalCounter(QString value) {

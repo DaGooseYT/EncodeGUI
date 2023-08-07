@@ -1,114 +1,180 @@
 #include "encodegui.hpp"
 
-QStringList EncodeGUI::configureAudioM(int stream, int stream2, QString stream3, QString id, QString container) {
-	MediaConfig::resetArguments();
-
-	if (stream == 1 && stream3.toInt() == 0) {
+QStringList EncodeGUI::configureAudioM(int stream, int index, QVariantList stream2, QString id, QString container) {
+	if (stream == 1) {
+		MediaConfig::resetArguments();
+		
 		if (_ui->VideoEncDD->currentIndex() != 6) {
 			MediaConfig::setOverride();
+
+			#ifdef Q_OS_WINDOWS
 			MediaConfig::setInput(QDir::toNativeSeparators(TEMPPATH_WIN + QString("\\%1").arg(id)));
-			MediaConfig::setInput(_ui->SelectInTxtBox->text());
-			MediaConfig::setMapAll(QString("v"), QString("0"));
+			#endif
+			#ifdef Q_OS_DARWIN
+			MediaConfig::setInput(QDir::toNativeSeparators(TEMPPATH_DAR + QString("/%1").arg(id)));
+			#endif
+
+			if (_ui->AudioDD->currentIndex() != 1)
+				MediaConfig::setInput(_ui->SelectInTxtBox->text());
+			else
+				foreach(QString path, *_streamInputs)
+					MediaConfig::setInput(path);
+
+			MediaConfig::setMapAll(QString("v"), 0);
 			MediaConfig::setVideoCodec(QString("copy"));
 		}
-
-		configureSubtitle(stream, container, id);
 
 		if (!CHECKED(_ui->ChaptersCB) && SubtitleInfo::getChapter())
 			MediaConfig::setVideoChapters();
 	}
 
-	if (stream == 1)
-		if (_ui->VideoEncDD->currentIndex() != 6)
-			MediaConfig::setMap(QString("a"), QString("%1").arg(stream), stream2);
-		else
-			MediaConfig::setMapMux(QString("a"), stream2);
-
-	if (_isTitle->at(stream3.toInt())) {
-		MediaConfig::setAudioMetadata(stream3);
-		MediaConfig::setAudioTitle(_title->at(stream3.toInt()));
-
-		if (_isLang->at(stream3.toInt())) {
-			MediaConfig::setAudioMetadata(stream3);
-			MediaConfig::setAudioLang(_audioLangs->at(stream3.toInt()));
+	for (int i = _streamNum; i < stream2.count() + _streamNum; i++) {
+		if (stream > 0) {
+			if (_ui->VideoEncDD->currentIndex() != 6)
+				MediaConfig::setMap(QString("a"), _audioStream->at(i).toInt(), stream2.at(index).toInt());
+			else {
+				if (_streamInputs->count() > 1)
+					MediaConfig::setMap(QString("a"), _audioStream->at(i).toInt(), stream2.at(index).toInt());
+				else if (_streamInputs->count() == 1)
+					MediaConfig::setMapMux(QString("a"), stream2.at(index).toInt());
+			}
 		}
-	}
-	else if (_isLang->at(stream3.toInt())) {
-		MediaConfig::setAudioMetadata(stream3);
-		MediaConfig::setAudioLang(_audioLangs->at(stream3.toInt()));
-	}
 
-	if (_isEncoding->at(stream3.toInt())) {
-		MediaConfig::setAudioCodecMulti(_audioCodec->at(stream3.toInt()), stream3);
-			
-		if (!_audioCodec->at(stream3.toInt()).contains(QString("libvorbis")))
-			MediaConfig::setAudioBitrate(_bitrate->at(stream3.toInt()), stream3);
+		if (_isTitle->at(i)) {
+			MediaConfig::setAudioMetadata(i);
+			MediaConfig::setAudioTitle(_title->at(i));
+
+			if (_isLang->at(i)) {
+				MediaConfig::setAudioMetadata(i);
+				MediaConfig::setAudioLang(_audioLangs->at(i));
+			}
+		}
+		else if (_isLang->at(i)) {
+			MediaConfig::setAudioMetadata(i);
+			MediaConfig::setAudioLang(_audioLangs->at(i));
+		}
+
+		if (_isEncoding->at(i)) {
+			MediaConfig::setAudioCodecMulti(_audioCodec->at(i), i);
+
+			if (!_audioCodec->at(i).contains(QString("libvorbis")))
+				MediaConfig::setAudioBitrate(_bitrate->at(i), i);
+			else
+				MediaConfig::setConstantAudioQuality(_quality->at(i), i);
+
+			if (!_channels->at(i).contains(QString("0")))
+				MediaConfig::setAudioChannels(_channels->at(i), i);
+		}
 		else
-			MediaConfig::setConstantAudioQuality(_quality->at(stream3.toInt()), stream3);
+			MediaConfig::setAudioCodecMulti(QString("copy"), i);
 
-		if (!_channels->at(stream3.toInt()).contains(QString("0")))
-			MediaConfig::setAudioChannels(_channels->at(stream3.toInt()), stream3);
+		index++;
 	}
-	else
-		MediaConfig::setAudioCodecMulti(QString("copy"), stream3);
 
-	if (stream == 1 && _ui->VideoEncDD->currentIndex() != 6 && stream3.toInt() == _ui->AudioQueue->rowCount() - 1) {
-		MediaConfig::setMetaData1();
-		MediaConfig::setMetaData2(QString("\"EncodeGUI v%1\"").arg(VERSION));
+	_streamNum = stream2.count() + _streamNum;
+
+	if (CHECKED(_ui->SubtitlesCB) && stream == _stream.count())
+		configureSubtitle(stream, 0, container, id);
+
+	if (stream == _stream.count() && _ui->VideoEncDD->currentIndex() != 6) {
+		MediaConfig::setVideoMetadata();
+		MediaConfig::setEncoder(QString("EncodeGUI v%1").arg(VERSION));
 		MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
 	}
 
-	return(MediaConfig::getArguments());
+	if (_streamNum == _ui->AudioQueue->rowCount())
+		return(MediaConfig::getArguments());
+	else
+		return(QStringList());
 }
 
-QStringList EncodeGUI::configureAudioP(int stream, QString id, QString container) {
+QStringList EncodeGUI::configureAudioP(int stream, int stream2, int index, QString id, QString container) {
 	MediaConfig::resetArguments();
 
 	if (stream == 1 && _ui->VideoEncDD->currentIndex() != 6) {
 		MediaConfig::setOverride();
+		
+		#ifdef Q_OS_WINDOWS
 		MediaConfig::setInput(QDir::toNativeSeparators(TEMPPATH_WIN + QString("\\%1").arg(id)));
-		MediaConfig::setInput(_ui->SelectInTxtBox->text());
-		MediaConfig::setMapAll(QString("v"), QString("0"));
+		#endif
+		#ifdef Q_OS_DARWIN
+		MediaConfig::setInput(QDir::toNativeSeparators(TEMPPATH_DAR + QString("/%1").arg(id)));
+		#endif
+
+		if (!CHECKED(_ui->BatchCB))
+			MediaConfig::setInput(_ui->SelectInTxtBox->text());
+		else
+			MediaConfig::setInput(_batchFiles->at(index));
+
+		MediaConfig::setMapAll(QString("v"), 0);
 		MediaConfig::setVideoCodec(QString("copy"));
 	}
 
 	if (stream == 1 && _ui->VideoEncDD->currentIndex() != 6)
-		MediaConfig::setMapAll(QString("a"), QString("%1").arg(stream));
+		MediaConfig::setMapAll(QString("a"), stream);
 	else if (_ui->VideoEncDD->currentIndex() == 6)
 		MediaConfig::setMapSingle(QString("a"));
 	
 	MediaConfig::setAudioCodec(QString("copy"));
 
-	configureSubtitle(stream, container, id);
+	if (CHECKED(_ui->SubtitlesCB))
+		configureSubtitle(stream, 0, container, id);
 
 	if (!CHECKED(_ui->ChaptersCB) && SubtitleInfo::getChapter())
 		MediaConfig::setVideoChapters();
 
 	if (stream == 1 && _ui->VideoEncDD->currentIndex() != 6) {
-		MediaConfig::setMetaData1();
-		MediaConfig::setMetaData2(QString("\"EncodeGUI v%1\"").arg(VERSION));
-		MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
+		MediaConfig::setVideoMetadata();
+		MediaConfig::setEncoder(QString("EncodeGUI v%1").arg(VERSION));
+		
+		if (CHECKED(_ui->BatchCB)) {
+			QFileInfo fn(_batchFiles->at(index));
+
+			#ifdef Q_OS_WINDOWS
+			MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + QString("\\batch_") + fn.fileName() + container);
+			#endif
+			#ifdef Q_OS_DARWIN
+			MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + QString("/batch_") + fn.fileName() + container);
+			#endif
+		}
+		else
+			MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
 	}
 
 	return(MediaConfig::getArguments());
 }
 
-QStringList EncodeGUI::configureSubtitle(int stream, QString container, QString id) {
+QStringList EncodeGUI::configureSubtitle(int stream, int index, QString container, QString id) {
 	if (!CHECKED(_ui->AudioCB)) {
 		MediaConfig::resetArguments();
 
 		if (_ui->VideoEncDD->currentIndex() != 6) {
 			MediaConfig::setOverride();
+			#ifdef Q_OS_WINDOWS
 			MediaConfig::setInput(QDir::toNativeSeparators(TEMPPATH_WIN + QString("\\%1%2").arg(id).arg(container)));
-			MediaConfig::setInput(_ui->SelectInTxtBox->text());
-			MediaConfig::setMapAll(QString("v"), QString("0"));
+			#endif
+			#ifdef Q_OS_DARWIN
+			MediaConfig::setInput(QDir::toNativeSeparators(TEMPPATH_DAR + QString("/%1%2").arg(id).arg(container)));
+			#endif
+
+			if (_ui->SubtitlesDD->currentIndex() != 2) {
+				if (!CHECKED(_ui->BatchCB))
+					MediaConfig::setInput(_ui->SelectInTxtBox->text());
+				else
+					MediaConfig::setInput(_batchFiles->at(index));
+			}
+			else
+				foreach(QString path, *_streamInputs)
+					MediaConfig::setInput(path);
+
+			MediaConfig::setMapAll(QString("v"), 0);
 			MediaConfig::setVideoCodec(QString("copy"));
 		}
 	}
 
 	if (CHECKED(_ui->SubtitlesCB) && _ui->SubtitlesDD->currentIndex() == 0) {
 		if (_ui->VideoEncDD->currentIndex() != 6)
-			MediaConfig::setMapAll(QString("s"), QString("%1").arg(stream));
+			MediaConfig::setMapAll(QString("s"), stream);
 		else
 			MediaConfig::setMapSingle(QString("s"));
 
@@ -116,7 +182,7 @@ QStringList EncodeGUI::configureSubtitle(int stream, QString container, QString 
 	}
 	else if (CHECKED(_ui->SubtitlesCB) && _ui->SubtitlesDD->currentIndex() == 1) {
 		if (_ui->VideoEncDD->currentIndex() != 6)
-			MediaConfig::setMapAll(QString("s"), QString("%1").arg(stream));
+			MediaConfig::setMapAll(QString("s"), stream);
 		else
 			MediaConfig::setMapSingle(QString("s"));
 
@@ -125,15 +191,69 @@ QStringList EncodeGUI::configureSubtitle(int stream, QString container, QString 
 		else if (container.contains(QString(".mov")) || container.contains(QString(".mp4")) || container.contains(QString(".3gp")))
 			MediaConfig::setSubtitleCodec(QString("mov_text"));
 	}
+	else if (CHECKED(_ui->SubtitlesCB) && _ui->SubtitlesDD->currentIndex() == 2) {
+		int indexr = 0;
+
+		for (int i = 0; i < _streamSub.count(); i++) {
+			QVariantList stream2(_streamSub.at(i).toList());
+
+			for (int j = _subStreamNum; j < stream2.count() + _subStreamNum; j++) {
+				if (_ui->VideoEncDD->currentIndex() != 6)
+					MediaConfig::setMap(QString("s"), _subtitleStream->at(j).toInt(), stream2.at(indexr).toInt());
+				else {
+					if (_streamInputs->count() > 1)
+						MediaConfig::setMap(QString("s"), _subtitleStream->at(i).toInt(), stream2.at(indexr).toInt());
+					else if (_streamInputs->count() == 1)
+						MediaConfig::setMapMux(QString("s"), stream2.at(indexr).toInt());
+				}
+
+				if (_isTitleSub->at(j)) {
+					MediaConfig::setSubtitleMetadata(j);
+					MediaConfig::setSubtitleTitle(_titleSub->at(j));
+
+					if (_isLangSub->at(j)) {
+						MediaConfig::setSubtitleMetadata(j);
+						MediaConfig::setSubtitleLang(_subtitleLangs->at(j));
+					}
+				}
+				else if (_isLangSub->at(j)) {
+					MediaConfig::setSubtitleMetadata(j);
+					MediaConfig::setSubtitleLang(_subtitleLangs->at(j));
+				}
+
+				if (_isEncodingSub->at(j))
+					MediaConfig::setSubtitleCodecMulti(_subtitleCodec->at(j), j);
+				else
+					MediaConfig::setSubtitleCodecMulti(QString("copy"), j);
+
+				indexr++;
+			}
+
+			indexr = 0;
+			_subStreamNum = stream2.count() + _subStreamNum;
+		}
+	}
 
 	if (!CHECKED(_ui->AudioCB)) {
-		if (!CHECKED(_ui->ChaptersCB) && SubtitleInfo::getChapter())
+		if (!CHECKED(_ui->ChaptersCB) && SubtitleInfo::getChapter() && !CHECKED(_ui->BatchCB))
 			MediaConfig::setVideoChapters();
 
 		if (_ui->VideoEncDD->currentIndex() != 6) {
-			MediaConfig::setMetaData1();
-			MediaConfig::setMetaData2(QString("\"EncodeGUI v%1\"").arg(VERSION));
-			MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
+			MediaConfig::setVideoMetadata();
+			MediaConfig::setEncoder(QString("EncodeGUI v%1").arg(VERSION));
+			
+			if (CHECKED(_ui->BatchCB)) {
+				QFileInfo fn(_batchFiles->at(index));
+
+				#ifdef Q_OS_WINDOWS
+				MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + QString("\\batch_") + fn.fileName() + container);
+				#endif
+				#ifdef Q_OS_DARWIN
+				MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + QString("/batch_") + fn.fileName() + container);
+				#endif
+			}
+			else
+				MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
 		}
 
 		return(MediaConfig::getArguments());
@@ -142,6 +262,7 @@ QStringList EncodeGUI::configureSubtitle(int stream, QString container, QString 
 		return(QStringList());
 }
 
+#ifdef Q_OS_WINDOWS
 QStringList EncodeGUI::configureVS(QString id) {
 	MediaConfig::resetArguments();
 
@@ -151,14 +272,20 @@ QStringList EncodeGUI::configureVS(QString id) {
 
 	return(MediaConfig::getArguments());
 }
+#endif
 
 QStringList EncodeGUI::configureMux(QString container, QStringList audio, QStringList subtitles) {
 	MediaConfig::resetArguments();
 
 	MediaConfig::setOverride();
-	MediaConfig::setInput(_ui->SelectInTxtBox->text());
 
-	MediaConfig::setMapMux(QString("V"), 0);
+	if ((CHECKED(_ui->AudioCB) && _ui->AudioDD->currentIndex() == 1) || (CHECKED(_ui->SubtitlesCB) && _ui->SubtitlesDD->currentIndex() == 2))
+		foreach(QString input, *_streamInputs)
+			MediaConfig::setInput(input);
+	else if (_streamInputs->count() == 0)
+		MediaConfig::setInput(_ui->SelectInTxtBox->text());
+
+	MediaConfig::setMapMux(QString("v"), 0);
 	MediaConfig::setVideoCodec(QString("copy"));
 
 	foreach(QString aud, audio)
@@ -166,25 +293,35 @@ QStringList EncodeGUI::configureMux(QString container, QStringList audio, QStrin
 	foreach(QString sub, subtitles)
 		MediaConfig::append(sub);
 
-	MediaConfig::setMetaData1();
-	MediaConfig::setMetaData2(QString("\"EncodeGUI v%1\"").arg(VERSION));
+	MediaConfig::setVideoMetadata();
+	MediaConfig::setEncoder(QString("EncodeGUI v%1").arg(VERSION));
 	MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
 
 	return(MediaConfig::getArguments());
 }
 
-QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass, int pass) {
+QStringList EncodeGUI::configureArgs(QString input, int index, QString container, QString id, bool twoPass, int pass) {
 	MediaConfig::resetArguments();
 	MediaConfig::setOverride();
 
 	if (CHECKED(_ui->RotateGB) && CHECKED(_ui->NoAutoRotateCB))
 		MediaConfig::setNoAutoRotate();
 
-	MediaConfig::setInput("-");
+	#ifdef Q_OS_WINDOWS
+	MediaConfig::setInput(QString("-"));
+	#endif
+	#ifdef Q_OS_DARWIN
+	MediaConfig::setVs();
+	MediaConfig::setInput(QDir::toNativeSeparators(LOGPATH_DAR + QString("/job-%1/%1.vpy").arg(id)));
+	#endif
+
+	QString profile;
 
 	switch (_ui->VideoEncDD->currentIndex()) {
 	case 0:
+		#ifdef Q_OS_WINDOWS
 		if (!CHECKED(_ui->Hardware264CB)) {
+		#endif
 			MediaConfig::setVideoCodec(QString("libx264"));
 
 			if (_ui->EncodeMode264DD->currentIndex() == 0)
@@ -228,6 +365,7 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 				MediaConfig::setRefFrames(_ui->Reference264Sldr->value());
 			if (CHECKED(_ui->BFrames264GB))
 				MediaConfig::setBFrames(_ui->BFrame264Sldr->value());
+		#ifdef Q_OS_WINDOWS
 		}
 		else {
 			if (_ui->Hardware264DD->currentText().contains(QString("QuickSync")))
@@ -253,9 +391,12 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 				break;
 			}
 		}
+		#endif
 		break;
 	case 1:
+		#ifdef Q_OS_WINDOWS
 		if (!CHECKED(_ui->Hardware265CB)) {
+		#endif
 			MediaConfig::setVideoCodec(QString("libx265"));
 
 			if (_ui->EncodeMode265DD->currentIndex() == 0)
@@ -270,8 +411,6 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 
 			if (CHECKED(_ui->Preset265CB))
 				MediaConfig::setVideoPreset(_ui->Preset265DD->currentText().toLower().remove(QString(" ")));
-
-			QString profile;
 
 			if (CHECKED(_ui->Profile265GB)) {
 				profile = _ui->Profile265DD->currentText().toLower().remove(QString(" ")).remove(QString(":"));
@@ -318,16 +457,24 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 			if (CHECKED(_ui->BFrames265GB))
 				MediaConfig::setBFrames(_ui->BFrame265Sldr->value());
 
+			#ifdef Q_OS_WINDOWS
 			if ((CHECKED(_ui->FastPass265CB) && _ui->EncodeMode265DD->currentIndex() == 2) || _ui->EncodeMode265DD->currentIndex() == 2 || 
 				CHECKED(_ui->HDRMetadataGB) || CHECKED(_ui->ColorsHDRGB) || CHECKED(_ui->Profile265GB) || CHECKED(_ui->DBVisionGB))
 				MediaConfig::setx265Params();
+			#endif
+			#ifdef Q_OS_DARWIN
+			if (_ui->EncodeMode265DD->currentIndex() == 2 || CHECKED(_ui->HDRMetadataGB) || CHECKED(_ui->ColorsHDRGB) || CHECKED(_ui->Profile265GB) || CHECKED(_ui->DBVisionGB))
+				MediaConfig::setx265Params();
+			#endif
 
+			#ifdef Q_OS_WINDOWS
 			if (CHECKED(_ui->FastPass265CB) && _ui->EncodeMode265DD->currentIndex() == 2) {
 				MediaConfig::setFastPass();
 
 				if (CHECKED(_ui->Profile265GB) && _ui->Tier265DD->currentIndex() == 0 && (_ui->EncodeMode265DD->currentIndex() == 2 || CHECKED(_ui->ColorsHDRGB) || CHECKED(_ui->HDRMetadataGB)))
 					MediaConfig::setColin();
 			}
+			#endif
 			if (CHECKED(_ui->Profile265GB) && _ui->Tier265DD->currentIndex() == 0) {
 				MediaConfig::setTier(0);
 
@@ -335,7 +482,12 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 					MediaConfig::setColin();
 			}
 			if (_ui->EncodeMode265DD->currentIndex() == 2) {
+				#ifdef Q_OS_WINDOWS
 				MediaConfig::setStatsFile(TEMPPATH_WIN);
+				#endif
+				#ifdef Q_OS_DARWIN
+				MediaConfig::setStatsFile(TEMPPATH_DAR);
+				#endif
 				
 				if (CHECKED(_ui->ColorsHDRGB) || CHECKED(_ui->HDRMetadataGB) || CHECKED(_ui->DBVisionGB))
 					MediaConfig::setColin();
@@ -377,11 +529,18 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 				MediaConfig::setBuffer((int)_ui->Bitrate265NUD->value());
 			}
 
+			#ifdef Q_OS_WINDOWS
 			if ((CHECKED(_ui->FastPass265CB) && _ui->EncodeMode265DD->currentIndex() == 2) || _ui->EncodeMode265DD->currentIndex() == 2 ||
 				CHECKED(_ui->HDRMetadataGB) || CHECKED(_ui->ColorsHDRGB) || CHECKED(_ui->Profile265GB) || CHECKED(_ui->DBVisionGB))
 				MediaConfig::setConcludeParams();
+			#endif
+			#ifdef Q_OS_DARWIN
+			if (_ui->EncodeMode265DD->currentIndex() == 2 || CHECKED(_ui->HDRMetadataGB) || CHECKED(_ui->ColorsHDRGB) || CHECKED(_ui->Profile265GB) || CHECKED(_ui->DBVisionGB))
+				MediaConfig::setConcludeParams();
+			#endif
 
 			MediaConfig::setAppleTag();
+		#ifdef Q_OS_WINDOWS
 		}
 		else {
 		    if (_ui->Hardware265DD->currentText().contains(QString("QuickSync")))
@@ -407,7 +566,7 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 				break;
 			}
 		}
-
+		#endif
 		break;
 	case 2:
 		MediaConfig::setVideoCodec(QString("prores_ks"));
@@ -438,6 +597,7 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 			MediaConfig::setConstantVideoQuality(_ui->QualityNUD->value());
 			break;
 		}
+
 		break;
 	case 4:
 		MediaConfig::setVideoCodec(QString("libvpx-vp9"));
@@ -480,7 +640,12 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 
 		break;
 	case 5:
+		#ifdef Q_OS_WINDOWS
 		MediaConfig::setVideoCodec(QString("libsvtav1"));
+		#endif
+		#ifdef Q_OS_DARWIN
+		MediaConfig::setVideoCodec(QString("libaom-av1"));
+		#endif
 
 		switch (_ui->EncodeModeAV1DD->currentIndex()) {
 		case 0:
@@ -495,6 +660,7 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 			MediaConfig::setPixelFormat(QString("yuv420p10le"));
 		else
 			MediaConfig::setPixelFormat(QString("yuv420p"));
+
 		break;
 	}
 
@@ -608,21 +774,45 @@ QStringList EncodeGUI::configureArgs(QString container, QString id, bool twoPass
 	}
 
 	if (twoPass) {
-		if (_ui->VideoEncDD->currentIndex() != 1)
+		if (_ui->VideoEncDD->currentIndex() != 1) {
+			#ifdef Q_OS_WINDOWS
 			MediaConfig::setPassLogFile(TEMPPATH_WIN);
+			#endif
+			#ifdef Q_OS_DARWIN
+			MediaConfig::setPassLogFile(TEMPPATH_DAR);
+			#endif
+		}
 		
 		MediaConfig::setNullPath();
 	}
 	else
-		if (CHECKED(_ui->AudioCB) || CHECKED(_ui->SubtitlesCB))
+		if (CHECKED(_ui->AudioCB) || CHECKED(_ui->SubtitlesCB)) {
+			#ifdef Q_OS_WINDOWS
 			MediaConfig::setOutput(QDir::toNativeSeparators(TEMPPATH_WIN + QString("\\%1.mkv").arg(id)));
+			#endif
+			#ifdef Q_OS_DARWIN
+			MediaConfig::setOutput(QDir::toNativeSeparators(TEMPPATH_DAR + QString("/%1.mkv").arg(id)));
+			#endif
+		}
 		else if (!CHECKED(_ui->AudioCB) && !CHECKED(_ui->SubtitlesCB)) {
-			if (!CHECKED(_ui->ChaptersCB) && SubtitleInfo::getChapter())
+			if (!CHECKED(_ui->ChaptersCB) && SubtitleInfo::getChapter() && !CHECKED(_ui->BatchCB))
 				MediaConfig::setVideoChapters();
 
-			MediaConfig::setMetaData1();
-			MediaConfig::setMetaData2(QString("\"EncodeGUI v%1\"").arg(VERSION));
-			MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
+			MediaConfig::setVideoMetadata();
+			MediaConfig::setEncoder(QString("EncodeGUI v%1").arg(VERSION));
+
+			if (CHECKED(_ui->BatchCB)) {
+				QFileInfo fn(_batchFiles->at(index));
+
+				#ifdef Q_OS_WINDOWS
+				MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + QString("\\batch_") + fn.fileName() + container);
+				#endif
+				#ifdef Q_OS_DARWIN
+				MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + QString("/batch_") + fn.fileName() + container);
+				#endif
+			}
+			else
+				MediaConfig::setOutput(_ui->SaveOutTxtBox->text() + container);
 		}
 
 	return(MediaConfig::getArguments());

@@ -2,8 +2,10 @@
 
 void EncodeGUI::hideAud() {
     if (CHECKED(_ui->AudioCB)) {
-        SET_ENABLED(_ui->AudioDD);
-        hideAudTab();
+        if (!CHECKED(_ui->BatchCB)) {
+            SET_ENABLED(_ui->AudioDD);
+            hideAudTab();
+        }
     }
     else {
         SET_DISABLED(_ui->AudioDD);
@@ -19,11 +21,13 @@ void EncodeGUI::removeAudio() {
     _bitrate->clear();
     _isEncoding->clear();
     _audioCodec->clear();
-    _stream->clear();
+    _stream.clear();
     _isTitle->clear();
     _title->clear();
     _isLang->clear();
     _audioLangs->clear();
+    _audioInputs->clear();
+    _audioStream->clear();
 }
 
 void EncodeGUI::audioTitle() {
@@ -42,17 +46,67 @@ void EncodeGUI::audioLang() {
 
 void EncodeGUI::removeAudioClick() {
     _ui->AudioQueue->removeRow(_selectedAudio);
+
+    int input = _audioStream->at(_selectedAudio).toInt();
+    int index = 0;
     
     _channels->removeAt(_selectedAudio);
     _quality->removeAt(_selectedAudio);
     _bitrate->removeAt(_selectedAudio);
     _isEncoding->removeAt(_selectedAudio);
     _audioCodec->removeAt(_selectedAudio);
-    _stream->removeAt(_selectedAudio);
     _isTitle->removeAt(_selectedAudio);
     _title->removeAt(_selectedAudio);
     _isLang->removeAt(_selectedAudio);
     _audioLangs->removeAt(_selectedAudio);
+    _audioStream->removeAt(_selectedAudio);
+
+    [&] {
+        for (int i = 0; i < _stream.count(); i++)
+            for (int j = 0; j < _stream.at(i).toStringList().count(); j++) {
+                if (index == _selectedAudio) {
+                    if (_stream.at(i).toStringList().count() > 1) {
+                        QStringList newStream(_stream.at(i).toStringList());
+                        newStream.removeAt(j);
+                        _stream.replace(i, newStream);
+                    }
+                    else if (_stream.at(i).toStringList().count() == 1) {
+                        _stream.removeAt(i);
+                        i--;
+                    }
+
+                    return;
+                }
+
+                index++;
+            }
+    }();
+
+    if (!_subtitleStream->contains(QString("%1").arg(input)) && !_audioStream->contains(QString("%1").arg(input))) {
+        if (!_ui->SelectInTxtBox->text().contains(_streamInputs->at(input - 1)) && _ui->VideoEncDD->currentIndex() != 6)
+            _streamInputs->removeAt(input - 1);
+    }
+    if (!_audioStream->contains(QString("%1").arg(input)))
+        _audioInputs->removeAt(input - 1);
+
+    for (int i = 0; i < _stream.count(); i++)
+        if (_audioStream->at(i).toInt() > _stream.count())
+            _audioStream->replace(i, QString("%1").arg(_stream.count()));
+
+    index = 0;
+
+    for (int i = 0; i < _streamSub.count(); i++)
+        for (int j = 0; j < _streamSub.at(i).toStringList().count(); j++) {
+            if (_subtitleStream->at(index).toInt() > _streamInputs->count())
+                _subtitleStream->replace(index, QString("%1").arg(_streamInputs->count()));
+
+            index++;
+        }
+
+    for (int i = 0; i < _ui->AudioQueue->rowCount(); i++) {
+        _ui->AudioQueue->setItem(i, 0, new QTableWidgetItem(_ui->AudioQueue->item(i, 0)->text().replace(_ui->AudioQueue->item(i, 0)->text().at(_ui->AudioQueue->item(i, 0)->text().indexOf(QRegularExpression("[1-8]"))), QString("%1").arg(i + 1))));
+        _ui->AudioQueue->item(i, 0)->setTextAlignment(Qt::AlignCenter);
+    }
 
     delete(sender());
 }
@@ -89,8 +143,23 @@ void EncodeGUI::audioDD() {
     }
 }
 
+void EncodeGUI::audioFinished() {
+    setAudioInfo();
+
+    if (AudioInfo::totalStreams() == 0) {
+        msgBoxHelper(MessageType::Error, QString("EncodeGUI error"), QString("The selected source does not contain any audio files."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        _ui->AudioSourceTxtBox->setText(QString());
+    }
+    else
+        msgBoxHelper(MessageType::Info, QString("Extracted info"), QString("Successfully loaded the audio from source."), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+    connect(_ui->AudioTrackDD, SIGNAL(currentIndexChanged(int)), this, SLOT(audioTrack()));
+}
+
 void EncodeGUI::setAudioInfo() {
     if (AudioInfo::totalStreams() > 0) {
+        SET_ENABLED(_ui->AudioTrackDD);
+
         FOR_EACH(AudioInfo::totalStreams()) {
             _ui->AudioTrackDD->addItem(QString("%1").arg(i + 1));
 
@@ -114,8 +183,9 @@ void EncodeGUI::setAudioInfo() {
     }
     else {
         SET_DISABLED(_ui->AudioTrackDD);
-        SET_DISABLED(_ui->AudioCB);
-        _ui->AudioCB->setChecked(false);
+
+        if (CHECKED(_ui->BatchCB))
+            SET_DISABLED(_ui->AudioCB);
 
         paletter(_ui->FormatValueLabel);
         _ui->FormatValueLabel->setText(QString("?"));

@@ -43,6 +43,7 @@ void FFLoader::encode(QStringList args, QStringList vsArgs, QString ffmpeg, QStr
 	newProcess(_encode, args, ffmpeg);
 }
 
+#ifdef Q_OS_WINDOWS
 void FFLoader::gpu() {
 	_vk = new QProcess();
 
@@ -51,6 +52,7 @@ void FFLoader::gpu() {
 
 	newProcess(_vk, QStringList() << QString("/C") << QString("vs\\vspipe.exe") << QString("-c") << QString("y4m") << QString("vs\\dummy.vpy") << QString("-"), QString("cmd.exe"));
 }
+#endif
 
 void FFLoader::extractRPU(QStringList args, QStringList doviArgs, QString doviTool, QString ffmpeg) {
 	_extract = new QProcess();
@@ -65,12 +67,28 @@ void FFLoader::extractRPU(QStringList args, QStringList doviArgs, QString doviTo
 }
 
 void FFLoader::action(bool sd) {
-	QProcess* proc(new QProcess());
+	QProcess *proc(new QProcess());
 
+	#ifdef Q_OS_WINDOWS
 	if (sd)
 		newProcess(proc, QStringList() << QString("/C") << QString("shutdown") << QString("/s"), QString("cmd.exe"));
 	else
 		newProcess(proc, QStringList() << QString("/C") << QString("shutdown") << QString("/l"), QString("cmd.exe"));
+	#endif
+	#ifdef Q_OS_DARWIN
+	if (sd)
+		newProcess(proc, QStringList() << QString("sudo") << QString("shutdown") << QString("-h") << QString("now"), QString("cmd.exe"));
+	else
+		newProcess(proc, QStringList() << QString("sudo") << QString("shutdown") << QString("-s") << QString("now"), QString("cmd.exe"));
+	#endif
+}
+
+void FFLoader::batchInfo(QStringList args, QString ffprobe) {
+	_video = new QProcess();
+
+	connector(_video, ProcessType::BatchInfo);
+	connector(_video, ProcessType::BatchFinish);
+	newProcess(_video, args, ffprobe);
 }
 
 void FFLoader::videoInfo(QStringList args, QString ffprobe) {
@@ -81,12 +99,40 @@ void FFLoader::videoInfo(QStringList args, QString ffprobe) {
 	newProcess(_video, args, ffprobe);
 }
 
+void FFLoader::audioInfo(QStringList args, QString ffprobe) {
+	_video = new QProcess();
+
+	connector(_video, ProcessType::AudioInfo);
+	connector(_video, ProcessType::AudioFinish);
+	newProcess(_video, args, ffprobe);
+}
+
+void FFLoader::subtitleInfo(QStringList args, QString ffprobe) {
+	_video = new QProcess();
+
+	connector(_video, ProcessType::SubtitleInfo);
+	connector(_video, ProcessType::SubtitleFinish);
+	newProcess(_video, args, ffprobe);
+}
+
 void FFLoader::outputDataVideo() {
 	outputData(_video, ProcessType::VideoInfo);
 }
 
+void FFLoader::outputDataBatch() {
+	outputData(_video, ProcessType::BatchInfo);
+}
+
 void FFLoader::outputDataInfo() {
 	outputData(_encode, ProcessType::Encode);
+}
+
+void FFLoader::outputDataAudio() {
+	outputData(_video, ProcessType::AudioInfo);
+}
+
+void FFLoader::outputDataSubtitle() {
+	outputData(_video, ProcessType::SubtitleInfo);
 }
 
 void FFLoader::outputDataExtract() {
@@ -97,9 +143,11 @@ void FFLoader::outputDataVs() {
 	outputData(_vs, ProcessType::Vs);
 }
 
+#ifdef Q_OS_WINDOWS
 void FFLoader::outputDataVk() {
 	outputData(_vk, ProcessType::VkInfo);
 }
+#endif
 
 void FFLoader::outputDataRPU() {
 	outputData(_extract, ProcessType::ExtractRPU);
@@ -107,6 +155,18 @@ void FFLoader::outputDataRPU() {
 
 void FFLoader::videoFinished() {
 	finisher(_video, ProcessType::VideoFinish);
+}
+
+void FFLoader::batchFinished() {
+	finisher(_video, ProcessType::BatchFinish);
+}
+
+void FFLoader::audioFinished() {
+	finisher(_video, ProcessType::AudioFinish);
+}
+
+void FFLoader::subtitleFinished() {
+	finisher(_video, ProcessType::SubtitleFinish);
 }
 
 void FFLoader::encodeFinished() {
@@ -117,9 +177,11 @@ void FFLoader::extractFinished() {
 	finisher(_encode, ProcessType::ExtractFinish);
 }
 
+#ifdef Q_OS_WINDOWS
 void FFLoader::vkFinished() {
 	finisher(_vk, ProcessType::VkFinish);
 }
+#endif
 
 void FFLoader::extractRPUFinished() {
 	finisher(_extract, ProcessType::ExtractRPUFinish);
@@ -143,8 +205,8 @@ void FFLoader::outputData(QProcess *process, ProcessType type) {
 
 		switch (type) {
 		case ProcessType::Encode:
-			if (ProgressInfoRegex::progressRegex(output, VideoInfoList::getDuration(_currentJob), VideoInfoList::getFrameRate(_currentJob).trimmed().toDouble() 
-				* QTime(0, 0, 0, 0).secsTo(VideoInfoList::getDuration(_currentJob)), *_timer, *_pauseTime))
+			if (ProgressInfoRegex::progressRegex(output, VideoInfoList::getJobDuration(_currentJob), VideoInfoList::getJobFrameRate(_currentJob).trimmed().toDouble() 
+				* QTime(0, 0, 0, 0).secsTo(VideoInfoList::getJobDuration(_currentJob)), *_timer, *_pauseTime))
 				emit setProgress();
 			else
 				emit logs(output);
@@ -157,13 +219,25 @@ void FFLoader::outputData(QProcess *process, ProcessType type) {
 			AudioSubInfoRegex::subInfoRegex(output);
 			AudioSubInfoRegex::chapterInfoRegex(output);
 			break;
+		case ProcessType::BatchInfo:
+			VideoInfoRegex::durationBitrateRegex(output);
+			VideoInfoRegex::batchInfoerRegex(output);
+			break;
+		case ProcessType::AudioInfo:
+			AudioSubInfoRegex::audioInfoRegex(output);
+			break;
+		case ProcessType::SubtitleInfo:
+			AudioSubInfoRegex::subInfoRegex(output);
+			break;
 		case ProcessType::ExtractInfo:
-			if (ProgressInfoRegex::extractRegex(output, VideoInfoList::getDuration(_currentJob)))
+			if (ProgressInfoRegex::extractRegex(output, VideoInfoList::getJobDuration(_currentJob)))
 				emit extractInfo();
 			break;
+		#ifdef Q_OS_WINDOWS
 		case ProcessType::VkInfo:
 			VideoInfoRegex::vkRegex(output);
 			break;
+		#endif
 		}
 	}
 }
@@ -188,16 +262,33 @@ void FFLoader::finisher(QProcess *process, ProcessType type) {
 		disconnecter(process, ProcessType::VideoInfo);
 		emit setVideoInfo();
 		break;
+	case ProcessType::BatchFinish:
+		disconnecter(process, ProcessType::BatchFinish);
+		disconnecter(process, ProcessType::BatchInfo);
+		emit setBatchInfo();
+		break;
+	case ProcessType::AudioFinish:
+		disconnecter(process, ProcessType::AudioFinish);
+		disconnecter(process, ProcessType::AudioInfo);
+		emit setAudioInfo();
+		break;
+	case ProcessType::SubtitleFinish:
+		disconnecter(process, ProcessType::SubtitleFinish);
+		disconnecter(process, ProcessType::SubtitleInfo);
+		emit setSubtitleInfo();
+		break;
 	case ProcessType::ExtractFinish:
 		disconnecter(process, ProcessType::ExtractFinish);
 		disconnecter(process, ProcessType::ExtractInfo);
 		emit extractComplete();
 		break;
+	#ifdef Q_OS_WINDOWS
 	case ProcessType::VkFinish:
 		disconnecter(process, ProcessType::VkFinish);
 		disconnecter(process, ProcessType::VkInfo);
 		emit vkComplete();
 		break;
+	#endif
 	case ProcessType::ExtractRPUFinish:
 		disconnecter(process, ProcessType::ExtractRPUFinish);
 		disconnecter(process, ProcessType::ExtractRPU);
@@ -229,20 +320,40 @@ void FFLoader::connector(QProcess *process, ProcessType type) {
 	case ProcessType::VideoInfo:
 		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataVideo);
 		break;
+	case ProcessType::BatchInfo:
+		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataBatch);
+		break;
+	case ProcessType::AudioInfo:
+		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataAudio);
+		break;
+	case ProcessType::SubtitleInfo:
+		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataSubtitle);
+		break;
 	case ProcessType::Vs:
 		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataVs);
 		break;
 	case ProcessType::ExtractInfo:
 		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataExtract);
 		break;
+	#ifdef Q_OS_WINDOWS
 	case ProcessType::VkInfo:
 		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataVk);
 		break;
+	#endif
 	case ProcessType::ExtractRPU:
 		process->connect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataRPU);
 		break;
 	case ProcessType::VideoFinish:
 		process->connect(process, &QProcess::finished, this, &FFLoader::videoFinished);
+		break;
+	case ProcessType::BatchFinish:
+		process->connect(process, &QProcess::finished, this, &FFLoader::batchFinished);
+		break;
+	case ProcessType::AudioFinish:
+		process->connect(process, &QProcess::finished, this, &FFLoader::audioFinished);
+		break;
+	case ProcessType::SubtitleFinish:
+		process->connect(process, &QProcess::finished, this, &FFLoader::subtitleFinished);
 		break;
 	case ProcessType::EncodeFinish:
 		process->connect(process, &QProcess::finished, this, &FFLoader::encodeFinished);
@@ -250,9 +361,11 @@ void FFLoader::connector(QProcess *process, ProcessType type) {
 	case ProcessType::ExtractFinish:
 		process->connect(process, &QProcess::finished, this, &FFLoader::extractFinished);
 		break;
+	#ifdef Q_OS_WINDOWS
 	case ProcessType::VkFinish:
 		process->connect(process, &QProcess::finished, this, &FFLoader::vkFinished);
 		break;
+	#endif
 	case ProcessType::ExtractRPUFinish:
 		process->connect(process, &QProcess::finished, this, &FFLoader::extractRPUFinished);
 		break;
@@ -267,20 +380,40 @@ void FFLoader::disconnecter(QProcess *process, ProcessType type) {
 	case ProcessType::VideoInfo:
 		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataVideo);
 		break;
+	case ProcessType::BatchInfo:
+		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataBatch);
+		break;
+	case ProcessType::AudioInfo:
+		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataAudio);
+		break;
+	case ProcessType::SubtitleInfo:
+		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataSubtitle);
+		break;
 	case ProcessType::Vs:
 		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataVs);
 		break;
 	case ProcessType::ExtractInfo:
 		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataExtract);
 		break;
+	#ifdef Q_OS_WINDOWS
 	case ProcessType::VkInfo:
 		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataVk);
 		break;
+	#endif
 	case ProcessType::ExtractRPU:
 		process->disconnect(process, &QProcess::readyReadStandardError, this, &FFLoader::outputDataRPU);
 		break;
 	case ProcessType::VideoFinish:
 		process->disconnect(process, &QProcess::finished, this, &FFLoader::videoFinished);
+		break;
+	case ProcessType::BatchFinish:
+		process->disconnect(process, &QProcess::finished, this, &FFLoader::batchFinished);
+		break;
+	case ProcessType::AudioFinish:
+		process->disconnect(process, &QProcess::finished, this, &FFLoader::audioFinished);
+		break;
+	case ProcessType::SubtitleFinish:
+		process->disconnect(process, &QProcess::finished, this, &FFLoader::subtitleFinished);
 		break;
 	case ProcessType::EncodeFinish:
 		process->disconnect(process, &QProcess::finished, this, &FFLoader::encodeFinished);
@@ -288,9 +421,11 @@ void FFLoader::disconnecter(QProcess *process, ProcessType type) {
 	case ProcessType::ExtractFinish:
 		process->disconnect(process, &QProcess::finished, this, &FFLoader::extractFinished);
 		break;
+	#ifdef Q_OS_WINDOWS
 	case ProcessType::VkFinish:
 		process->disconnect(process, &QProcess::finished, this, &FFLoader::vkFinished);
 		break;
+	#endif
 	case ProcessType::ExtractRPUFinish:
 		process->disconnect(process, &QProcess::finished, this, &FFLoader::extractRPUFinished);
 		break;
