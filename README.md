@@ -37,4 +37,4 @@ Install the Qt Visual Studio extension and compile using the built-in Visual Stu
 # Licensing
 EncodeGUI's source code is released under the AGPL v3.0 license. See `LICENSE` for more details.
 
-**The setup file for EncodeGUI is closed source and is NOT a part of this repository or the AGPL license. Read the privacy and terms at EncodeGUI.com linked above for more details.**
+**The setup file for EncodeGUI is closed source and is NOT a part of this repository or the AGPL license. Read the privacy and terms for more details:** https://encodegui.com/privacy-terms
