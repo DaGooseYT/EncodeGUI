@@ -1,3 +1,14 @@
+=============================================================================================================
+End of official releases
+=============================================================================================================
+
+EncodeGUI v1.2.3 [Pre-release: 08/06/2023] [Regular release: 10/29/2023]
+
+- Replace SRMD upscaling with RealSR (slower but higher quality).
+- Add multi-gpu support for RealSR.
+
+=============================================================================================================
+
 EncodeGUI v1.2.0 [Pre-release: 05/14/2023] [Regular release: 08/06/2023]
 
 - Added the Subtitle queue for custom subtitle configurations.
