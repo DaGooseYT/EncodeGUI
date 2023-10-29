@@ -82,7 +82,6 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     connect(_ui->PercentageCB, SIGNAL(stateChanged(int)), this, SLOT(percentCB()));
     connect(_ui->DonateToDaGooseBttn, SIGNAL(clicked(bool)), this, SLOT(donateDaGoose()));
     connect(_ui->DonateToGlitchBttn, SIGNAL(clicked(bool)), this, SLOT(donateGlitch()));
-    connect(_ui->PatreonBttn, SIGNAL(clicked(bool)), this, SLOT(patreonClick()));
     connect(_ui->YoutubeBttn, SIGNAL(clicked(bool)), this, SLOT(youClick()));
     connect(_ui->DiscordBttn, SIGNAL(clicked(bool)), this, SLOT(disClick()));
     connect(_ui->InstaBttn, SIGNAL(clicked(bool)), this, SLOT(igClick()));
@@ -212,7 +211,7 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
         QDir().mkpath(QDir::toNativeSeparators(LOGPATH_DAR));
     #endif
 
-    writeLog(QString("Welcome to EncodeGUI! You are using the v%1 (free, stable) build.").arg(VERSION), false, false, false);
+    writeLog(QString("Welcome to EncodeGUI! You are using the v%1 build.").arg(VERSION), false, false, false);
 
     #ifdef Q_OS_WINDOWS
     writeLog(QString("This is a user information log and will not be accepted in an issue/bug report."), true, false, false);
@@ -239,10 +238,6 @@ EncodeGUI::EncodeGUI(QWidget *parent) : QMainWindow(parent) {
     connect(_ui->AutoDelSourceCB, SIGNAL(stateChanged(int)), this, SLOT(delSource()));
 
     connect(new QShortcut(QKeySequence(Qt::Key_F1), this), &QShortcut::activated, []() { QDesktopServices::openUrl(QUrl(QString("https://encodegui.com/support"))); });
-
-    #ifdef VERIFY
-    verifyStart();
-    #endif
     
     if (CHECKED(_ui->UpdateOptCB))
         updater();
@@ -373,7 +368,7 @@ void EncodeGUI::licenseBttn() {
 }
 
 void EncodeGUI::clearBttn() {
-    QMessageBox::StandardButton msg(msgBoxHelper(MessageType::Warning, QString("Warning"), QString("Clearing the saved data will remove ALL of your unactive jobs in the queue and will remove your saved email address for Patreon verification (if applicable). Continue?"), QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton));
+    QMessageBox::StandardButton msg(msgBoxHelper(MessageType::Warning, QString("Warning"), QString("Clearing the saved data will remove ALL inactive jobs in the queue. Continue?"), QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton));
 
     if (msg == QMessageBox::No)
         return;
@@ -991,10 +986,6 @@ void EncodeGUI::donateDaGoose() {
 
 void EncodeGUI::donateGlitch() {
     QDesktopServices::openUrl(QUrl(QString("https://www.paypal.com/donate/?hosted_button_id=4KSB88LADE3WU")));
-}
-
-void EncodeGUI::patreonClick() {
-    QDesktopServices::openUrl(QUrl(QString("https://www.patreon.com/dagoose")));
 }
 
 void EncodeGUI::youClick() {
@@ -1862,7 +1853,7 @@ void EncodeGUI::newTask() {
         }
 
         if (!_arguments.at(_ffloader->_currentJob).toStringList().join(QString(" ")).contains(QString("-c:v copy"))) {
-            _ui->ProgressBarLabel->setText(QString("Initializing componants... (this may take some time)"));
+            _ui->ProgressBarLabel->setText(QString("Initializing components... (this may take some time)"));
             _ui->progressBar->setMaximum(0);
         }
     }
@@ -2514,7 +2505,7 @@ void EncodeGUI::gpuFinished() {
 
     writeLog(QString("Found %1 GPU device(s): %2").arg(_gpuNames->count()).arg(_gpuNames->join(QString(", "))), false, false, false);
 
-    this->setWindowTitle(QString("EncodeGUI v%1 (free, stable) - [GPU 0: %2]").arg(VERSION).arg(_gpuNames->at(0)));
+    this->setWindowTitle(QString("EncodeGUI v%1 - [GPU 0: %2]").arg(VERSION).arg(_gpuNames->at(0)));
     #endif
     #ifdef Q_OS_DARWIN
     char buf[100];
@@ -2526,7 +2517,7 @@ void EncodeGUI::gpuFinished() {
     _ui->GPUUpscaleDD->addItem(QString(buf));
     
     writeLog(QString("Found 1 GPU device: %1").arg(_gpuNames->join(QString(", "))), false, false, false);
-    this->setWindowTitle(QString("EncodeGUI v%1 (free, stable) - [GPU: %2]").arg(VERSION).arg(_gpuNames->at(0)));
+    this->setWindowTitle(QString("EncodeGUI v%1 - [GPU: %2]").arg(VERSION).arg(_gpuNames->at(0)));
     #endif
 }
 

@@ -1,3 +1,20 @@
+/****************************************************************************
+ * Copyright (C) 2022 DaGoose
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+
 #include "scriptbuilder.hpp"
 
 QString ScriptBuilder::_scriptList;
@@ -30,8 +47,14 @@ void ScriptBuilder::setWaifu2x(int noise, int scale, int model, int id, int thre
 	_scriptList.append(VapourSynth::waifu2x(noise, scale, model, id, thread, precision, dual, gpu1, gpu2));
 }
 
-void ScriptBuilder::setSRMD(int scale, int noise, int id, int thread, QString tta, bool dual, int gpu1, int gpu2) {
-	_scriptList.append(VapourSynth::srmd(scale, noise, id, thread, tta, dual, gpu1, gpu2));
+#ifdef Q_OS_DARWIN
+void ScriptBuilder::setSRMD(int scale, int noise, int id, int thread, QString tta) {
+	_scriptList.append(VapourSynth::srmd(scale, noise, id, thread, tta));
+}
+#endif
+
+void ScriptBuilder::setRealSR(int id, int thread, QString tta, bool dual, int gpu1, int gpu2) {
+	_scriptList.append(VapourSynth::realSR(id, thread, tta, dual, gpu1, gpu2));
 }
 
 void ScriptBuilder::setRGB(QString matrix, QString transfer, QString primaries) {

@@ -20,7 +20,7 @@
 #ifndef MEDIACONFIG_H
 #define MEDIACONFIG_H
 
-#include <QStringList>
+#include <QtCore/QStringList>
 
 #include "args.hpp"
 

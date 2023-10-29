@@ -1,5 +1,22 @@
-#ifndef ENCODEGUIQKBEUP_H
-#define ENCODEGUIQKBEUP_H
+/****************************************************************************
+ * Copyright (C) 2022 DaGoose
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+
+#ifndef ENCODEGUIQUBDDF_H
+#define ENCODEGUIQUBDDF_H
 
 #include <QtCore/QVariant>
 #include <QtGui/QIcon>
@@ -383,10 +400,8 @@ public:
     QGroupBox *DonateGB;
     QLabel *DonateToDaGooseLabel;
     QLabel *DonateToGlitchLabel;
-    QLabel *PatreonMemeberLabel;
     QPushButton *DonateToDaGooseBttn;
     QPushButton *DonateToGlitchBttn;
-    QPushButton *PatreonBttn;
     QGroupBox *LinksGB;
     QPushButton *YoutubeBttn;
     QPushButton *DiscordBttn;
@@ -2427,17 +2442,14 @@ public:
         AboutGuiLabel->setOpenExternalLinks(true);
         DonateGB = new QGroupBox(AboutTab);
         DonateGB->setObjectName(QString::fromUtf8("DonateGB"));
-        DonateGB->setGeometry(QRect(14, 114, 367, 134));
+        DonateGB->setGeometry(QRect(14, 114, 367, 101));
         DonateGB->setAlignment(Qt::AlignCenter);
         DonateToDaGooseLabel = new QLabel(DonateGB);
         DonateToDaGooseLabel->setObjectName(QString::fromUtf8("DonateToDaGooseLabel"));
-        DonateToDaGooseLabel->setGeometry(QRect(24, 31, 178, 16));
+        DonateToDaGooseLabel->setGeometry(QRect(24, 31, 221, 16));
         DonateToGlitchLabel = new QLabel(DonateGB);
         DonateToGlitchLabel->setObjectName(QString::fromUtf8("DonateToGlitchLabel"));
-        DonateToGlitchLabel->setGeometry(QRect(24, 67, 191, 16));
-        PatreonMemeberLabel = new QLabel(DonateGB);
-        PatreonMemeberLabel->setObjectName(QString::fromUtf8("PatreonMemeberLabel"));
-        PatreonMemeberLabel->setGeometry(QRect(24, 101, 191, 19));
+        DonateToGlitchLabel->setGeometry(QRect(24, 67, 161, 16));
         DonateToDaGooseBttn = new QPushButton(DonateGB);
         DonateToDaGooseBttn->setObjectName(QString::fromUtf8("DonateToDaGooseBttn"));
         DonateToDaGooseBttn->setGeometry(QRect(262, 22, 81, 34));
@@ -2452,14 +2464,6 @@ public:
         DonateToGlitchBttn->setFocusPolicy(Qt::NoFocus);
         DonateToGlitchBttn->setIcon(icon1);
         DonateToGlitchBttn->setIconSize(QSize(70, 35));
-        PatreonBttn = new QPushButton(DonateGB);
-        PatreonBttn->setObjectName(QString::fromUtf8("PatreonBttn"));
-        PatreonBttn->setGeometry(QRect(262, 95, 81, 34));
-        PatreonBttn->setFocusPolicy(Qt::NoFocus);
-        QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/EncodeGUI/patreon_logo.png"), QSize(), QIcon::Normal, QIcon::Off);
-        PatreonBttn->setIcon(icon2);
-        PatreonBttn->setIconSize(QSize(65, 32));
         LinksGB = new QGroupBox(AboutTab);
         LinksGB->setObjectName(QString::fromUtf8("LinksGB"));
         LinksGB->setGeometry(QRect(402, 114, 148, 165));
@@ -2468,25 +2472,25 @@ public:
         YoutubeBttn->setObjectName(QString::fromUtf8("YoutubeBttn"));
         YoutubeBttn->setGeometry(QRect(23, 27, 103, 35));
         YoutubeBttn->setFocusPolicy(Qt::NoFocus);
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/EncodeGUI/yt_logo.png"), QSize(), QIcon::Normal, QIcon::Off);
-        YoutubeBttn->setIcon(icon3);
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/EncodeGUI/yt_logo.png"), QSize(), QIcon::Normal, QIcon::Off);
+        YoutubeBttn->setIcon(icon2);
         YoutubeBttn->setIconSize(QSize(90, 35));
         DiscordBttn = new QPushButton(LinksGB);
         DiscordBttn->setObjectName(QString::fromUtf8("DiscordBttn"));
         DiscordBttn->setGeometry(QRect(23, 73, 103, 35));
         DiscordBttn->setFocusPolicy(Qt::NoFocus);
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/EncodeGUI/discord_logo.png"), QSize(), QIcon::Normal, QIcon::Off);
-        DiscordBttn->setIcon(icon4);
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/EncodeGUI/discord_logo.png"), QSize(), QIcon::Normal, QIcon::Off);
+        DiscordBttn->setIcon(icon3);
         DiscordBttn->setIconSize(QSize(90, 35));
         InstaBttn = new QPushButton(LinksGB);
         InstaBttn->setObjectName(QString::fromUtf8("InstaBttn"));
         InstaBttn->setGeometry(QRect(23, 119, 103, 35));
         InstaBttn->setFocusPolicy(Qt::NoFocus);
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/EncodeGUI/ig_logo.png"), QSize(), QIcon::Normal, QIcon::Off);
-        InstaBttn->setIcon(icon5);
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/EncodeGUI/ig_logo.png"), QSize(), QIcon::Normal, QIcon::Off);
+        InstaBttn->setIcon(icon4);
         InstaBttn->setIconSize(QSize(90, 35));
         ClearBttn = new QPushButton(AboutTab);
         ClearBttn->setObjectName(QString::fromUtf8("ClearBttn"));
@@ -2886,8 +2890,7 @@ public:
         QWidget::setTabOrder(LogsOutRTxtBox, LogsDirBttn);
         QWidget::setTabOrder(LogsDirBttn, DonateToDaGooseBttn);
         QWidget::setTabOrder(DonateToDaGooseBttn, DonateToGlitchBttn);
-        QWidget::setTabOrder(DonateToGlitchBttn, PatreonBttn);
-        QWidget::setTabOrder(PatreonBttn, YoutubeBttn);
+        QWidget::setTabOrder(DonateToGlitchBttn, YoutubeBttn);
         QWidget::setTabOrder(YoutubeBttn, DiscordBttn);
         QWidget::setTabOrder(DiscordBttn, InstaBttn);
         QWidget::setTabOrder(InstaBttn, SaveOutTxtBox);
@@ -2924,7 +2927,7 @@ public:
 
     void retranslateUi(QMainWindow *EncodeGUIMV)
     {
-        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.2.0 (free, stable)", nullptr));
+        EncodeGUIMV->setWindowTitle(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI v1.2.3", nullptr));
 #if QT_CONFIG(tooltip)
         EGUILogo->setToolTip(QCoreApplication::translate("EncodeGUIMV", "EncodeGUI :)", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -4120,12 +4123,10 @@ public:
         AboutGUIGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "About EncodeGUI", nullptr));
         AboutGuiLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p align=\"center\"><span style=\" font-weight:700;\">EncodeGUI (encode-gooey) is the latest and greatest video encoding application. It features 5 different video codecs to use and AI backed filters such as frame interpolation, resolution upscaling, and DeNoise for an unparalleled experience. Find out more at </span><a href=\"https://encodegui.com\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://encodegui.com</span></a></p></body></html>", nullptr));
         DonateGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "Donate", nullptr));
-        DonateToDaGooseLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700; color:#008000;\">Goose</span><span style=\" font-weight:700;\"> (developer &amp; owner):</span></p></body></html>", nullptr));
-        DonateToGlitchLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700; color:#008000;\">Glitch</span><span style=\" font-weight:700;\"> (assistant consultant):</span></p></body></html>", nullptr));
-        PatreonMemeberLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700;\">Get early access to updates:</span></p></body></html>", nullptr));
+        DonateToDaGooseLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700; color:#008000;\">Goose</span><span style=\" font-weight:700;\"> (owner &amp; dev. up to v1.2.3):</span></p></body></html>", nullptr));
+        DonateToGlitchLabel->setText(QCoreApplication::translate("EncodeGUIMV", "<html><head/><body><p><span style=\" font-weight:700; color:#008000;\">Glitch</span><span style=\" font-weight:700;\"> (dev. after v1.2.3):</span></p></body></html>", nullptr));
         DonateToDaGooseBttn->setText(QString());
         DonateToGlitchBttn->setText(QString());
-        PatreonBttn->setText(QString());
         LinksGB->setTitle(QCoreApplication::translate("EncodeGUIMV", "DaGoose's Links", nullptr));
         YoutubeBttn->setText(QString());
         DiscordBttn->setText(QString());
@@ -4258,4 +4259,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // ENCODEGUIQKBEUP_H
+#endif // ENCODEGUIQUBDDF_H

@@ -1,3 +1,20 @@
+/****************************************************************************
+ * Copyright (C) 2022 DaGoose
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+
 #include "encodegui.hpp"
 
 void EncodeGUI::hideInterpGpu() {
@@ -308,9 +325,9 @@ void EncodeGUI::hideUpscale() {
     case 0:
         SET_INVISIBLE(_ui->TTA2xCB);
         SET_INVISIBLE(_ui->TTA2xLabel);
-        SET_ENABLED(_ui->ModelUpscaleDD);
-        SET_ENABLED(_ui->ModelUpscaleLabel);
-        SET_INVISIBLE(_ui->NoiseLabelSDDD);
+        SET_VISIBLE(_ui->NoiseReduc2xLabel);
+        SET_VISIBLE(_ui->ModelUpscaleDD);
+        SET_VISIBLE(_ui->ModelUpscaleLabel);
         SET_VISIBLE(_ui->Precision2xDD);
         SET_VISIBLE(_ui->Precision2xLabel);
         SET_VISIBLE(_ui->NoiseReduc2xDD);
@@ -318,9 +335,9 @@ void EncodeGUI::hideUpscale() {
     case 1:
         SET_VISIBLE(_ui->TTA2xCB);
         SET_VISIBLE(_ui->TTA2xLabel);
-        SET_DISABLED(_ui->ModelUpscaleDD);
-        SET_DISABLED(_ui->ModelUpscaleLabel);
-        SET_VISIBLE(_ui->NoiseLabelSDDD);
+        SET_INVISIBLE(_ui->NoiseReduc2xLabel);
+        SET_INVISIBLE(_ui->ModelUpscaleDD);
+        SET_INVISIBLE(_ui->ModelUpscaleLabel);
         SET_INVISIBLE(_ui->Precision2xDD);
         SET_INVISIBLE(_ui->Precision2xLabel);
         SET_INVISIBLE(_ui->NoiseReduc2xDD);

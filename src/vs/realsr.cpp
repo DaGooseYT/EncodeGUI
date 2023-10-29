@@ -15,20 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-#include "args.hpp"
+#include "vapoursynth.hpp"
 
 /// <summary>
-/// Enables vapoursynth script input.
+/// Enables real-world super-resolution plugin.
 /// </summary>
+/// <param name="id">The GPU id index to use.</param>
+/// <param name="thread">The number of GPU threads to use.</param>
+/// <param name="tta">Enables test time augmentation for better results.</param>
 /// <returns>String representation of the argument.</returns>
-QString Argument::vs() {
-	return(QString("-f vapoursynth"));
-}
-
-/// <summary>
-/// Configures the pipe for vspipe.exe.
-/// </summary>
-/// <returns>String representation of the argument.</returns>
-QString Argument::vsPipe() {
-	return(QString("-c y4m"));
+QString VapourSynth::realSR(int id, int thread, QString tta, bool dual, int gpu1, int gpu2) {
+	if (!dual)
+		return(QString("clip = core.rsnv.RealSR(clip, gpu_id=%1, gpu_thread=%2, tta=%3)\n\n").arg(id).arg(thread).arg(tta));
+	else
+		return(QString("even = core.std.SelectEvery(core.rsnv.RealSR(clip, gpu_id=%1, gpu_thread=%2, tta=%3), cycle=2, offsets=0)\nodd = core.std.SelectEvery(core.rsnv.RealSR(clip, gpu_id=%4, gpu_thread=%2, tta=%3), cycle=2, offsets=1)\nclip = core.std.Interleave([even, odd])\n\n").arg(gpu1).arg(thread).arg(tta).arg(gpu2));
 }

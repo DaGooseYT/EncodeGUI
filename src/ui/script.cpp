@@ -1,3 +1,20 @@
+/****************************************************************************
+ * Copyright (C) 2022 DaGoose
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+
 #include "encodegui.hpp"
 
 QString EncodeGUI::buildScript(QString input, QString matrix, QString transfer, QString primaries, QString frameRate, int width, int height, QString jobID) {
@@ -143,7 +160,7 @@ QString EncodeGUI::buildScript(QString input, QString matrix, QString transfer, 
 
 	if (CHECKED(_ui->UpscalingGB)) {
 		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\vs\\plugins\\libwaifu2x.dll")));
-		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\vs\\plugins\\libsrmdnv.dll")));
+		ScriptBuilder::setPlugin(QDir::toNativeSeparators(QApplication::applicationDirPath() + QString("\\vs\\plugins\\librealsrnv.dll")));
 	}
 	if (CHECKED(_ui->InterpolationCB)) {
 		if (_ui->BackendDD->currentIndex() == 1)
@@ -380,7 +397,7 @@ void EncodeGUI::upscaleMD(int width, int height) {
 	int scale = 2;
 
 	thread = _ui->GPUThreadUpscaleDD->currentIndex() + 1;
-	id = _ui->GPUInterpDD->currentIndex();
+	id = _ui->GPUUpscaleDD->currentIndex();
 	noise = _ui->NoiseReduc2xDD->currentIndex() - 1;
 
 	if ((width * 2 < _ui->Width2xNUD->value() && width * 3 >= _ui->Width2xNUD->value()) && (height * 2 < _ui->Height2xNUD->value() && height * 3 >= _ui->Height2xNUD->value()))
@@ -417,9 +434,13 @@ void EncodeGUI::upscaleMD(int width, int height) {
 	#ifdef Q_OS_WINDOWS
 	else
 		if (CHECKED(_ui->MultiGPUGB))
-			ScriptBuilder::setSRMD(scale, _ui->NoiseLabelSDDD->currentIndex(), id, thread, tta, true, _ui->GPU1IDNUD->value(), _ui->GPU2IDNUD->value());
+			ScriptBuilder::setRealSR(id, thread, tta, true, _ui->GPU1IDNUD->value(), _ui->GPU2IDNUD->value());
 		else
-			ScriptBuilder::setSRMD(scale, _ui->NoiseLabelSDDD->currentIndex(), id, thread, tta, false, 0, 0);
+			ScriptBuilder::setRealSR(id, thread, tta, false, 0, 0);
+	#endif
+	#ifdef Q_OS_DARWIN
+	else
+		ScriptBuilder::setSRMD(scale, _ui->NoiseLabelSDDD->currentIndex(), id, thread, tta);
 	#endif
 }
 

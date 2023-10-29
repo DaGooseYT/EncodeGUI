@@ -1,3 +1,20 @@
+/****************************************************************************
+ * Copyright (C) 2022 DaGoose
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+
 #include "encodegui.hpp"
 
 QString EncodeGUI::checkEnviornment() {
@@ -38,7 +55,7 @@ QString EncodeGUI::checkEnviornment() {
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\liblsmashsource.dll"))).exists()) return(QString("liblsmashsource.dll"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\libeedi2.dll"))).exists()) return(QString("libeedi2.dll"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\librife.dll"))).exists()) return(QString("librife.dll"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\libsrmdnv.dll"))).exists()) return(QString("libsrmdnv.dll"));
+	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\librealsrnv.dll"))).exists()) return(QString("librealsrnv.dll"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\libwaifu2x.dll"))).exists()) return(QString("libwaifu2x.dll"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\libsvpflow.1.dll"))).exists()) return(QString("libsvpflow.1.dll"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\libsvpflow.2.dll"))).exists()) return(QString("libsvpflow.2.dll"));
@@ -70,18 +87,8 @@ QString EncodeGUI::checkEnviornment() {
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\rife-v1.8\\contextnet.param"))).exists()) return(QString("RIFE model v1.8"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\rife-v1.8\\fusionnet.bin"))).exists()) return(QString("RIFE model v1.8"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\rife-v1.8\\fusionnet.param"))).exists()) return(QString("RIFE model v1.8"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmd_x2.bin"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmd_x2.param"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmd_x3.bin"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmd_x3.param"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmd_x4.bin"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmd_x4.param"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmdnf_x2.bin"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmdnf_x2.param"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmdnf_x3.bin"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmdnf_x3.param"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmdnf_x4.bin"))).exists()) return(QString("SRMD models"));
-	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models\\models-srmd\\srmdnf_x4.param"))).exists()) return(QString("SRMD models"));
+	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models-realsr\\realsr-x4.bin"))).exists()) return(QString("RealSR models"));
+	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models-realsr\\realsr-x4.param"))).exists()) return(QString("RealSR models"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models-cunet\\noise0_model.bin"))).exists()) return(QString("CUNET models"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models-cunet\\noise0_model.param"))).exists()) return(QString("CUNET models"));
 	if (!QFile(QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\plugins\\models-cunet\\noise0_scale2.0x_model.bin"))).exists()) return(QString("CUNET models"));

@@ -1,9 +1,26 @@
+/****************************************************************************
+ * Copyright (C) 2022 DaGoose
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
+
 #pragma once
 
 #ifndef VAPOURSYNTH_H
 #define VAPOURSYNTH_H
 
-#include <QString>
+#include <QtCore/QString>
 
 class VapourSynth {
 protected:
@@ -11,7 +28,12 @@ protected:
 	static QString rifeNcnn(int model, int id, int thread, QString tta, QString uhd, QString sc);
 	static QString rifeNcnnNew(int model, int id, int thread, int num, int den, QString tta, QString uhd, QString sc);
 	static QString waifu2x(int noise, int scale, int model, int id, int thread, int precision, bool dual, int gpu1, int gpu2);
-	static QString srmd(int scale, int noise, int id, int thread, QString tta, bool dual, int gpu1, int gpu2);
+
+	#ifdef Q_OS_DARWIN
+	static QString srmd(int scale, int noise, int id, int thread, QString tta);
+	#endif
+
+	static QString realSR(int id, int thread, QString tta, bool dual, int gpu1, int gpu2);
 	static QString rgb(QString matrix, QString transfer, QString primaries);
 	static QString colorsInOut(QString format, QString matrixIn, QString transferIn, QString primariesIn, QString matrix, QString transfer, QString primaries);
 	static QString colorsOut(QString format, QString matrix, QString transfer, QString primaries);

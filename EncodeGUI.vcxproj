@@ -191,8 +191,8 @@
     <ClCompile Include="src\ui\vpx.cpp" />
     <ClCompile Include="src\ui\vs.cpp" />
     <ClCompile Include="src\vs\colors.cpp" />
+    <ClCompile Include="src\vs\realsr.cpp" />
     <ClCompile Include="src\vs\rife.cpp" />
-    <ClCompile Include="src\vs\srmd.cpp" />
     <ClCompile Include="src\vs\svpflow.cpp" />
     <ClCompile Include="src\vs\vapoursynth.cpp" />
     <ClCompile Include="src\vs\waifu2x.cpp" />

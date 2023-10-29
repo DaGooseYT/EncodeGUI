@@ -20,10 +20,10 @@
 #ifndef FFLOADER_H
 #define FFLOADER_H
 
-#include <QProcess>
-#include <QtGlobal>
-#include <QTime>
-#include <QDir>
+#include <QtCore/QProcess>
+#include <QtCore/QtGlobal>
+#include <QtCore/QTime>
+#include <QtCore/QDir>
 
 #include "audiosubinforegex.hpp"
 #include "processerrorregex.hpp"

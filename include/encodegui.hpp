@@ -75,7 +75,7 @@
 #define SET_INVISIBLE(control) (control->setVisible(false))
 #define CHECKED(control) (control->isChecked())
 
-#define VERSION QString("1.2.0")
+#define VERSION QString("1.2.3")
 #define VSPIPEPATH (QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + QString("\\vs\\vspipe.exe")))
 #define TEMPPATH_WIN (QDir::toNativeSeparators(QDir::homePath() + QString("\\AppData\\Local\\Temp")))
 #define TEMPPATH_DAR (QDir::toNativeSeparators(QDir::homePath() + QString("/Library/Caches/TemporaryItems")))
@@ -146,11 +146,6 @@ private:
     void paletter(QLabel *label);
     int multi(double inFPS, double outFPS);
     QString checkEnviornment();
-
-    #ifdef VERIFY
-    void verifyInit(QByteArray email);
-    void verifyStart();
-    #endif
 
     int _devices;
     int _selectedJob;
@@ -241,7 +236,6 @@ private slots:
     void modelVK();
     void later();
     void audioLang();
-    void patreonClick();
     void youClick();
     void updateOpt();
     void updaterFinished();
@@ -364,10 +358,6 @@ private slots:
     void hideParams();
     void gpu1();
     void gpu2();
-    #endif
-
-    #ifdef VERIFY
-    void verifyClick();
     #endif
     
 protected:
